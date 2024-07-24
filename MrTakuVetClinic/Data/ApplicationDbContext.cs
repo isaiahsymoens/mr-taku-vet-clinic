@@ -10,5 +10,6 @@ namespace MrTakuVetClinic.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Pet> Pets { get; set; }
     }
 }
