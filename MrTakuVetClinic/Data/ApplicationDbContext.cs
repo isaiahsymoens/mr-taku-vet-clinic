@@ -34,16 +34,25 @@ namespace MrTakuVetClinic.Data
             modelBuilder.Entity<Breed>()
                 .HasKey(b => b.BreedId);
 
+            modelBuilder.Entity<VisitType>()
+                .HasKey(v => v.VisitTypeId);
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Pets)
-                .WithOne(p => p.User)
-                .HasForeignKey(p => p.UserId)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
                 .HasOne(u => u.UserType)
                 .WithMany()
                 .HasForeignKey(u => u.UserTypeId);
+
+            modelBuilder.Entity<Pet>()
+                .HasMany(p => p.Visits)
+                .WithOne(p => p.Pet)
+                .HasForeignKey(p => p.PetId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.PetType)
@@ -54,6 +63,11 @@ namespace MrTakuVetClinic.Data
                 .HasOne(p => p.Breed)
                 .WithMany()
                 .HasForeignKey(p => p.BreedId);
+
+            modelBuilder.Entity<Visit>()
+                .HasOne(v => v.VisitType)
+                .WithMany()
+                .HasForeignKey(v => v.VisitTypeId);
         }
     }
 }

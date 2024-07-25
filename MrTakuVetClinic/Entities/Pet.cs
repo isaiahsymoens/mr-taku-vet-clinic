@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MrTakuVetClinic.Entities
@@ -19,5 +20,6 @@ namespace MrTakuVetClinic.Entities
         public User User { get; set; }
         public PetType PetType { get; set; }
         public Breed Breed { get; set; }
+        public ICollection<Visit> Visits { get; set; }
     }
 }
