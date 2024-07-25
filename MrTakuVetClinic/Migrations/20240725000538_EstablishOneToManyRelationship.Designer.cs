@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MrTakuVetClinic.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MrTakuVetClinic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240725000538_EstablishOneToManyRelationship")]
+    partial class EstablishOneToManyRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,6 +46,8 @@ namespace MrTakuVetClinic.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("PetId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Pets");
                 });
@@ -87,6 +91,15 @@ namespace MrTakuVetClinic.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MrTakuVetClinic.Entities.Pet", b =>
+                {
+                    b.HasOne("MrTakuVetClinic.Entities.User", "User")
+                        .WithMany("Pets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
