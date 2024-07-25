@@ -15,5 +15,6 @@ namespace MrTakuVetClinic.Entities
         public string PetType { get; set; }
         public string Breed { get; set; }
         public DateTime BirthDate { get; set; }
+        public User User { get; set; }
     }
 }

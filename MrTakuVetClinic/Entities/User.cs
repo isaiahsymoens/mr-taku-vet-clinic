@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MrTakuVetClinic.Entities
 {
@@ -20,5 +21,6 @@ namespace MrTakuVetClinic.Entities
         [Required]
         public int UserType { get; set; }
         public bool Active { get; set; }
+        public ICollection<Pet> Pets { get; set; }
     }
 }
