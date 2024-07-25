@@ -23,6 +23,22 @@ namespace MrTakuVetClinic.Controllers
             return Json(new { data = await _context.Pets.ToListAsync() });
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Pet>> GetPetById(int id)
+        {
+            var pet = await _context.Pets
+                .Include(u => u.PetType)
+                .Include(u => u.Breed)
+                .FirstOrDefaultAsync(u => u.PetId == id);
+
+            if (pet == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(pet);
+        }
+
         [HttpPost]
         public IActionResult AddPetRecord([FromBody] Pet pet)
         {

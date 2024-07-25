@@ -25,9 +25,14 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("{username}")]
-        public ActionResult<User> GetUserByUsername(string username)
+        public async Task<ActionResult<User>> GetUserByUsername(string username)
         {
-            var user = _context.Users.FirstOrDefault(usr => usr.Username == username);
+            //var user = _context.Users.FirstOrDefault(usr => usr.Username == username);
+
+            var user = await _context.Users
+                .Include(u => u.UserType)
+                .FirstOrDefaultAsync(u => u.Username == username);
+
             //var user = _context.Users.Include(p => p.Pets).FirstOrDefault(usr => usr.Username == username);
             if (user == null)
             {
