@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
 {
-    [Route("api/pets")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PetsController : Controller
     {
