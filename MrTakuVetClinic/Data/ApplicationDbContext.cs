@@ -14,6 +14,8 @@ namespace MrTakuVetClinic.Data
         public DbSet<UserType> UserTypes { get; set; }
         public DbSet<PetType> PetTypes { get; set; }
         public DbSet<Breed> Breeds { get; set; }
+        public DbSet<Visit> Visits { get; set; }
+        public DbSet<VisitType> VisitsTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
