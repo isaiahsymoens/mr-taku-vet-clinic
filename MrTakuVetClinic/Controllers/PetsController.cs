@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -10,27 +11,23 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class PetsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly PetService _petService;
 
-        public PetsController(ApplicationDbContext context)
+        public PetsController(PetService petService)
         {
-            _context = context;
+            _petService = petService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPetsAsync()
         {
-            return Json(new { data = await _context.Pets.ToListAsync() });
+            return Ok(await _petService.GetAllPetsAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetPetById(int id)
+        public async Task<IActionResult> GetPetById(int id)
         {
-            var pet = await _context.Pets
-                .Include(u => u.PetType)
-                .Include(u => u.Breed)
-                .FirstOrDefaultAsync(u => u.PetId == id);
-
+            var pet = await _petService.GetPetByIdAsync(id);
             if (pet == null)
             {
                 return NotFound();
@@ -39,25 +36,25 @@ namespace MrTakuVetClinic.Controllers
             return Ok(pet);
         }
 
-        [HttpPost]
-        public IActionResult AddPetRecord([FromBody] Pet pet)
-        {
-            if (pet == null)
-            {
-                return BadRequest("Pet data is required");
-            }
+        //[HttpPost]
+        //public IActionResult AddPetRecord([FromBody] Pet pet)
+        //{
+        //    if (pet == null)
+        //    {
+        //        return BadRequest("Pet data is required");
+        //    }
 
-            var user = _context.Users.Find(pet.UserId);
-            if (user == null)
-            {
-                ModelState.AddModelError("UserId", "Invalid UserId");
-                return BadRequest(ModelState);
-            }
+        //    var user = _context.Users.Find(pet.UserId);
+        //    if (user == null)
+        //    {
+        //        ModelState.AddModelError("UserId", "Invalid UserId");
+        //        return BadRequest(ModelState);
+        //    }
 
-            _context.Pets.Add(pet);
-            _context.SaveChanges();
+        //    _context.Pets.Add(pet);
+        //    _context.SaveChanges();
 
-            return Ok(new { Message = "Successfully added." });
-        }
+        //    return Ok(new { Message = "Successfully added." });
+        //}
     }
 }

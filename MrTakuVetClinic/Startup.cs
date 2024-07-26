@@ -28,9 +28,11 @@ namespace MrTakuVetClinic
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserTypeRepository, UserTypeRepository>();
+            services.AddScoped<IPetRepository, PetRepository>();
 
             services.AddScoped<UserService>();
             services.AddScoped<UserTypeService>();
+            services.AddScoped<PetService>();
 
             services.AddControllers();
         }
