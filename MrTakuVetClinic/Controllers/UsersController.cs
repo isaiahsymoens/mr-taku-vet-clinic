@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,31 +12,25 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserService _userService;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(UserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            return Json(new { data = await _context.Users.ToListAsync() });
+        public async Task<IActionResult> GetAllUsersAsync()
+        { 
+            return Ok(await _userService.GetAllUsersAsync());
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<User>> GetUserByUsername(string username)
+        public async Task<IActionResult> GetUserByUsername(string username)
         {
-            //var user = _context.Users.FirstOrDefault(usr => usr.Username == username);
-
-            var user = await _context.Users
-                .Include(u => u.UserType)
-                .FirstOrDefaultAsync(u => u.Username == username);
-
-            //var user = _context.Users.Include(p => p.Pets).FirstOrDefault(usr => usr.Username == username);
+            var user = await _userService.GetUserByUsernameAsync(username);
             if (user == null)
-            {
+            { 
                 return NotFound();
             }
 
@@ -43,20 +38,11 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<User>> SearchUsers([FromQuery] string firstName, string lastName)
+        public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, string lastName)
         {
-            var query = _context.Users.AsQueryable();
-            if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
-            { 
-                query = query.Where(u=>
-                    (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName)) &&
-                    (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
-                );
-            }
-
-            var users = await query.ToListAsync();
+            var users = await _userService.GetSearchUsersAsync(firstName, lastName);
             if (users == null || !users.Any())
-            {
+            { 
                 return NotFound();
             }
 
@@ -64,51 +50,66 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(User user)
+        public async Task<IActionResult> PostUser(User user)
         {
-            if (user == null) { 
-                return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
+            await _userService.AddUserAsync(user);
             return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
         }
 
-        [HttpPut("{username}")]
-        public async Task<IActionResult> UpdateUserDetails(string username, [FromBody] User userDetails)
+        [HttpPut]
+        public async Task<IActionResult> PutUser(string username, [FromBody] User user)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
-            if (user == null)
+            if (username != user.Username)
+            {
+                return BadRequest();
+            }
+
+            var existingUser = await _userService.GetUserByUsernameAsync(username);
+            if (existingUser == null)
             {
                 return NotFound();
             }
 
-            user.FirstName = userDetails.FirstName;
-            user.MiddleName = userDetails.MiddleName;
-            user.LastName = userDetails.LastName;
-            user.Email = userDetails.Email;
-
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
+            await _userService.UpdateUserAsync(existingUser);
+            return NoContent();
         }
 
         [HttpDelete("{username}")]
-        public ActionResult DeleteUserRecord(string username)
-        {
-            var user = _context.Users.FirstOrDefault(u=> u.Username== username);
+        public async Task<IActionResult> DeleteUser(string username)
+        { 
+            var user = await _userService.GetUserByUsernameAsync(username);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-
+            await _userService.DeleteUserByUsernameAsync(username);
             return NoContent();
         }
+
+        //[HttpPut("{username}")]
+        //public async Task<IActionResult> UpdateUserDetails(string username, [FromBody] User userDetails)
+        //{
+        //    var user = _context.Users.FirstOrDefault(u => u.Username == username);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    user.FirstName = userDetails.FirstName;
+        //    user.MiddleName = userDetails.MiddleName;
+        //    user.LastName = userDetails.LastName;
+        //    user.Email = userDetails.Email;
+
+        //    _context.Entry(user).State = EntityState.Modified;
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(user);
+        //}
     }
 }

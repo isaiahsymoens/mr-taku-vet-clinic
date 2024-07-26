@@ -8,6 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MrTakuVetClinic.Data;
+using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Repositories;
+using MrTakuVetClinic.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +32,10 @@ namespace MrTakuVetClinic
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<UserService>();
+
             services.AddControllers();
         }
 
