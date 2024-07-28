@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -10,22 +11,23 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class PetTypesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public PetTypesController(ApplicationDbContext context)
+        private PetTypeService _petTypeService;
+
+        public PetTypesController(PetTypeService petTypeService)
         {
-            _context = context;
+            _petTypeService = petTypeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPetTypesAsync()
         {
-            return Json(new { data = await _context.PetTypes.ToListAsync() });
+            return Ok(await _petTypeService.GetAllPetTypesAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PetType> GetPetTypeById(int id)
+        public async Task<IActionResult> GetPetTypeById(int id)
         {
-            var petType = _context.PetTypes.FindAsync(id);
+            var petType = await _petTypeService.GetPetTypeByIdAsync(id);
             if (petType == null)
             {
                 return NotFound();
@@ -35,12 +37,15 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostPetType(PetType petType)
+        public async Task<IActionResult> PostPetTypeAsync(PetType petType)
         {
-            _context.PetTypes.Add(petType);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            await _petTypeService.PostPetTypeAsync(petType);
+            return CreatedAtAction(nameof(GetPetTypeById), new { id = petType.PetTypeId}, petType);
         }
     }
 }

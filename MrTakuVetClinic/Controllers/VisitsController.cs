@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -10,53 +11,54 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class VisitsController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
-        public VisitsController(ApplicationDbContext context)
+        private readonly VisitService _visitService;
+        public VisitsController(VisitService visitService)
         {
-            _context = context;
+            _visitService = visitService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPetsAsync()
         {
-            return Json(new { data = await _context.Visits.ToListAsync() });
+            return Ok(await _visitService.GetAllVisitsAsync());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Visit>> GetVisitById(int id)
-        {
-            var visit = await _context.Visits
-                .Include(v => v.VisitType)
-                .FirstOrDefaultAsync(v => v.VisitId == id);
+        //    [HttpGet("{id}")]
+        //    public async Task<ActionResult<Visit>> GetVisitById(int id)
+        //    {
+        //        var visit = await _context.Visits
+        //            .Include(v => v.VisitType)
+        //            .FirstOrDefaultAsync(v => v.VisitId == id);
 
-            if (visit == null)
-            {
-                return NotFound();
-            }
+        //        if (visit == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-            return Ok(visit);
-        }
+        //        return Ok(visit);
+        //    }
 
-        [HttpPost]
-        public IActionResult PostVisit([FromBody] Visit visit)
-        {
-            if (visit == null)
-            {
-                return BadRequest("Pet data is required");
-            }
+        //    [HttpPost]
+        //    public IActionResult PostVisit([FromBody] Visit visit)
+        //    {
+        //        if (visit == null)
+        //        {
+        //            return BadRequest("Pet data is required");
+        //        }
 
-            var user = _context.Pets.Find(visit.PetId);
-            if (user == null)
-            {
-                ModelState.AddModelError("PetId", "Invalid PetId");
-                return BadRequest(ModelState);
-            }
+        //        var user = _context.Pets.Find(visit.PetId);
+        //        if (user == null)
+        //        {
+        //            ModelState.AddModelError("PetId", "Invalid PetId");
+        //            return BadRequest(ModelState);
+        //        }
 
-            _context.Visits.Add(visit);
-            _context.SaveChanges();
+        //        _context.Visits.Add(visit);
+        //        _context.SaveChanges();
 
-            return Ok(new { Message = "Successfully added." });
-        }
+        //        return Ok(new { Message = "Successfully added." });
+        //    }
+        //}
     }
 }

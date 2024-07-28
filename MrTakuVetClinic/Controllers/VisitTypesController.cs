@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -10,37 +11,41 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class VisitTypesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public VisitTypesController(ApplicationDbContext context)
+        private VisitTypeService _visitTypeService;
+
+        public VisitTypesController(VisitTypeService visitTypeService)
         {
-            _context = context;
+            _visitTypeService = visitTypeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllVisitTypesAsync()
         {
-            return Json(new { data = await _context.VisitsTypes.ToListAsync() });
+            return Ok(await _visitTypeService.GetAllVisitTypesAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PetType> GetVisitTypeById(int id)
+        public async Task<IActionResult> GetVisitTypeById(int id)
         {
-            var petType = _context.VisitsTypes.FindAsync(id);
-            if (petType == null)
+            var visitType = await _visitTypeService.GetVisitTypeByIdAsync(id);
+            if (visitType == null)
             {
                 return NotFound();
             }
 
-            return Ok(petType);
+            return Ok(visitType);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostVisitType(VisitType visitType)
+        public async Task<IActionResult> PostVisitTypeAsync(VisitType visitType)
         {
-            _context.VisitsTypes.Add(visitType);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            await _visitTypeService.PostVisitTypeAsync(visitType);
+            return CreatedAtAction(nameof(GetVisitTypeById), new { id = visitType.VisitTypeId }, visitType);
         }
     }
 }
