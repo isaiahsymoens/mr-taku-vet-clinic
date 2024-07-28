@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MrTakuVetClinic.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.Entities;
-using System;
+using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -12,22 +9,23 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class UserTypesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public UserTypesController(ApplicationDbContext context)
+        private readonly UserTypeService _userTypeService;
+
+        public UserTypesController(UserTypeService userTypeService)
         {
-            _context = context;
+            _userTypeService = userTypeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllUserTypesAsync()
         {
-            return Json(new { data = await _context.UserTypes.ToListAsync() });
+            return Ok(await _userTypeService.GetAllUserTypesAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<UserType> GetUserTypeById(int id)
+        public async Task<IActionResult> GetUserTypeById(int id)
         {
-            var userType = _context.UserTypes.FindAsync(id);
+            var userType = await _userTypeService.GetUserTypeByIdAsync(id);
             if (userType == null)
             {
                 return NotFound();
@@ -37,12 +35,15 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUserType(UserType userType)
+        public async Task<IActionResult> PostUserTypeAsync(UserType userType)
         {
-            _context.UserTypes.Add(userType);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            await _userTypeService.PostUserTypeAsync(userType);
+            return CreatedAtAction(nameof(GetUserTypeById), new { id = userType.UserTypeId }, userType);
         }
     }
 }

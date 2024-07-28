@@ -1,17 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using MrTakuVetClinic.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Repositories;
+using MrTakuVetClinic.Services;
 
 namespace MrTakuVetClinic
 {
@@ -29,6 +25,21 @@ namespace MrTakuVetClinic
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserTypeRepository, UserTypeRepository>();
+            services.AddScoped<IPetRepository, PetRepository>();
+            services.AddScoped<IPetTypeRepository, PetTypeRepository>();
+            services.AddScoped<IVisitRepository, VisitRepository>();
+            services.AddScoped<IVisitTypeRepository, VisitTypeRepository>();
+
+            services.AddScoped<UserService>();
+            services.AddScoped<UserTypeService>();
+            services.AddScoped<PetService>();
+            services.AddScoped<PetTypeService>();
+            services.AddScoped<VisitService>();
+            services.AddScoped<VisitTypeService>();
+
             services.AddControllers();
         }
 
