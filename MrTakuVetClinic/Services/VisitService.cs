@@ -36,15 +36,16 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostVisitAsync(Visit visit)
         {
-            if (await _petRepository.GetByIdAsync(visit.PetId) != null)
-            {
-                throw new ArgumentException("Pet does not exist.");
-            }
+            // TODO: Add validation to check if the pet and visit type exists before saving the data.
+            //if (await _petRepository.GetByIdAsync(visit.PetId) != null)
+            //{
+            //    throw new ArgumentException("Pet does not exist.");
+            //}
 
-            if (await _visitTypeRepository.GetByIdAsync(visit.VisitTypeId) != null)
-            {
-                throw new ArgumentException("Visit type does not exist.");
-            }
+            //if (await _visitTypeRepository.GetByIdAsync(visit.VisitTypeId) != null)
+            //{
+            //    throw new ArgumentException("Visit type does not exist.");
+            //}
 
             await _visitRepository.AddAsync(visit);
         }

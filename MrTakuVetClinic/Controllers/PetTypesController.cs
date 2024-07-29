@@ -24,7 +24,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPetTypeById(int id)
+        public async Task<IActionResult> GetPetTypeByIdAsync(int id)
         {
             try
             {
@@ -45,7 +45,8 @@ namespace MrTakuVetClinic.Controllers
             }
 
             await _petTypeService.PostPetTypeAsync(petType);
-            return CreatedAtAction(nameof(GetPetTypeById), new { id = petType.PetTypeId}, petType);
+            return Ok("Success.");
+            //return CreatedAtAction(nameof(GetPetTypeByIdAsync), new { id = petType.PetTypeId}, petType);
         }
     }
 }

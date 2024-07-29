@@ -49,7 +49,8 @@ namespace MrTakuVetClinic.Controllers
             try
             {
                 await _visitService.PostVisitAsync(visit);
-                return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+                return Ok("success test.");
+                //return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
             }
             catch (Exception ex)
             {
