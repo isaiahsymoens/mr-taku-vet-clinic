@@ -10,10 +10,12 @@ namespace MrTakuVetClinic.Services
     public class PetService
     {
         private readonly IPetRepository _petRepository;
+        private readonly IPetTypeRepository _petTypeRepository;
 
-        public PetService(IPetRepository petRepository)
+        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository)
         {
             _petRepository = petRepository;
+            _petTypeRepository = petTypeRepository;
         }
 
         public async Task<IEnumerable<Pet>> GetAllPetsAsync()
@@ -28,13 +30,10 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostPetAsync(Pet pet)
         {
-            //if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
-            //{
-            //    throw new ArgumentException("Pet type does not exist.");
-            //}
-
-            //Console.WriteLine("#############################################################################################################################");
-            //Console.WriteLine("yey");
+            if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
+            {
+                throw new ArgumentException("Pet type does not exist.");
+            }
 
             await _petRepository.AddAsync(pet);
 

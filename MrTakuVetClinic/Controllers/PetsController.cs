@@ -48,8 +48,7 @@ namespace MrTakuVetClinic.Controllers
             try
             {
                 await _petService.PostPetAsync(pet);
-                return Ok("test.");
-                //return CreatedAtAction(nameof(GetPetById), new { id = pet.PetId }, pet);
+                return CreatedAtAction(nameof(GetPetById), new { id = pet.PetId }, pet);
             }
             catch (Exception ex)
             { 
