@@ -50,9 +50,16 @@ namespace MrTakuVetClinic.Controllers
                 return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
             }
             catch (Exception ex)
-            { 
+            {
                 return BadRequest(new { Message = ex.Message });
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePetRecordAsync(int id)
+        {
+            await _petService.DeletePetAsync(id);
+            return NoContent();
         }
 
         //[HttpPost]

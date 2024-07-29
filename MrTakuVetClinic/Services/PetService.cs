@@ -1,6 +1,5 @@
 ﻿using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
-using MrTakuVetClinic.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -41,6 +40,12 @@ namespace MrTakuVetClinic.Services
             //}
 
             await _petRepository.AddAsync(pet);
+        }
+
+        public async Task DeletePetAsync(int id)
+        {
+            // TODO: refactor & add validation
+            await _petRepository.DeleteAsync(id);
         }
     }
 }
