@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -10,37 +10,41 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class BreedsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public BreedsController(ApplicationDbContext context)
+        private readonly BreedService _breedService;
+        public BreedsController(BreedService breedService)
         {
-            _context = context;
+            _breedService = breedService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllBreedsAsync()
         {
-            return Json(new { data = await _context.Breeds.ToListAsync() });
+            return Ok(await _breedService.GetAllBreedsAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Breed> GetBreedById(int id)
+        public async Task<IActionResult> GetBreedById(int id)
         {
-            var breed = _context.Breeds.FindAsync(id);
-            if (breed == null)
+            try
             {
-                return NotFound();
+                return Ok(await _breedService.GetBreedByIdAsync(id));
             }
-
-            return Ok(breed);
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> PostBreed(Breed breed)
         {
-            _context.Breeds.Add(breed);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            await _breedService.PostBreedAsync(breed);
+            return CreatedAtAction(nameof(GetBreedById), new { id = breed.BreedId}, breed);
         }
     }
 }
