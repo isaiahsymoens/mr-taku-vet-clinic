@@ -1,5 +1,6 @@
 ﻿using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +22,12 @@ namespace MrTakuVetClinic.Services
 
         public async Task<PetType> GetPetTypeByIdAsync(int id)
         {
-            return await _petTypeRepository.GetByIdAsync(id);
+            var pet = await _petTypeRepository.GetByIdAsync(id);
+            if (pet == null)
+            {
+                throw new ArgumentException("Pet type does not exist.");
+            }
+            return pet;
         }
 
         public async Task PostPetTypeAsync(PetType petType)

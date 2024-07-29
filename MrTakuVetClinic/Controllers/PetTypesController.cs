@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -27,13 +26,14 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPetTypeById(int id)
         {
-            var petType = await _petTypeService.GetPetTypeByIdAsync(id);
-            if (petType == null)
+            try
             {
-                return NotFound();
+                return Ok(await _petTypeService.GetPetTypeByIdAsync(id));
             }
-
-            return Ok(petType);
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         [HttpPost]
