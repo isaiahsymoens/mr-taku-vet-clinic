@@ -15,11 +15,10 @@ namespace MrTakuVetClinic.Entities
         public string PetName { get; set; }
         [Required]
         public int PetTypeId { get; set; }
-        public int BreedId { get; set; }
+        public string Breed { get; set; }
         public DateTime BirthDate { get; set; }
         public User User { get; set; }
         public PetType PetType { get; set; }
-        public Breed Breed { get; set; }
         public ICollection<Visit> Visits { get; set; }
     }
 }

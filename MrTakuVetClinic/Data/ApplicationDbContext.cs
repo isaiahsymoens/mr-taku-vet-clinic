@@ -13,7 +13,6 @@ namespace MrTakuVetClinic.Data
         public DbSet<Pet> Pets { get; set; }
         public DbSet<UserType> UserTypes { get; set; }
         public DbSet<PetType> PetTypes { get; set; }
-        public DbSet<Breed> Breeds { get; set; }
         public DbSet<Visit> Visits { get; set; }
         public DbSet<VisitType> VisitsTypes { get; set; }
 
@@ -32,9 +31,6 @@ namespace MrTakuVetClinic.Data
 
             modelBuilder.Entity<PetType>()
                 .HasKey(p => p.PetTypeId);
-
-            modelBuilder.Entity<Breed>()
-                .HasKey(b => b.BreedId);
 
             modelBuilder.Entity<VisitType>()
                 .HasKey(v => v.VisitTypeId);
@@ -60,11 +56,6 @@ namespace MrTakuVetClinic.Data
                 .HasOne(p => p.PetType)
                 .WithMany()
                 .HasForeignKey(p => p.PetTypeId);
-
-            modelBuilder.Entity<Pet>()
-                .HasOne(p => p.Breed)
-                .WithMany()
-                .HasForeignKey(p => p.BreedId);
 
             modelBuilder.Entity<Visit>()
                 .HasOne(v => v.VisitType)

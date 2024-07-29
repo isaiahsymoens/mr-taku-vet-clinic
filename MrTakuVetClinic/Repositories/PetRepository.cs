@@ -16,7 +16,6 @@ namespace MrTakuVetClinic.Repositories
         {
             return await _context.Pets
                 //.Include(p => p.PetId)
-                //.Include(p => p.Breed)
                 .FirstOrDefaultAsync(p => p.PetId == id);
         }
     }

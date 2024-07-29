@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -25,15 +24,42 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPetById(int id)
+        public async Task<IActionResult> GetPetByIdAsync(int id)
         {
-            var pet = await _petService.GetPetByIdAsync(id);
-            if (pet == null)
+            try
             {
-                return NotFound();
+                return Ok(await _petService.GetPetByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPetRecord([FromBody] Pet pet)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
-            return Ok(pet);
+            try
+            {
+                await _petService.PostPetAsync(pet);
+                return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePetRecordAsync(int id)
+        {
+            await _petService.DeletePetAsync(id);
+            return NoContent();
         }
 
         //[HttpPost]

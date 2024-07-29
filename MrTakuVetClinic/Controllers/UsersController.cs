@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,13 +27,14 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
-            var user = await _userService.GetUserByUsernameAsync(username);
-            if (user == null)
-            { 
-                return NotFound();
+            try
+            {
+                return Ok(await _userService.GetUserByUsernameAsync(username));
             }
-
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         [HttpGet("search")]
@@ -41,7 +43,7 @@ namespace MrTakuVetClinic.Controllers
             var users = await _userService.GetSearchUsersAsync(firstName, lastName);
             if (users == null || !users.Any())
             { 
-                return NotFound();
+                return NotFound(new { Message = "User not found." });
             }
 
             return Ok(users);
@@ -55,22 +57,25 @@ namespace MrTakuVetClinic.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _userService.AddUserAsync(user);
-            return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
+            try
+            {
+                await _userService.AddUserAsync(user);
+                return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
-        [HttpPut]
+        [HttpPut("{username}")]
         public async Task<IActionResult> PutUser(string username, [FromBody] User user)
         {
-            if (username != user.Username)
-            {
-                return BadRequest();
-            }
-
             var existingUser = await _userService.GetUserByUsernameAsync(username);
+
             if (existingUser == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "User not found." });
             }
 
             await _userService.UpdateUserAsync(existingUser);
@@ -80,14 +85,15 @@ namespace MrTakuVetClinic.Controllers
         [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser(string username)
         { 
-            var user = await _userService.GetUserByUsernameAsync(username);
-            if (user == null)
+            try
             {
-                return NotFound();
+                await _userService.DeleteUserByUsernameAsync(username);
+                return NoContent();
             }
-
-            await _userService.DeleteUserByUsernameAsync(username);
-            return NoContent();
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         //[HttpPut("{username}")]

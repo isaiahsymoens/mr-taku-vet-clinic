@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
+using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -19,9 +23,50 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPetsAsync()
+        public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllVisitsAsync()
         {
             return Ok(await _visitService.GetAllVisitsAsync());
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchVisitsAsync([FromQuery] string lastName, [FromQuery] int petTypeId)
+        {
+            var visits = await _visitService.SearchVisitsAsync(lastName, petTypeId);
+            return Ok(visits);
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetVisitByIdAsync(int id)
+        {
+            try
+            {
+                return Ok(await _visitService.GetVisitById(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostVisit([FromBody] Visit visit)
+        {
+            if (visit == null)
+            {
+                return BadRequest(new { Message = "Visit data is required." });
+            }
+
+            try
+            {
+                await _visitService.PostVisitAsync(visit);
+                return Ok("success test.");
+                //return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         //    [HttpGet("{id}")]
