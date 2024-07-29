@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -34,6 +35,26 @@ namespace MrTakuVetClinic.Controllers
             }
 
             return Ok(pet);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPetRecord([FromBody] Pet pet)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _petService.PostPetAsync(pet);
+                return Ok("test.");
+                //return CreatedAtAction(nameof(GetPetById), new { id = pet.PetId }, pet);
+            }
+            catch (Exception ex)
+            { 
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         //[HttpPost]

@@ -1,5 +1,7 @@
 ﻿using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ namespace MrTakuVetClinic.Services
     public class PetService
     {
         private readonly IPetRepository _petRepository;
+
         public PetService(IPetRepository petRepository)
         {
             _petRepository = petRepository;
@@ -25,7 +28,17 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostPetAsync(Pet pet)
         {
+            //if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
+            //{
+            //    throw new ArgumentException("Pet type does not exist.");
+            //}
+
+            //Console.WriteLine("#############################################################################################################################");
+            //Console.WriteLine("yey");
+
             await _petRepository.AddAsync(pet);
+
+            Console.WriteLine("yey2");
         }
     }
 }
