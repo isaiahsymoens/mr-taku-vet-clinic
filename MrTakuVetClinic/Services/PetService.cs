@@ -30,14 +30,12 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostPetAsync(Pet pet)
         {
-            if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
-            {
-                throw new ArgumentException("Pet type does not exist.");
-            }
+            //if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
+            //{
+            //    throw new ArgumentException("Pet type does not exist.");
+            //}
 
             await _petRepository.AddAsync(pet);
-
-            Console.WriteLine("yey2");
         }
     }
 }

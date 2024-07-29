@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;

@@ -30,7 +30,6 @@ namespace MrTakuVetClinic
             services.AddScoped<IUserTypeRepository, UserTypeRepository>();
             services.AddScoped<IPetRepository, PetRepository>();
             services.AddScoped<IPetTypeRepository, PetTypeRepository>();
-            services.AddScoped<IBreedRepository, BreedRepository>();
             services.AddScoped<IVisitRepository, VisitRepository>();
             services.AddScoped<IVisitTypeRepository, VisitTypeRepository>();
 
@@ -38,7 +37,6 @@ namespace MrTakuVetClinic
             services.AddScoped<UserTypeService>();
             services.AddScoped<PetService>();
             services.AddScoped<PetTypeService>();
-            services.AddScoped<BreedService>();
             services.AddScoped<VisitService>();
             services.AddScoped<VisitTypeService>();
 
