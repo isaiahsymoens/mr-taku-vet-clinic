@@ -25,7 +25,12 @@ namespace MrTakuVetClinic.Services
 
         public async Task<Pet> GetPetByIdAsync(int id)
         {
-            return await _petRepository.GetPetByIdAsync(id);
+            var pet = await _petRepository.GetPetByIdAsync(id);
+            if (pet == null)
+            {
+                throw new Exception("Pet not found.");
+            }
+            return pet;
         }
 
         public async Task PostPetAsync(Pet pet)

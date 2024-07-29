@@ -24,15 +24,16 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPetById(int id)
+        public async Task<IActionResult> GetPetByIdAsync(int id)
         {
-            var pet = await _petService.GetPetByIdAsync(id);
-            if (pet == null)
+            try
             {
-                return NotFound();
+                return Ok(await _petService.GetPetByIdAsync(id));
             }
-
-            return Ok(pet);
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -46,7 +47,7 @@ namespace MrTakuVetClinic.Controllers
             try
             {
                 await _petService.PostPetAsync(pet);
-                return CreatedAtAction(nameof(GetPetById), new { id = pet.PetId }, pet);
+                return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
             }
             catch (Exception ex)
             { 
