@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -19,9 +20,41 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPetsAsync()
+        public async Task<IActionResult> GetAllVisitsAsync()
         {
             return Ok(await _visitService.GetAllVisitsAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetVisitByIdAsync(int id)
+        {
+            try
+            {
+                return Ok(await _visitService.GetVisitById(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostVisit([FromBody] Visit visit)
+        {
+            if (visit == null)
+            {
+                return BadRequest(new { Message = "Visit data is required." });
+            }
+
+            try
+            {
+                await _visitService.PostVisitAsync(visit);
+                return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         //    [HttpGet("{id}")]
