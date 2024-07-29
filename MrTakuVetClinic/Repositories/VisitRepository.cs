@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
+using MrTakuVetClinic.DTOs.Pet;
+using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Repositories
@@ -10,6 +14,22 @@ namespace MrTakuVetClinic.Repositories
     {
         public VisitRepository(ApplicationDbContext context) : base(context)
         {
+        }
+
+        public async Task<IEnumerable<Visit>> GetAllVisitsAsync()
+        {
+            return await _context.Visits
+                .Include(v => v.Pet)
+                .ThenInclude(v => v.User)
+                .ThenInclude(v => v.UserType)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Visit>> SearchVisitsAsync(string? lastName, int? visitTypeId)
+        {
+            return await _context.Visits
+                //.Include(v => v.Pet)
+                .ToListAsync();
         }
 
         public async Task<Visit> GetBVisitByIdAsync(int id)
