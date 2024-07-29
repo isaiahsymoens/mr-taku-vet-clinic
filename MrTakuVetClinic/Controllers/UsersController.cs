@@ -41,7 +41,7 @@ namespace MrTakuVetClinic.Controllers
             var users = await _userService.GetSearchUsersAsync(firstName, lastName);
             if (users == null || !users.Any())
             { 
-                return NotFound();
+                return NotFound(new { Message = "User not found." });
             }
 
             return Ok(users);
@@ -59,18 +59,14 @@ namespace MrTakuVetClinic.Controllers
             return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
         }
 
-        [HttpPut]
+        [HttpPut("{username}")]
         public async Task<IActionResult> PutUser(string username, [FromBody] User user)
         {
-            if (username != user.Username)
-            {
-                return BadRequest();
-            }
-
             var existingUser = await _userService.GetUserByUsernameAsync(username);
+
             if (existingUser == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "User not found." });
             }
 
             await _userService.UpdateUserAsync(existingUser);
