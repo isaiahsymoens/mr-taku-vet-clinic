@@ -38,7 +38,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, string lastName)
+        public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userService.GetSearchUsersAsync(firstName, lastName);
             if (users == null || !users.Any())

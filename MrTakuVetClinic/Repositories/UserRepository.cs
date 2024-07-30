@@ -39,7 +39,9 @@ namespace MrTakuVetClinic.Repositories
                     (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
                 );
             }
-            return await query.ToListAsync();
+            return await query
+                .Include(u => u.UserType)
+                .ToListAsync();
         }
 
         public async Task DeleteUserByUsernameAsync(string username)
