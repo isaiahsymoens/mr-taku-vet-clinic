@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
@@ -18,19 +20,38 @@ namespace MrTakuVetClinic.Services
             _userTypeRepository = userTypeRepository;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            return await _userRepository.GetAllAsync();
+            var user = await _userRepository.GetAllUsersAsync();
+            return user.Select(u => new UserDto
+            {
+                FirstName = u.FirstName,
+                MiddleName = u.MiddleName,
+                LastName = u.LastName,
+                Email = u.Email,
+                Username = u.Username,
+                UserType = u.UserType.TypeName,
+                Active = u.Active
+            });
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<UserDto> GetUserByUsernameAsync(string username)
         {
             var user = await _userRepository.GetUserByUsernameAsync(username);
             if (user == null)
             {
                 throw new ArgumentException("User not found.");
             }
-            return user;
+            return new UserDto 
+            {
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Username = user.Username,
+                UserType = user.UserType.TypeName,
+                Active = user.Active
+            };
         }
 
         public async Task<IEnumerable<User>> GetSearchUsersAsync([FromQuery] string firstName, string lastName)

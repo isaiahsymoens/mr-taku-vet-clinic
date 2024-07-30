@@ -45,7 +45,6 @@ namespace MrTakuVetClinic.Controllers
             { 
                 return NotFound(new { Message = "User not found." });
             }
-
             return Ok(users);
         }
 
@@ -71,14 +70,14 @@ namespace MrTakuVetClinic.Controllers
         [HttpPut("{username}")]
         public async Task<IActionResult> PutUser(string username, [FromBody] User user)
         {
-            var existingUser = await _userService.GetUserByUsernameAsync(username);
+            //var existingUser = await _userService.GetUserByUsernameAsync(username);
 
-            if (existingUser == null)
-            {
-                return NotFound(new { Message = "User not found." });
-            }
+            //if (existingUser == null)
+            //{
+            //    return NotFound(new { Message = "User not found." });
+            //}
 
-            await _userService.UpdateUserAsync(existingUser);
+            //await _userService.UpdateUserAsync(existingUser);
             return NoContent();
         }
 

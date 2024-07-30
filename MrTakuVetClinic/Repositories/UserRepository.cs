@@ -15,6 +15,13 @@ namespace MrTakuVetClinic.Repositories
         {
         }
 
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users
+                .Include(u => u.UserType)
+                .ToListAsync();
+        }
+
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
