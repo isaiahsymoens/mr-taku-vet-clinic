@@ -46,6 +46,14 @@ namespace MrTakuVetClinic.Data
                 .WithMany()
                 .HasForeignKey(u => u.UserTypeId);
 
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
             modelBuilder.Entity<Pet>()
                 .HasMany(p => p.Visits)
                 .WithOne(p => p.Pet)
