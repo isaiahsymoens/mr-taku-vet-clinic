@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;
@@ -68,7 +69,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPut("{username}")]
-        public async Task<IActionResult> PutUser(string username, [FromBody] User user)
+        public async Task<IActionResult> PutUser(string username, [FromBody] UpdateUserDto user)
         {
             var existingUser = await _userService.GetUserByUsernameAsync(username);
             if (existingUser == null)

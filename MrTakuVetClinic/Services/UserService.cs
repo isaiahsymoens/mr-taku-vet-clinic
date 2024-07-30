@@ -99,9 +99,70 @@ namespace MrTakuVetClinic.Services
             await _userRepository.AddAsync(user);
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(UpdateUserDto userUpdateDto)
         {
-            await _userRepository.UpdateAsync(user);
+            var existingUser = await _userRepository.GetUserByUsernameAsync(userUpdateDto.Username);
+
+            if (existingUser == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            // TODO: Temporary fix to update the user info.
+            if (userUpdateDto.FirstName != null)
+            {
+                existingUser.FirstName = userUpdateDto.FirstName;
+            }
+
+            if (userUpdateDto.MiddleName != null)
+            {
+                existingUser.MiddleName = userUpdateDto.MiddleName;
+            }
+
+            if (userUpdateDto.LastName != null)
+            {
+                existingUser.LastName = userUpdateDto.LastName;
+            }
+
+            if (userUpdateDto.Email != null)
+            {
+                existingUser.Email = userUpdateDto.Email;
+            }
+
+            if (userUpdateDto.Password != null)
+            {
+                existingUser.Password = userUpdateDto.Password;
+            }
+
+            if (userUpdateDto.Username != null)
+            {
+                existingUser.Username = userUpdateDto.Username;
+            }
+
+            if (userUpdateDto.UserTypeId != null)
+            {
+                existingUser.UserTypeId = userUpdateDto.UserTypeId.Value;
+            }
+
+            if (userUpdateDto.Active != null)
+            {
+                existingUser.Active = userUpdateDto.Active.Value;
+            }
+
+            //foreach (var property in userUpdateDto.GetType().GetProperties())
+            //{
+            //    var newvalue = property.GetValue(userUpdateDto, null);
+            //    if (newvalue != null)
+            //    {
+            //        var existingproperty = userUpdateDto.GetType().GetProperty(property.Name);
+            //        if (existingproperty != null && existingproperty.CanWrite)
+            //        {
+            //            existingproperty.SetValue(existingUser, newvalue, null);
+            //        }
+            //    }
+            //}
+
+            await _userRepository.UpdateAsync(existingUser);
         }
 
         public async Task DeleteUserByUsernameAsync(string username)
