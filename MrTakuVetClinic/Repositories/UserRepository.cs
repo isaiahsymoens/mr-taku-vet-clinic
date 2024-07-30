@@ -15,6 +15,13 @@ namespace MrTakuVetClinic.Repositories
         {
         }
 
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users
+                .Include(u => u.UserType)
+                .ToListAsync();
+        }
+
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
@@ -22,7 +29,7 @@ namespace MrTakuVetClinic.Repositories
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<IEnumerable<User>> GetSearchUsersAsync([FromQuery] string firstName, string lastName)
+        public async Task<IEnumerable<User>> GetSearchUsersAsync(string firstName, string lastName)
         {
             var query = _context.Users.AsQueryable();
             if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
@@ -32,7 +39,9 @@ namespace MrTakuVetClinic.Repositories
                     (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
                 );
             }
-            return await query.ToListAsync();
+            return await query
+                .Include(u => u.UserType)
+                .ToListAsync();
         }
 
         public async Task DeleteUserByUsernameAsync(string username)
@@ -43,6 +52,16 @@ namespace MrTakuVetClinic.Repositories
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> IsEmailExits(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> IsUsernameExits(string username)
+        {
+            return await _context.Users.AnyAsync(u => u.Username == username);
         }
     }
 }

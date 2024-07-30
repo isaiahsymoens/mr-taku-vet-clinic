@@ -1,4 +1,5 @@
-﻿using MrTakuVetClinic.Entities;
+﻿using MrTakuVetClinic.DTOs.Pet;
+using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,13 @@ namespace MrTakuVetClinic.Services
     {
         private readonly IPetRepository _petRepository;
         private readonly IPetTypeRepository _petTypeRepository;
+        private readonly IUserRepository _userRepository;
 
-        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository)
+        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository, IUserRepository userRepository)
         {
             _petRepository = petRepository;
             _petTypeRepository = petTypeRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<Pet>> GetAllPetsAsync()
@@ -34,11 +37,10 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostPetAsync(Pet pet)
         {
-            //if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
-            //{
-            //    throw new ArgumentException("Pet type does not exist.");
-            //}
-
+            if (await _petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
+            {
+                throw new ArgumentException("Pet type does not exist.");
+            }
             await _petRepository.AddAsync(pet);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;
@@ -38,14 +39,13 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, string lastName)
+        public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userService.GetSearchUsersAsync(firstName, lastName);
             if (users == null || !users.Any())
             { 
                 return NotFound(new { Message = "User not found." });
             }
-
             return Ok(users);
         }
 
@@ -69,16 +69,15 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPut("{username}")]
-        public async Task<IActionResult> PutUser(string username, [FromBody] User user)
+        public async Task<IActionResult> PutUser(string username, [FromBody] UpdateUserDto user)
         {
             var existingUser = await _userService.GetUserByUsernameAsync(username);
-
             if (existingUser == null)
             {
                 return NotFound(new { Message = "User not found." });
             }
 
-            await _userService.UpdateUserAsync(existingUser);
+            await _userService.UpdateUserAsync(user);
             return NoContent();
         }
 
@@ -95,25 +94,5 @@ namespace MrTakuVetClinic.Controllers
                 return NotFound(new { Message = ex.Message });
             }
         }
-
-        //[HttpPut("{username}")]
-        //public async Task<IActionResult> UpdateUserDetails(string username, [FromBody] User userDetails)
-        //{
-        //    var user = _context.Users.FirstOrDefault(u => u.Username == username);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    user.FirstName = userDetails.FirstName;
-        //    user.MiddleName = userDetails.MiddleName;
-        //    user.LastName = userDetails.LastName;
-        //    user.Email = userDetails.Email;
-
-        //    _context.Entry(user).State = EntityState.Modified;
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(user);
-        //}
     }
 }

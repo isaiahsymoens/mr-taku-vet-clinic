@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;
@@ -11,10 +12,12 @@ namespace MrTakuVetClinic.Controllers
     public class PetsController : Controller
     {
         private readonly PetService _petService;
+        private readonly UserService _userService;
 
-        public PetsController(PetService petService)
+        public PetsController(PetService petService, UserService userService)
         {
             _petService = petService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -37,17 +40,37 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPetRecord([FromBody] Pet pet)
+        public async Task<IActionResult> AddPetRecord([FromBody] PostPetDto addPet)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
+                if (addPet.Username == null)
+                {
+                    return BadRequest("Username is required.");
+                }
+
+                var user = await _userService.GetUserWithUserIdByUsername(addPet.Username);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                var pet= new Pet
+                {
+                    PetName = addPet.PetName,
+                    PetTypeId = addPet.PetTypeId,
+                    Breed = addPet.Breed,
+                    BirthDate = addPet.BirthDate,
+                    UserId = user.UserId
+                };
+
                 await _petService.PostPetAsync(pet);
-                return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
+                return Ok("Success.");
+                //return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
             }
             catch (Exception ex)
             {
@@ -61,26 +84,5 @@ namespace MrTakuVetClinic.Controllers
             await _petService.DeletePetAsync(id);
             return NoContent();
         }
-
-        //[HttpPost]
-        //public IActionResult AddPetRecord([FromBody] Pet pet)
-        //{
-        //    if (pet == null)
-        //    {
-        //        return BadRequest("Pet data is required");
-        //    }
-
-        //    var user = _context.Users.Find(pet.UserId);
-        //    if (user == null)
-        //    {
-        //        ModelState.AddModelError("UserId", "Invalid UserId");
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    _context.Pets.Add(pet);
-        //    _context.SaveChanges();
-
-        //    return Ok(new { Message = "Successfully added." });
-        //}
     }
 }
