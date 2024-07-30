@@ -69,7 +69,8 @@ namespace MrTakuVetClinic.Controllers
                 };
 
                 await _petService.PostPetAsync(pet);
-                return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
+                return Ok("Success.");
+                //return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
             }
             catch (Exception ex)
             {
