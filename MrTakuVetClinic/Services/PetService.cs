@@ -1,4 +1,5 @@
-﻿using MrTakuVetClinic.Entities;
+﻿using MrTakuVetClinic.DTOs.Pet;
+using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -32,14 +33,16 @@ namespace MrTakuVetClinic.Services
             return pet;
         }
 
-        public async Task PostPetAsync(Pet pet)
+        public async Task PostPetAsync(PostPetDto pet)
         {
-            //if (_petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
-            //{
-            //    throw new ArgumentException("Pet type does not exist.");
-            //}
+            Console.WriteLine("################################################################################################");
+            if (await _petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
+            {
+                throw new ArgumentException("Pet type does not exist.");
+            }
 
-            await _petRepository.AddAsync(pet);
+            //await _petRepository.AddAsync(pet);
+            Console.WriteLine("test");
         }
 
         public async Task DeletePetAsync(int id)

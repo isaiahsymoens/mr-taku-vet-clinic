@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;
@@ -37,17 +38,17 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPetRecord([FromBody] Pet pet)
+        public async Task<IActionResult> AddPetRecord([FromBody] PostPetDto pet)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
                 await _petService.PostPetAsync(pet);
-                return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
+                return Ok();
+                //return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
             }
             catch (Exception ex)
             {
@@ -61,26 +62,5 @@ namespace MrTakuVetClinic.Controllers
             await _petService.DeletePetAsync(id);
             return NoContent();
         }
-
-        //[HttpPost]
-        //public IActionResult AddPetRecord([FromBody] Pet pet)
-        //{
-        //    if (pet == null)
-        //    {
-        //        return BadRequest("Pet data is required");
-        //    }
-
-        //    var user = _context.Users.Find(pet.UserId);
-        //    if (user == null)
-        //    {
-        //        ModelState.AddModelError("UserId", "Invalid UserId");
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    _context.Pets.Add(pet);
-        //    _context.SaveChanges();
-
-        //    return Ok(new { Message = "Successfully added." });
-        //}
     }
 }
