@@ -53,5 +53,15 @@ namespace MrTakuVetClinic.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<bool> IsEmailExits(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> IsUsernameExits(string username)
+        {
+            return await _context.Users.AnyAsync(u => u.Username == username);
+        }
     }
 }

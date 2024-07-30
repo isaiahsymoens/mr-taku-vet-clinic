@@ -71,6 +71,16 @@ namespace MrTakuVetClinic.Services
 
         public async Task AddUserAsync(User user)
         {
+            if (await _userRepository.IsEmailExits(user.Email))
+            {
+                throw new ArgumentException("Email is already taken.");
+            }
+
+            if (await _userRepository.IsUsernameExits(user.Username))
+            {
+                throw new ArgumentException("Username is already taken.");
+            }
+
             var userType = await _userTypeRepository.GetByIdAsync(user.UserTypeId);
             if (userType == null)
             {
