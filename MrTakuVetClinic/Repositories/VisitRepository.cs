@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
-using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Repositories
