@@ -93,25 +93,5 @@ namespace MrTakuVetClinic.Controllers
                 return NotFound(new { Message = ex.Message });
             }
         }
-
-        //[HttpPut("{username}")]
-        //public async Task<IActionResult> UpdateUserDetails(string username, [FromBody] User userDetails)
-        //{
-        //    var user = _context.Users.FirstOrDefault(u => u.Username == username);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    user.FirstName = userDetails.FirstName;
-        //    user.MiddleName = userDetails.MiddleName;
-        //    user.LastName = userDetails.LastName;
-        //    user.Email = userDetails.Email;
-
-        //    _context.Entry(user).State = EntityState.Modified;
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(user);
-        //}
     }
 }

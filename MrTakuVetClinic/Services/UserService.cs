@@ -54,6 +54,16 @@ namespace MrTakuVetClinic.Services
             };
         }
 
+        public async Task<User> GetUserWithUserIdByUsername(string username)
+        {
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+            return user;
+        }
+
         public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, string lastName)
         {
             var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);

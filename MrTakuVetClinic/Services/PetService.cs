@@ -35,28 +35,13 @@ namespace MrTakuVetClinic.Services
             return pet;
         }
 
-        public async Task PostPetAsync(PostPetDto pet)
+        public async Task PostPetAsync(Pet pet)
         {
             if (await _petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
             {
                 throw new ArgumentException("Pet type does not exist.");
             }
-
-            var user = await _userRepository.GetUserByUsernameAsync(pet.Username);
-            if (user == null)
-            {
-                throw new ArgumentException("User not found.");
-            }
-
-            var addPet = new Pet
-            {
-                PetName = pet.PetName,
-                PetTypeId = pet.PetTypeId,
-                Breed = pet.Breed,
-                BirthDate = pet.BirthDate,
-                UserId = user.UserId
-            };
-            await _petRepository.AddAsync(addPet);
+            await _petRepository.AddAsync(pet);
         }
 
         public async Task DeletePetAsync(int id)
