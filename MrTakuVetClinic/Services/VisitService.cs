@@ -1,4 +1,5 @@
-﻿using MrTakuVetClinic.DTOs.Pet;
+﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
@@ -64,9 +65,9 @@ namespace MrTakuVetClinic.Services
             return visit;
         }
 
-        public async Task<IEnumerable<Visit>> SearchVisitsAsync(string lastName, int petTypeId)
+        public async Task<IEnumerable<Visit>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
         {
-            var visits = await _visitRepository.SearchVisitsAsync(lastName, petTypeId);
+            var visits = await _visitRepository.SearchVisitsAsync(visitFilterDto);
             Console.WriteLine("##################################################");
             return visits;
             //Console.WriteLine(visits);

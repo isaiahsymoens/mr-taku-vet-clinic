@@ -25,8 +25,17 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Visit>> SearchVisitsAsync(string lastName, int? visitTypeId)
+        public async Task<IEnumerable<Visit>> SearchVisitsAsync(VisitFilterDto visitFilterDto)
         {
+            //var query = _context.Users.AsQueryable();
+            //if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            //{
+            //    query = query.Where(u =>
+            //        (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName)) &&
+            //        (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
+            //    );
+            //}
+
             return await _context.Visits
                 //.Include(v => v.Pet)
                 .ToListAsync();

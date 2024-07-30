@@ -9,7 +9,7 @@ namespace MrTakuVetClinic.Interfaces
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByUsernameAsync(string username);
-        Task<IEnumerable<User>> GetSearchUsersAsync([FromQuery] string firstName, string lastName); 
+        Task<IEnumerable<User>> GetSearchUsersAsync(string firstName, string lastName); 
         Task DeleteUserByUsernameAsync(string username);
         Task<bool> IsEmailExits(string email);
         Task<bool> IsUsernameExits(string username);

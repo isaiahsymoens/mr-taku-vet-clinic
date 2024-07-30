@@ -29,7 +29,7 @@ namespace MrTakuVetClinic.Repositories
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<IEnumerable<User>> GetSearchUsersAsync([FromQuery] string firstName, string lastName)
+        public async Task<IEnumerable<User>> GetSearchUsersAsync(string firstName, string lastName)
         {
             var query = _context.Users.AsQueryable();
             if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
