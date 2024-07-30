@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Pet;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;
 using System.Threading.Tasks;
@@ -46,9 +45,13 @@ namespace MrTakuVetClinic.Controllers
             }
             try
             {
+                if (pet.Username == null)
+                {
+                    return BadRequest("Username is required.");
+                }
                 await _petService.PostPetAsync(pet);
-                return Ok();
-                //return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
+                return Ok("Added.");
+                //return CreatedAtAction(nameof(GetPetByIdAsync), new { petName = pet.PetName }, pet);
             }
             catch (Exception ex)
             {

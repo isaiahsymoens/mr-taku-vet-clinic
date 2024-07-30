@@ -11,11 +11,13 @@ namespace MrTakuVetClinic.Services
     {
         private readonly IPetRepository _petRepository;
         private readonly IPetTypeRepository _petTypeRepository;
+        private readonly IUserRepository _userRepository;
 
-        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository)
+        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository, IUserRepository userRepository)
         {
             _petRepository = petRepository;
             _petTypeRepository = petTypeRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<Pet>> GetAllPetsAsync()
@@ -35,14 +37,26 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostPetAsync(PostPetDto pet)
         {
-            Console.WriteLine("################################################################################################");
             if (await _petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
             {
                 throw new ArgumentException("Pet type does not exist.");
             }
 
-            //await _petRepository.AddAsync(pet);
-            Console.WriteLine("test");
+            var user = await _userRepository.GetUserByUsernameAsync(pet.Username);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            var addPet = new Pet
+            {
+                PetName = pet.PetName,
+                PetTypeId = pet.PetTypeId,
+                Breed = pet.Breed,
+                BirthDate = pet.BirthDate,
+                UserId = user.UserId
+            };
+            await _petRepository.AddAsync(addPet);
         }
 
         public async Task DeletePetAsync(int id)
