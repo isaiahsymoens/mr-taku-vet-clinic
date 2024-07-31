@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.Data;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
@@ -27,20 +28,6 @@ namespace MrTakuVetClinic.Controllers
             return Ok(await _visitService.GetAllVisitsAsync());
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
-        {
-            try
-            {
-                var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
-                return Ok(visits);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
         {
@@ -54,8 +41,22 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
+        //[HttpGet("search")]
+        //public async Task<IActionResult> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        //{
+        //    try
+        //    {
+        //        var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
+        //        return Ok(visits);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> PostVisit([FromBody] Visit visit)
+        public async Task<IActionResult> PostVisit(Visit visit)
         {
             if (visit == null)
             {
@@ -65,8 +66,12 @@ namespace MrTakuVetClinic.Controllers
             try
             {
                 await _visitService.PostVisitAsync(visit);
-                return Ok("success test.");
-                //return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+
+                Console.WriteLine("################################################################################################");
+                Console.WriteLine("visit :", visit);
+
+                return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+
             }
             catch (Exception ex)
             {
@@ -87,20 +92,5 @@ namespace MrTakuVetClinic.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-
-        //    [HttpGet("{id}")]
-        //    public async Task<ActionResult<Visit>> GetVisitById(int id)
-        //    {
-        //        var visit = await _context.Visits
-        //            .Include(v => v.VisitType)
-        //            .FirstOrDefaultAsync(v => v.VisitId == id);
-
-        //        if (visit == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        return Ok(visit);
-        //    }
     }
 }
