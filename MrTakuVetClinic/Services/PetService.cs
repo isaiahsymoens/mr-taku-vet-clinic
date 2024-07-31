@@ -123,7 +123,6 @@ namespace MrTakuVetClinic.Services
             }
 
             var visits = await _visitRepository.GetAllVisitsAsync();
-
             if (visits.FirstOrDefault(p => p.PetId == id) != null)
             {
                 throw new ArgumentException("Cannot delete the pet record because it has associated visit records.");

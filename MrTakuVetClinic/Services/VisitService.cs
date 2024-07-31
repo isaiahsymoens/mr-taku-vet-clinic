@@ -17,9 +17,12 @@ namespace MrTakuVetClinic.Services
         private readonly IVisitTypeRepository _visitTypeRepository;
         private readonly IPetRepository _petRepository;
 
-        public VisitService(IVisitRepository visitRepository)
+        public VisitService(IVisitRepository visitRepository, IVisitTypeRepository visitTypeRepository, IPetRepository petRepository)
         {
             _visitRepository = visitRepository;
+            _visitTypeRepository = visitTypeRepository;
+            _petRepository = petRepository;
+
         }
 
         public async Task<IEnumerable<VisitDto>> GetAllVisitsAsync()
@@ -63,6 +66,7 @@ namespace MrTakuVetClinic.Services
             }
             return new VisitDto
             {
+                VisitId = visit.VisitId,
                 Date = visit.Date,
                 PetId = visit.PetId,
                 Pet = new PetDto
@@ -96,16 +100,14 @@ namespace MrTakuVetClinic.Services
 
         public async Task PostVisitAsync(Visit visit)
         {
-            // TODO: Add validation to check if the pet and visit type exists before saving the data.
-            //if (await _petRepository.GetByIdAsync(visit.PetId) != null)
-            //{
-            //    throw new ArgumentException("Pet does not exist.");
-            //}
-
-            //if (await _visitTypeRepository.GetByIdAsync(visit.VisitTypeId) != null)
-            //{
-            //    throw new ArgumentException("Visit type does not exist.");
-            //}
+            if (await _petRepository.GetByIdAsync(visit.PetId) == null)
+            {
+                throw new ArgumentException("Pet does not exist.");
+            }
+            if (await _visitTypeRepository.GetByIdAsync(visit.VisitTypeId) == null)
+            {
+                throw new ArgumentException("Visit type does not exist.");
+            }
 
             await _visitRepository.AddAsync(visit);
         }

@@ -12,6 +12,8 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class VisitsController : Controller
     {
+        // TODO:
+        // Change Post visit pet DTO response (remove pet id)
 
         private readonly VisitService _visitService;
         public VisitsController(VisitService visitService)
@@ -31,7 +33,6 @@ namespace MrTakuVetClinic.Controllers
             var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
             return Ok(visits);
         }
-
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
