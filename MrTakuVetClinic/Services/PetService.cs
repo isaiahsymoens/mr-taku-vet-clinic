@@ -35,6 +35,37 @@ namespace MrTakuVetClinic.Services
             return pet;
         }
 
+        public async Task UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto)
+        {
+            var existingPet = await _petRepository.GetByIdAsync(id);
+            if (existingPet == null)
+            {
+                throw new ArgumentException("Pet record not found.");
+            }
+
+            if (petUpdateDto.PetName != null)
+            {
+                existingPet.PetName = petUpdateDto.PetName;
+            }
+
+            if (petUpdateDto.PetTypeId != null)
+            {
+                existingPet.PetTypeId = petUpdateDto.PetTypeId.Value;
+            }
+
+            if (petUpdateDto.Breed != null)
+            {
+                existingPet.Breed = petUpdateDto.Breed;
+            }
+
+            if (petUpdateDto.BirthDate != null)
+            {
+                existingPet.BirthDate = petUpdateDto.BirthDate;
+            }
+
+            await _petRepository.UpdateAsync(existingPet);
+        }
+
         public async Task PostPetAsync(Pet pet)
         {
             if (await _petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)

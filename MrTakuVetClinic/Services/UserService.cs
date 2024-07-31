@@ -99,7 +99,7 @@ namespace MrTakuVetClinic.Services
             await _userRepository.AddAsync(user);
         }
 
-        public async Task UpdateUserAsync(UpdateUserDto userUpdateDto)
+        public async Task UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
             var existingUser = await _userRepository.GetUserByUsernameAsync(userUpdateDto.Username);
 

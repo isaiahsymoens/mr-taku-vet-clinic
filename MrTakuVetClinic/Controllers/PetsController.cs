@@ -80,6 +80,20 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePetRecordById(int id, [FromBody] PetUpdateDto petUpdateDto)
+        {
+            try
+            {
+                await _petService.UpdatePetByIdAsync(id, petUpdateDto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetRecordAsync(int id)
         {
