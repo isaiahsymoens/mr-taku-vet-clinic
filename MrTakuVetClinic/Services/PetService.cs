@@ -1,8 +1,12 @@
 ﻿using MrTakuVetClinic.DTOs.Pet;
+using MrTakuVetClinic.DTOs.User;
+using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
@@ -20,19 +24,50 @@ namespace MrTakuVetClinic.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<Pet>> GetAllPetsAsync()
+        public async Task<IEnumerable<PetDto>> GetAllPetsAsync()
         {
-            return await _petRepository.GetAllAsync();
+            var pets = await _petRepository.GetAllPetsAsync();
+            return pets.Select(p => new PetDto { 
+                PetTypeId = p.PetTypeId,
+                PetName = p.PetName,
+                Breed = p.Breed,
+                BirthDate = p.BirthDate,
+                User = new UserDto {
+                    FirstName = p.User.FirstName,
+                    MiddleName = p.User.MiddleName,
+                    LastName = p.User.LastName,
+                    Email = p.User.Email,
+                    Username = p.User.Username,
+                    Active = p.User.Active,
+                    UserType = p.User.UserType.TypeName
+                }
+            }).ToList();
         }
 
-        public async Task<Pet> GetPetByIdAsync(int id)
+        public async Task<PetDto> GetPetByIdAsync(int id)
         {
             var pet = await _petRepository.GetPetByIdAsync(id);
             if (pet == null)
             {
                 throw new Exception("Pet not found.");
             }
-            return pet;
+
+            return new PetDto {
+                PetTypeId = pet.PetTypeId,
+                PetName = pet.PetName,
+                Breed = pet.Breed,
+                BirthDate = pet.BirthDate,
+                User = new UserDto
+                {
+                    FirstName = pet.User.FirstName,
+                    MiddleName = pet.User.MiddleName,
+                    LastName = pet.User.LastName,
+                    Email = pet.User.Email,
+                    Username = pet.User.Username,
+                    Active = pet.User.Active,
+                    UserType = pet.User.UserType.TypeName
+                }
+            };
         }
 
         public async Task UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto)
