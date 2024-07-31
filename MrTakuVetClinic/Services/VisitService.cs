@@ -32,6 +32,7 @@ namespace MrTakuVetClinic.Services
                 PetId = v.PetId,
                 Pet = new PetDto
                 {
+                    PetId = v.Pet.PetId,
                     PetName = v.Pet.PetName,
                     PetTypeId = v.Pet.PetTypeId,
                     Breed = v.Pet.Breed,
@@ -66,6 +67,7 @@ namespace MrTakuVetClinic.Services
                 PetId = visit.PetId,
                 Pet = new PetDto
                 {
+                    PetId = visit.PetId,
                     PetName = visit.Pet.PetName,
                     PetTypeId = visit.Pet.PetTypeId,
                     Breed = visit.Pet.Breed,

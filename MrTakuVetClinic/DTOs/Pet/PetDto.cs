@@ -5,6 +5,7 @@ namespace MrTakuVetClinic.DTOs.Pet
 {
     public class PetDto
     {
+        public int PetId { get; set; }
         public string PetName { get; set; }
         public int PetTypeId { get; set; }
         public string Breed { get; set; }

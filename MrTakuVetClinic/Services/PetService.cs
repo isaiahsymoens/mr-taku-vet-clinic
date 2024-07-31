@@ -28,6 +28,7 @@ namespace MrTakuVetClinic.Services
         {
             var pets = await _petRepository.GetAllPetsAsync();
             return pets.Select(p => new PetDto { 
+                PetId = p.PetId,
                 PetTypeId = p.PetTypeId,
                 PetName = p.PetName,
                 Breed = p.Breed,
@@ -53,6 +54,7 @@ namespace MrTakuVetClinic.Services
             }
 
             return new PetDto {
+                PetId = pet.PetId,
                 PetTypeId = pet.PetTypeId,
                 PetName = pet.PetName,
                 Breed = pet.Breed,
@@ -112,7 +114,12 @@ namespace MrTakuVetClinic.Services
 
         public async Task DeletePetAsync(int id)
         {
-            // TODO: refactor & add validation
+            var pet = await _petRepository.GetPetByIdAsync(id);
+            if (pet == null)
+            {
+                throw new ArgumentException("Pet record not found.");
+            }
+
             await _petRepository.DeleteAsync(id);
         }
     }
