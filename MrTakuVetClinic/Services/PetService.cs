@@ -16,12 +16,14 @@ namespace MrTakuVetClinic.Services
         private readonly IPetRepository _petRepository;
         private readonly IPetTypeRepository _petTypeRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IVisitRepository _visitRepository;
 
-        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository, IUserRepository userRepository)
+        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository, IUserRepository userRepository, IVisitRepository visitRepository)
         {
             _petRepository = petRepository;
             _petTypeRepository = petTypeRepository;
             _userRepository = userRepository;
+            _visitRepository = visitRepository;
         }
 
         public async Task<IEnumerable<PetDto>> GetAllPetsAsync()
@@ -113,13 +115,20 @@ namespace MrTakuVetClinic.Services
         }
 
         public async Task DeletePetAsync(int id)
-        {
+        { 
             var pet = await _petRepository.GetPetByIdAsync(id);
             if (pet == null)
             {
                 throw new ArgumentException("Pet record not found.");
             }
 
+            var visits = await _visitRepository.GetAllVisitsAsync();
+
+            if (visits.FirstOrDefault(p => p.PetId == id) != null)
+            {
+                throw new ArgumentException("Cannot delete the pet record because it has associated visit records.");
+            }
+            
             await _petRepository.DeleteAsync(id);
         }
     }

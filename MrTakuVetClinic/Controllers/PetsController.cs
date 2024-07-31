@@ -97,8 +97,15 @@ namespace MrTakuVetClinic.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetRecordAsync(int id)
         {
-            await _petService.DeletePetAsync(id);
-            return NoContent();
+            try
+            {
+                await _petService.DeletePetAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
     }
 }
