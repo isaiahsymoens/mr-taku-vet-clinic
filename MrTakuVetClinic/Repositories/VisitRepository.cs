@@ -67,19 +67,17 @@ namespace MrTakuVetClinic.Repositories
             var query = test.AsQueryable();
             query = query.Where(v =>
                 (string.IsNullOrEmpty(visitFilterDto.FirstName) || v.Pet.User.FirstName.ToLower().Contains(visitFilterDto.FirstName.ToLower())) ||
-                (string.IsNullOrEmpty(visitFilterDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitFilterDto.LastName.ToLower()))
+                (string.IsNullOrEmpty(visitFilterDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitFilterDto.LastName.ToLower())) ||
 
-                //(string.IsNullOrEmpty(visitFilterDto.PetName) || v.Pet.PetName.ToLower().Contains(visitFilterDto.PetName.ToLower())) ||
-                //(string.IsNullOrEmpty(visitFilterDto.PetType) || v.Pet.PetType.TypeName.ToLower().Contains(visitFilterDto.PetType.ToLower())) ||
+                (string.IsNullOrEmpty(visitFilterDto.PetName) || v.Pet.PetName.ToLower().Contains(visitFilterDto.PetName.ToLower())) ||
+            //(string.IsNullOrEmpty(visitFilterDto.PetType) || v.Pet.PetType.TypeName.ToLower().Contains(visitFilterDto.PetType.ToLower()))
+                (string.IsNullOrEmpty(visitFilterDto.VisitType) || v.VisitType.TypeName.ToLower().Contains(visitFilterDto.VisitType.ToLower()))
 
-                //(string.IsNullOrEmpty(visitFilterDto.VisitType) || v.VisitType.TypeName.ToLower().Contains(visitFilterDto.VisitType.ToLower()))
 
-
-                //(string.IsNullOrEmpty(visitFilterDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitFilterDto.LastName.ToLower())) ||
+            //(string.IsNullOrEmpty(visitFilterDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitFilterDto.LastName.ToLower())) ||
             );
-
             Console.WriteLine("###########################################################################################");
-            Console.WriteLine("test2 :", query);
+            //Console.WriteLine("test2 :", query);
 
             return query;
         }
