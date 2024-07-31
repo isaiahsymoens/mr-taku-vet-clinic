@@ -126,6 +126,10 @@ namespace MrTakuVetClinic.Services
 
             if (userUpdateDto.Email != null)
             {
+                if (await _userRepository.IsEmailExits(userUpdateDto.Email))
+                {
+                    throw new ArgumentException("Email is already taken.");
+                }
                 existingUser.Email = userUpdateDto.Email;
             }
 
@@ -136,6 +140,10 @@ namespace MrTakuVetClinic.Services
 
             if (userUpdateDto.Username != null)
             {
+                if (await _userRepository.IsUsernameExits(userUpdateDto.Username))
+                {
+                    throw new ArgumentException("Username is already taken.");
+                }
                 existingUser.Username = userUpdateDto.Username;
             }
 
