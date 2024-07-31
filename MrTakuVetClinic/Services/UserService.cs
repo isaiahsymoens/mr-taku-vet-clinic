@@ -64,7 +64,7 @@ namespace MrTakuVetClinic.Services
             return user;
         }
 
-        public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, string lastName)
+        public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);
             return users.Select(u => new UserDto
@@ -99,7 +99,7 @@ namespace MrTakuVetClinic.Services
             await _userRepository.AddAsync(user);
         }
 
-        public async Task UpdateUserAsync(UpdateUserDto userUpdateDto)
+        public async Task UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
             var existingUser = await _userRepository.GetUserByUsernameAsync(userUpdateDto.Username);
 
@@ -126,6 +126,10 @@ namespace MrTakuVetClinic.Services
 
             if (userUpdateDto.Email != null)
             {
+                if (await _userRepository.IsEmailExits(userUpdateDto.Email))
+                {
+                    throw new ArgumentException("Email is already taken.");
+                }
                 existingUser.Email = userUpdateDto.Email;
             }
 
@@ -136,6 +140,10 @@ namespace MrTakuVetClinic.Services
 
             if (userUpdateDto.Username != null)
             {
+                if (await _userRepository.IsUsernameExits(userUpdateDto.Username))
+                {
+                    throw new ArgumentException("Username is already taken.");
+                }
                 existingUser.Username = userUpdateDto.Username;
             }
 

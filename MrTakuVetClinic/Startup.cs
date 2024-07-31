@@ -40,6 +40,8 @@ namespace MrTakuVetClinic
             services.AddScoped<VisitService>();
             services.AddScoped<VisitTypeService>();
 
+            //services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
+
             services.AddControllers();
         }
 

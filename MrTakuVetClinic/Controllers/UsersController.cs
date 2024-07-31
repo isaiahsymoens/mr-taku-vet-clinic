@@ -12,6 +12,9 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class UsersController : Controller
     {
+        // TODO:
+        // Refactor update endpoint
+
         private readonly UserService _userService;
 
         public UsersController(UserService userService)
@@ -69,16 +72,17 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPut("{username}")]
-        public async Task<IActionResult> PutUser(string username, [FromBody] UpdateUserDto user)
+        public async Task<IActionResult> PutUser(string username, [FromBody] UserUpdateDto user)
         {
-            var existingUser = await _userService.GetUserByUsernameAsync(username);
-            if (existingUser == null)
+            try
             {
-                return NotFound(new { Message = "User not found." });
+                await _userService.UpdateUserAsync(user);
+                return NoContent();
             }
-
-            await _userService.UpdateUserAsync(user);
-            return NoContent();
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         [HttpDelete("{username}")]

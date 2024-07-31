@@ -11,6 +11,9 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class PetsController : Controller
     {
+        // TODO:
+        // Post endpoint response
+
         private readonly PetService _petService;
         private readonly UserService _userService;
 
@@ -78,11 +81,32 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePetRecordById(int id, [FromBody] PetUpdateDto petUpdateDto)
+        {
+            try
+            {
+                await _petService.UpdatePetByIdAsync(id, petUpdateDto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetRecordAsync(int id)
         {
-            await _petService.DeletePetAsync(id);
-            return NoContent();
+            try
+            {
+                await _petService.DeletePetAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MrTakuVetClinic.Entities;
+﻿using MrTakuVetClinic.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

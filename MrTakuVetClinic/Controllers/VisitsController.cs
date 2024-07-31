@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.Data;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
@@ -12,6 +13,8 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class VisitsController : Controller
     {
+        // TODO:
+        // Change Post visit pet DTO response (remove pet id)
 
         private readonly VisitService _visitService;
         public VisitsController(VisitService visitService)
@@ -25,15 +28,8 @@ namespace MrTakuVetClinic.Controllers
             return Ok(await _visitService.GetAllVisitsAsync());
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchVisitsAsync([FromQuery] string lastName, [FromQuery] int petTypeId)
-        {
-            var visits = await _visitService.SearchVisitsAsync(lastName, petTypeId);
-            return Ok(visits);
-        }
-
-
         [HttpGet("{id}")]
+        [ActionName(nameof(GetVisitByIdAsync))]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
         {
             try
@@ -46,8 +42,22 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        {
+            try
+            {
+                var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
+                return Ok(visits);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> PostVisit([FromBody] Visit visit)
+        public async Task<IActionResult> PostVisit(Visit visit)
         {
             if (visit == null)
             {
@@ -57,8 +67,9 @@ namespace MrTakuVetClinic.Controllers
             try
             {
                 await _visitService.PostVisitAsync(visit);
-                return Ok("success test.");
+                return Ok("Success.");
                 //return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+
             }
             catch (Exception ex)
             {
@@ -66,41 +77,18 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
-        //    [HttpGet("{id}")]
-        //    public async Task<ActionResult<Visit>> GetVisitById(int id)
-        //    {
-        //        var visit = await _context.Visits
-        //            .Include(v => v.VisitType)
-        //            .FirstOrDefaultAsync(v => v.VisitId == id);
-
-        //        if (visit == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        return Ok(visit);
-        //    }
-
-        //    [HttpPost]
-        //    public IActionResult PostVisit([FromBody] Visit visit)
-        //    {
-        //        if (visit == null)
-        //        {
-        //            return BadRequest("Pet data is required");
-        //        }
-
-        //        var user = _context.Pets.Find(visit.PetId);
-        //        if (user == null)
-        //        {
-        //            ModelState.AddModelError("PetId", "Invalid PetId");
-        //            return BadRequest(ModelState);
-        //        }
-
-        //        _context.Visits.Add(visit);
-        //        _context.SaveChanges();
-
-        //        return Ok(new { Message = "Successfully added." });
-        //    }
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteVisitRecordAsync(int id)
+        {
+            try
+            {
+                await _visitService.DeleteVisitAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }
