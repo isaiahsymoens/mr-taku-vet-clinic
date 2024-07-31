@@ -29,6 +29,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("{id}")]
+        [ActionName(nameof(GetVisitByIdAsync))]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
         {
             try
@@ -41,19 +42,19 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
-        //[HttpGet("search")]
-        //public async Task<IActionResult> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
-        //{
-        //    try
-        //    {
-        //        var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
-        //        return Ok(visits);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        {
+            try
+            {
+                var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
+                return Ok(visits);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> PostVisit(Visit visit)
@@ -66,11 +67,8 @@ namespace MrTakuVetClinic.Controllers
             try
             {
                 await _visitService.PostVisitAsync(visit);
-
-                Console.WriteLine("################################################################################################");
-                Console.WriteLine("visit :", visit);
-
-                return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
+                return Ok("Success.");
+                //return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
 
             }
             catch (Exception ex)
