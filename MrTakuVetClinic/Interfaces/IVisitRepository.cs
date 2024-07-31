@@ -8,7 +8,7 @@ namespace MrTakuVetClinic.Interfaces
     public interface IVisitRepository : IRepository<Visit>
     {
         Task<IEnumerable<Visit>> GetAllVisitsAsync();
-        Task<Visit> GetBVisitByIdAsync(int id);
+        Task<Visit> GetVisitByIdAsync(int id);
         Task<IEnumerable<Visit>> SearchVisitsAsync(VisitFilterDto visitFilterDto);
     }
 }

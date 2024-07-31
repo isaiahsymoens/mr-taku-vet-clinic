@@ -39,10 +39,12 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Visit> GetBVisitByIdAsync(int id)
+        public async Task<Visit> GetVisitByIdAsync(int id)
         {
             return await _context.Visits
-                .Include(v => v.VisitType)
+                //.Include(v => v.Pet)
+                //.ThenInclude(v => v.User)
+                //.ThenInclude(v => v.UserType)
                 .FirstOrDefaultAsync(v => v.VisitId == id);
         }
     }

@@ -12,6 +12,10 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class UsersController : Controller
     {
+        // TODO:
+        // Create an endpoint to get the list of active or inactive users
+        // Refactor update endpoint
+
         private readonly UserService _userService;
 
         public UsersController(UserService userService)

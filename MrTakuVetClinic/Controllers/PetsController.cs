@@ -11,6 +11,8 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class PetsController : Controller
     {
+        // TODO:
+        // Validation to not allow the user to delete pet record
         private readonly PetService _petService;
         private readonly UserService _userService;
 

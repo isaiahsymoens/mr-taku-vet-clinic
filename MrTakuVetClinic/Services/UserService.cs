@@ -64,7 +64,7 @@ namespace MrTakuVetClinic.Services
             return user;
         }
 
-        public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, string lastName)
+        public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);
             return users.Select(u => new UserDto

@@ -24,12 +24,10 @@ namespace MrTakuVetClinic.Services
 
         public async Task<IEnumerable<VisitDto>> GetAllVisitsAsync()
         {
-            //return (IEnumerable<VisitDto>)await _visitRepository.GetAllVisitsAsync();
-
             var visits = await _visitRepository.GetAllVisitsAsync();
-
             return visits.Select(v => new VisitDto
             {
+                VisitId = v.VisitId,
                 Date = v.Date,
                 PetId = v.PetId,
                 Pet = new PetDto
@@ -52,15 +50,38 @@ namespace MrTakuVetClinic.Services
             }).ToList();
         }
 
-        public async Task<Visit> GetVisitById(int id)
+        public async Task<VisitDto> GetVisitById(int id)
         {
-            var visit = await _visitRepository.GetByIdAsync(id);
+            // TODO: Temporary fix
+            //var visit = await _visitRepository.GetVisitByIdAsync(id);
+            var visits = await _visitRepository.GetAllVisitsAsync();
+            var visit = visits.FirstOrDefault(v => v.VisitId == id);
             if (visit == null)
             {
-                throw new ArgumentException("Visit not found.");
+                throw new ArgumentException("Visit record not found.");
             }
-
-            return visit;
+            return new VisitDto
+            {
+                Date = visit.Date,
+                PetId = visit.PetId,
+                Pet = new PetDto
+                {
+                    PetName = visit.Pet.PetName,
+                    PetTypeId = visit.Pet.PetTypeId,
+                    Breed = visit.Pet.Breed,
+                    BirthDate = visit.Pet.BirthDate,
+                    User = new UserDto
+                    {
+                        FirstName = visit.Pet.User.FirstName,
+                        MiddleName = visit.Pet.User.MiddleName,
+                        LastName = visit.Pet.User.LastName,
+                        Email = visit.Pet.User.Email,
+                        Username = visit.Pet.User.Username,
+                        Active = visit.Pet.User.Active,
+                        UserType = visit.Pet.User.UserType.TypeName
+                    }
+                }
+            };
         }
 
         public async Task<IEnumerable<Visit>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
