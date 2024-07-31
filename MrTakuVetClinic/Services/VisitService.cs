@@ -95,17 +95,10 @@ namespace MrTakuVetClinic.Services
         public async Task<IEnumerable<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
         {
             var visits = await _visitRepository.SearchVisitsAsync(visitFilterDto);
-
-            
-
-            Console.WriteLine("##################################################");
-
-            //throw new ArgumentException("test.");
-
             return visits.Select(v => new VisitDto
             {
                 VisitId = v.VisitId,
-                //VisitType = v.VisitType.TypeName,
+                VisitType = v.VisitType.TypeName,
                 Date = v.Date,
                 PetId = v.PetId,
                 Pet = new PetDto
@@ -127,9 +120,6 @@ namespace MrTakuVetClinic.Services
                     }
                 }
             }).ToList();
-
-            //return visits;
-            //Console.WriteLine(visits);
         }
 
         public async Task PostVisitAsync(Visit visit)
@@ -144,6 +134,16 @@ namespace MrTakuVetClinic.Services
             }
 
             await _visitRepository.AddAsync(visit);
+        }
+
+        public async Task DeleteVisitAsync(int id)
+        {
+            var visit = await _visitRepository.GetByIdAsync(id);
+            if (visit == null)
+            {
+                throw new ArgumentException("Visit record not found.");
+            }
+            await _visitRepository.DeleteAsync(id);
         }
     }
 }

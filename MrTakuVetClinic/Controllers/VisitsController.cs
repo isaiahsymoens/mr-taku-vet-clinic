@@ -74,6 +74,20 @@ namespace MrTakuVetClinic.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteVisitRecordAsync(int id)
+        {
+            try
+            {
+                await _visitService.DeleteVisitAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
         //    [HttpGet("{id}")]
         //    public async Task<ActionResult<Visit>> GetVisitById(int id)
         //    {
@@ -88,27 +102,5 @@ namespace MrTakuVetClinic.Controllers
 
         //        return Ok(visit);
         //    }
-
-        //    [HttpPost]
-        //    public IActionResult PostVisit([FromBody] Visit visit)
-        //    {
-        //        if (visit == null)
-        //        {
-        //            return BadRequest("Pet data is required");
-        //        }
-
-        //        var user = _context.Pets.Find(visit.PetId);
-        //        if (user == null)
-        //        {
-        //            ModelState.AddModelError("PetId", "Invalid PetId");
-        //            return BadRequest(ModelState);
-        //        }
-
-        //        _context.Visits.Add(visit);
-        //        _context.SaveChanges();
-
-        //        return Ok(new { Message = "Successfully added." });
-        //    }
-        //}
     }
 }
