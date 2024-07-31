@@ -34,8 +34,8 @@ namespace MrTakuVetClinic.Repositories
             if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
             {
                 query = query.Where(u =>
-                    (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName)) &&
-                    (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
+                    (string.IsNullOrEmpty(firstName) || u.FirstName.ToLower().Contains(firstName.ToLower())) &&
+                    (string.IsNullOrEmpty(lastName) || u.LastName.ToLower().Contains(lastName.ToLower()))
                 );
             }
             return await query

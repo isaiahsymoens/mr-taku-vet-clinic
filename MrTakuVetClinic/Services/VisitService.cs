@@ -31,6 +31,7 @@ namespace MrTakuVetClinic.Services
             return visits.Select(v => new VisitDto
             {
                 VisitId = v.VisitId,
+                VisitType = v.VisitType.TypeName,
                 Date = v.Date,
                 PetId = v.PetId,
                 Pet = new PetDto
@@ -67,6 +68,7 @@ namespace MrTakuVetClinic.Services
             return new VisitDto
             {
                 VisitId = visit.VisitId,
+                VisitType = visit.VisitType.TypeName,
                 Date = visit.Date,
                 PetId = visit.PetId,
                 Pet = new PetDto
@@ -90,11 +92,43 @@ namespace MrTakuVetClinic.Services
             };
         }
 
-        public async Task<IEnumerable<Visit>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        public async Task<IEnumerable<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
         {
             var visits = await _visitRepository.SearchVisitsAsync(visitFilterDto);
+
+            
+
             Console.WriteLine("##################################################");
-            return visits;
+
+            //throw new ArgumentException("test.");
+
+            return visits.Select(v => new VisitDto
+            {
+                VisitId = v.VisitId,
+                //VisitType = v.VisitType.TypeName,
+                Date = v.Date,
+                PetId = v.PetId,
+                Pet = new PetDto
+                {
+                    PetId = v.Pet.PetId,
+                    PetName = v.Pet.PetName,
+                    PetTypeId = v.Pet.PetTypeId,
+                    Breed = v.Pet.Breed,
+                    BirthDate = v.Pet.BirthDate,
+                    User = new UserDto
+                    {
+                        FirstName = v.Pet.User.FirstName,
+                        MiddleName = v.Pet.User.MiddleName,
+                        LastName = v.Pet.User.LastName,
+                        Email = v.Pet.User.Email,
+                        Username = v.Pet.User.Username,
+                        Active = v.Pet.User.Active,
+                        UserType = v.Pet.User.UserType.TypeName
+                    }
+                }
+            }).ToList();
+
+            //return visits;
             //Console.WriteLine(visits);
         }
 

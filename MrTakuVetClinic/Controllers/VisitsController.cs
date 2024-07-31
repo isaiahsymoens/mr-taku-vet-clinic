@@ -30,8 +30,15 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
         {
-            var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
-            return Ok(visits);
+            try
+            {
+                var visits = await _visitService.SearchVisitsAsync(visitFilterDto);
+                return Ok(visits);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
