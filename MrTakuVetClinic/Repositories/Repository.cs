@@ -25,10 +25,11 @@ namespace MrTakuVetClinic.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task UpdateAsync(T entity)

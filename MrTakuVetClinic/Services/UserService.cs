@@ -54,16 +54,6 @@ namespace MrTakuVetClinic.Services
             };
         }
 
-        public async Task<User> GetUserWithUserIdByUsername(string username)
-        {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
-            if (user == null)
-            {
-                throw new ArgumentException("User not found.");
-            }
-            return user;
-        }
-
         public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);
@@ -79,24 +69,45 @@ namespace MrTakuVetClinic.Services
             });
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task<UserDto> AddUserAsync(UserPostDto userPostDto)
         {
-            if (await _userRepository.IsEmailExits(user.Email))
+            if (await _userRepository.IsEmailExits(userPostDto.Email))
             {
                 throw new ArgumentException("Email is already taken.");
             }
 
-            if (await _userRepository.IsUsernameExits(user.Username))
+            if (await _userRepository.IsUsernameExits(userPostDto.Username))
             {
                 throw new ArgumentException("Username is already taken.");
             }
 
-            var userType = await _userTypeRepository.GetByIdAsync(user.UserTypeId);
-            if (userType == null)
+            if (await _userTypeRepository.GetByIdAsync(userPostDto.UserTypeId) == null)
             {
                 throw new ArgumentException("User type does not exist.");
             }
-            await _userRepository.AddAsync(user);
+
+            var user = await _userRepository.AddAsync(new User
+            {
+                FirstName = userPostDto.FirstName,
+                MiddleName = userPostDto.MiddleName,
+                LastName = userPostDto.LastName,
+                Email = userPostDto.Email,
+                Password = userPostDto.Password,
+                Username = userPostDto.Username,
+                UserTypeId = userPostDto.UserTypeId,
+                Active = userPostDto.Active
+            });
+
+            return new UserDto
+            {
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Username = user.Username,
+                UserType = user.UserType.TypeName,
+                Active = user.Active
+            };
         }
 
         public async Task UpdateUserAsync(UserUpdateDto userUpdateDto)
@@ -108,7 +119,6 @@ namespace MrTakuVetClinic.Services
                 throw new ArgumentException("User not found.");
             }
 
-            // TODO: Temporary fix to update the user info.
             if (userUpdateDto.FirstName != null)
             {
                 existingUser.FirstName = userUpdateDto.FirstName;

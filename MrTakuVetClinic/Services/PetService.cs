@@ -1,11 +1,9 @@
 ﻿using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
-using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,8 +29,8 @@ namespace MrTakuVetClinic.Services
             var pets = await _petRepository.GetAllPetsAsync();
             return pets.Select(p => new PetDto { 
                 PetId = p.PetId,
-                PetTypeId = p.PetTypeId,
                 PetName = p.PetName,
+                PetType = p.PetType.TypeName,
                 Breed = p.Breed,
                 BirthDate = p.BirthDate,
                 User = new UserDto {
@@ -57,8 +55,8 @@ namespace MrTakuVetClinic.Services
 
             return new PetDto {
                 PetId = pet.PetId,
-                PetTypeId = pet.PetTypeId,
                 PetName = pet.PetName,
+                PetType = pet.PetType.TypeName,
                 Breed = pet.Breed,
                 BirthDate = pet.BirthDate,
                 User = new UserDto
@@ -105,13 +103,51 @@ namespace MrTakuVetClinic.Services
             await _petRepository.UpdateAsync(existingPet);
         }
 
-        public async Task PostPetAsync(Pet pet)
+        public async Task<PetDto> PostPetAsync(PetPostDto petPostDto)
         {
-            if (await _petTypeRepository.GetByIdAsync(pet.PetTypeId) == null)
+            if (petPostDto.Username == null)
+            {
+                throw new ArgumentException("Username is required.");
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(petPostDto.Username);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
             {
                 throw new ArgumentException("Pet type does not exist.");
             }
-            await _petRepository.AddAsync(pet);
+
+            var pet = await _petRepository.AddAsync(new Pet
+            {
+                PetName = petPostDto.PetName,
+                PetTypeId = petPostDto.PetTypeId,
+                Breed = petPostDto.Breed,
+                BirthDate = petPostDto.BirthDate,
+                UserId = user.UserId
+            });
+
+            return new PetDto
+            {
+                PetId = pet.PetId,
+                PetName = pet.PetName,
+                PetType = pet.PetType.TypeName,
+                Breed = pet.Breed,
+                BirthDate = pet.BirthDate,
+                User = new UserDto
+                {
+                    FirstName = pet.User.FirstName,
+                    MiddleName = pet.User.MiddleName,
+                    LastName = pet.User.LastName,
+                    Email = pet.User.Email,
+                    Username = pet.User.Username,
+                    UserType = pet.User.UserType.TypeName,
+                    Active = pet.User.Active
+                }
+            };
         }
 
         public async Task DeletePetAsync(int id)

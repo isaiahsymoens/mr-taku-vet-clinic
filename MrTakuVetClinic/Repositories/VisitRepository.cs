@@ -85,9 +85,10 @@ namespace MrTakuVetClinic.Repositories
         public async Task<Visit> GetVisitByIdAsync(int id)
         {
             return await _context.Visits
-                //.Include(v => v.Pet)
-                //.ThenInclude(v => v.User)
-                //.ThenInclude(v => v.UserType)
+                .Include(v => v.VisitType)
+                .Include(v => v.Pet)
+                .ThenInclude(v => v.User)
+                .ThenInclude(v => v.UserType)
                 .FirstOrDefaultAsync(v => v.VisitId == id);
         }
     }

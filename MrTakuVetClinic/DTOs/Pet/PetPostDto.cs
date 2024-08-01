@@ -3,7 +3,7 @@ using System;
 
 namespace MrTakuVetClinic.DTOs.Pet
 {
-    public class PostPetDto
+    public class PetPostDto
     {
         public string PetName { get; set; }
         public int PetTypeId { get; set; }
