@@ -57,19 +57,11 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostVisit(Visit visit)
+        public async Task<ActionResult<VisitDto>> PostVisit(VisitPostDto visitPostDto)
         {
-            if (visit == null)
-            {
-                return BadRequest(new { Message = "Visit data is required." });
-            }
-
             try
             {
-                await _visitService.PostVisitAsync(visit);
-                return Ok("Success.");
-                //return CreatedAtAction(nameof(GetVisitByIdAsync), new { id = visit.VisitId }, visit);
-
+                return Ok(await _visitService.PostVisitAsync(visitPostDto));
             }
             catch (Exception ex)
             {

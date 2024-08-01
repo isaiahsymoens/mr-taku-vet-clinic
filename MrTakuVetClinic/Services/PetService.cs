@@ -29,7 +29,6 @@ namespace MrTakuVetClinic.Services
             var pets = await _petRepository.GetAllPetsAsync();
             return pets.Select(p => new PetDto { 
                 PetId = p.PetId,
-                PetTypeId = p.PetTypeId,
                 PetName = p.PetName,
                 Breed = p.Breed,
                 BirthDate = p.BirthDate,
@@ -55,7 +54,6 @@ namespace MrTakuVetClinic.Services
 
             return new PetDto {
                 PetId = pet.PetId,
-                PetTypeId = pet.PetTypeId,
                 PetName = pet.PetName,
                 Breed = pet.Breed,
                 BirthDate = pet.BirthDate,

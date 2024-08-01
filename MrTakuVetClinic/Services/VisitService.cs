@@ -38,7 +38,6 @@ namespace MrTakuVetClinic.Services
                 {
                     PetId = v.Pet.PetId,
                     PetName = v.Pet.PetName,
-                    PetTypeId = v.Pet.PetTypeId,
                     Breed = v.Pet.Breed,
                     BirthDate = v.Pet.BirthDate,
                     User = new UserDto 
@@ -57,10 +56,7 @@ namespace MrTakuVetClinic.Services
 
         public async Task<VisitDto> GetVisitById(int id)
         {
-            // TODO: Temporary fix
-            //var visit = await _visitRepository.GetVisitByIdAsync(id);
-            var visits = await _visitRepository.GetAllVisitsAsync();
-            var visit = visits.FirstOrDefault(v => v.VisitId == id);
+            var visit = await _visitRepository.GetVisitByIdAsync(id);
             if (visit == null)
             {
                 throw new ArgumentException("Visit record not found.");
@@ -75,7 +71,6 @@ namespace MrTakuVetClinic.Services
                 {
                     PetId = visit.PetId,
                     PetName = visit.Pet.PetName,
-                    PetTypeId = visit.Pet.PetTypeId,
                     Breed = visit.Pet.Breed,
                     BirthDate = visit.Pet.BirthDate,
                     User = new UserDto
@@ -105,7 +100,6 @@ namespace MrTakuVetClinic.Services
                 {
                     PetId = v.Pet.PetId,
                     PetName = v.Pet.PetName,
-                    PetTypeId = v.Pet.PetTypeId,
                     Breed = v.Pet.Breed,
                     BirthDate = v.Pet.BirthDate,
                     User = new UserDto
@@ -122,18 +116,27 @@ namespace MrTakuVetClinic.Services
             }).ToList();
         }
 
-        public async Task PostVisitAsync(Visit visit)
+        public async Task<VisitDto> PostVisitAsync(VisitPostDto visitPostDto)
         {
-            if (await _petRepository.GetByIdAsync(visit.PetId) == null)
+            if (await _petRepository.GetByIdAsync(visitPostDto.PetId) == null)
             {
                 throw new ArgumentException("Pet does not exist.");
             }
-            if (await _visitTypeRepository.GetByIdAsync(visit.VisitTypeId) == null)
+            if (await _visitTypeRepository.GetByIdAsync(visitPostDto.VisitTypeId) == null)
             {
                 throw new ArgumentException("Visit type does not exist.");
             }
 
-            await _visitRepository.AddAsync(visit);
+            var visit = await _visitRepository.AddAsync(new Visit
+            { 
+                VisitTypeId = visitPostDto.VisitTypeId,
+                PetId = visitPostDto.PetId,
+                Date = visitPostDto.Date,
+                Notes = visitPostDto.Notes
+            });
+
+            // TODO: Temporary fix to get visit complete details
+            return await GetVisitById(visit.VisitId);
         }
 
         public async Task DeleteVisitAsync(int id)
