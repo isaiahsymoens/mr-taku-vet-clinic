@@ -54,16 +54,6 @@ namespace MrTakuVetClinic.Services
             };
         }
 
-        public async Task<User> GetUserWithUserIdByUsername(string username)
-        {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
-            if (user == null)
-            {
-                throw new ArgumentException("User not found.");
-            }
-            return user;
-        }
-
         public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);
@@ -129,7 +119,6 @@ namespace MrTakuVetClinic.Services
                 throw new ArgumentException("User not found.");
             }
 
-            // TODO: Temporary fix to update the user info.
             if (userUpdateDto.FirstName != null)
             {
                 existingUser.FirstName = userUpdateDto.FirstName;
