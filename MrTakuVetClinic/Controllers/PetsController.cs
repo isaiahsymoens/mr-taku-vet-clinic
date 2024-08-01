@@ -12,12 +12,10 @@ namespace MrTakuVetClinic.Controllers
     public class PetsController : Controller
     {
         private readonly PetService _petService;
-        private readonly UserService _userService;
 
-        public PetsController(PetService petService, UserService userService)
+        public PetsController(PetService petService)
         {
             _petService = petService;
-            _userService = userService;
         }
 
         [HttpGet]
@@ -40,37 +38,11 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPetRecord([FromBody] PetPostDto addPet)
+        public async Task<ActionResult<PetDto>> AddPetRecord([FromBody] PetPostDto petPostDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             try
             {
-                if (addPet.Username == null)
-                {
-                    return BadRequest("Username is required.");
-                }
-
-                var user = await _userService.GetUserWithUserIdByUsername(addPet.Username);
-                if (user == null)
-                {
-                    return NotFound("User not found.");
-                }
-
-                var pet= new Pet
-                {
-                    PetName = addPet.PetName,
-                    PetTypeId = addPet.PetTypeId,
-                    Breed = addPet.Breed,
-                    BirthDate = addPet.BirthDate,
-                    UserId = user.UserId
-                };
-
-                await _petService.PostPetAsync(pet);
-                return Ok("Success.");
-                //return CreatedAtAction(nameof(GetPetByIdAsync), new { id = pet.PetId }, pet);
+                return Ok(await _petService.PostPetAsync(petPostDto));
             }
             catch (Exception ex)
             {
