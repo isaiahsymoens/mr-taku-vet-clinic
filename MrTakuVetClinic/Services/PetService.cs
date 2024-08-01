@@ -30,6 +30,7 @@ namespace MrTakuVetClinic.Services
             return pets.Select(p => new PetDto { 
                 PetId = p.PetId,
                 PetName = p.PetName,
+                PetType = p.PetType.TypeName,
                 Breed = p.Breed,
                 BirthDate = p.BirthDate,
                 User = new UserDto {
@@ -55,6 +56,7 @@ namespace MrTakuVetClinic.Services
             return new PetDto {
                 PetId = pet.PetId,
                 PetName = pet.PetName,
+                PetType = pet.PetType.TypeName,
                 Breed = pet.Breed,
                 BirthDate = pet.BirthDate,
                 User = new UserDto
