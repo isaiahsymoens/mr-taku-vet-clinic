@@ -12,9 +12,6 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        // TODO:
-        // Refactor update endpoint
-
         private readonly UserService _userService;
 
         public UsersController(UserService userService)
@@ -53,7 +50,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUser(User user)
+        public async Task<ActionResult<UserDto>> PostUser(UserPostDto userPostDto)
         {
             if (!ModelState.IsValid)
             {
@@ -62,8 +59,7 @@ namespace MrTakuVetClinic.Controllers
 
             try
             {
-                await _userService.AddUserAsync(user);
-                return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
+                return Ok(await _userService.AddUserAsync(userPostDto));
             }
             catch (Exception ex)
             {
