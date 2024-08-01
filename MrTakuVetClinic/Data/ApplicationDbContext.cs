@@ -58,7 +58,7 @@ namespace MrTakuVetClinic.Data
                 .HasMany(p => p.Visits)
                 .WithOne(p => p.Pet)
                 .HasForeignKey(p => p.PetId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.PetType)
