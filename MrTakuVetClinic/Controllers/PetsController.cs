@@ -11,9 +11,6 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class PetsController : Controller
     {
-        // TODO:
-        // Post endpoint response
-
         private readonly PetService _petService;
         private readonly UserService _userService;
 
@@ -43,7 +40,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPetRecord([FromBody] PostPetDto addPet)
+        public async Task<IActionResult> AddPetRecord([FromBody] PetPostDto addPet)
         {
             if (!ModelState.IsValid)
             {
