@@ -101,10 +101,10 @@ namespace MrTakuVetClinic.Services
                 Active = userPostDto.Active
             };
 
-            //var userValidator = _userValidator.Validate(convertToUserEntity);
-            //if (!userValidator.IsValid)
+            //var validationResult = _userValidator.Validate(convertToUserEntity);
+            //if (!validationResult.IsValid)
             //{
-            //    return userValidator;
+            //    var test = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
             //}
 
             var user = await _userRepository.AddAsync(convertToUserEntity);

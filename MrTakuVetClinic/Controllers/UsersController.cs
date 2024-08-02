@@ -59,7 +59,7 @@ namespace MrTakuVetClinic.Controllers
 
             try
             {
-                return Ok(await _userService.AddUserAsync(userPostDto));
+                return Ok(await _userService.PostUserAsync(userPostDto));
             }
             catch (Exception ex)
             {
