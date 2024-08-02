@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces;
@@ -13,11 +14,13 @@ namespace MrTakuVetClinic.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserTypeRepository _userTypeRepository;
+        private readonly IValidator<User> _userValidator;
 
-        public UserService(IUserRepository userRepository, IUserTypeRepository userTypeRepository)
+        public UserService(IUserRepository userRepository, IUserTypeRepository userTypeRepository, IValidator<User> userValidator)
         {
             _userRepository = userRepository;
             _userTypeRepository = userTypeRepository;
+            _userValidator = userValidator;
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -69,7 +72,7 @@ namespace MrTakuVetClinic.Services
             });
         }
 
-        public async Task<UserDto> AddUserAsync(UserPostDto userPostDto)
+        public async Task<UserDto> PostUserAsync(UserPostDto userPostDto)
         {
             if (await _userRepository.IsEmailExits(userPostDto.Email))
             {
@@ -86,7 +89,7 @@ namespace MrTakuVetClinic.Services
                 throw new ArgumentException("User type does not exist.");
             }
 
-            var user = await _userRepository.AddAsync(new User
+            var convertToUserEntity = new User
             {
                 FirstName = userPostDto.FirstName,
                 MiddleName = userPostDto.MiddleName,
@@ -96,7 +99,15 @@ namespace MrTakuVetClinic.Services
                 Username = userPostDto.Username,
                 UserTypeId = userPostDto.UserTypeId,
                 Active = userPostDto.Active
-            });
+            };
+
+            //var userValidator = _userValidator.Validate(convertToUserEntity);
+            //if (!userValidator.IsValid)
+            //{
+            //    return userValidator;
+            //}
+
+            var user = await _userRepository.AddAsync(convertToUserEntity);
 
             return new UserDto
             {

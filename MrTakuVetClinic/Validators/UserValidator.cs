@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using MrTakuVetClinic.Entities;
-using MrTakuVetClinic.Interfaces.Validators;
 
 namespace MrTakuVetClinic.Validators
 {
-    public class UserValidator : AbstractValidator<User>, IUserValidator
+    public class UserValidator : AbstractValidator<User>
     {
         public UserValidator()
         {
