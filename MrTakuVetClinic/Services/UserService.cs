@@ -6,7 +6,6 @@ using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
 using MrTakuVetClinic.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,46 +24,52 @@ namespace MrTakuVetClinic.Services
             _userValidator = userValidator;
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        public async Task<ApiResponse<UserDto>> GetAllUsersAsync()
         {
-            var user = await _userRepository.GetAllUsersAsync();
-            return user.Select(u => new UserDto
-            {
-                FirstName = u.FirstName,
-                MiddleName = u.MiddleName,
-                LastName = u.LastName,
-                Email = u.Email,
-                Username = u.Username,
-                UserType = u.UserType.TypeName,
-                Active = u.Active
-            });
+            return ApiResponseHelper.SuccessResponse<UserDto>(
+                200,
+                (await _userRepository.GetAllUsersAsync())
+                .Select(u => new UserDto
+                {
+                    FirstName = u.FirstName,
+                    MiddleName = u.MiddleName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    Username = u.Username,
+                    UserType = u.UserType.TypeName,
+                    Active = u.Active
+                })
+            );
         }
 
-        public async Task<UserDto> GetUserByUsernameAsync(string username)
+        public async Task<ApiResponse<UserDto>> GetUserByUsernameAsync(string username)
         {
             var user = await _userRepository.GetUserByUsernameAsync(username);
             if (user == null)
             {
-                throw new ArgumentException("User not found.");
+                return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User not found." });
             }
-            return new UserDto 
-            {
-                FirstName = user.FirstName,
-                MiddleName = user.MiddleName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Username = user.Username,
-                UserType = user.UserType.TypeName,
-                Active = user.Active
-            };
+            return ApiResponseHelper.SuccessResponse<UserDto>(
+                200,
+                new UserDto 
+                {
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Username = user.Username,
+                    UserType = user.UserType.TypeName,
+                    Active = user.Active
+                }
+            );
         }
 
         public async Task<ApiResponse<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
-            var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
-                users.Select(u => new UserDto
+                (await _userRepository.GetSearchUsersAsync(firstName, lastName))
+                .Select(u => new UserDto
                 {
                     FirstName = u.FirstName,
                     MiddleName = u.MiddleName,
@@ -192,19 +197,6 @@ namespace MrTakuVetClinic.Services
             {
                 existingUser.Active = userUpdateDto.Active.Value;
             }
-
-            //foreach (var property in userUpdateDto.GetType().GetProperties())
-            //{
-            //    var newvalue = property.GetValue(userUpdateDto, null);
-            //    if (newvalue != null)
-            //    {
-            //        var existingproperty = userUpdateDto.GetType().GetProperty(property.Name);
-            //        if (existingproperty != null && existingproperty.CanWrite)
-            //        {
-            //            existingproperty.SetValue(existingUser, newvalue, null);
-            //        }
-            //    }
-            //}
 
             await _userRepository.UpdateAsync(existingUser);
         }

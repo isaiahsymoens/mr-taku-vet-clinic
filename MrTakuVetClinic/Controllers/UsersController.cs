@@ -23,20 +23,16 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsersAsync()
         {
-            return Ok(await _userService.GetAllUsersAsync());
+            var response = await _userService.GetAllUsersAsync();
+            return StatusCode(response.StatusCode, response);
+
         }
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
-            try
-            {
-                return Ok(await _userService.GetUserByUsernameAsync(username));
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
+            var response = await _userService.GetUserByUsernameAsync(username);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("search")]
