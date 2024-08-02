@@ -59,19 +59,22 @@ namespace MrTakuVetClinic.Services
             };
         }
 
-        public async Task<IEnumerable<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<ApiResponse<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var users = await _userRepository.GetSearchUsersAsync(firstName, lastName);
-            return users.Select(u => new UserDto
-            {
-                FirstName = u.FirstName,
-                MiddleName = u.MiddleName,
-                LastName = u.LastName,
-                Email = u.Email,
-                Username = u.Username,
-                UserType = u.UserType.TypeName,
-                Active = u.Active
-            });
+            return ApiResponseHelper.SuccessResponse<UserDto>(
+                200,
+                users.Select(u => new UserDto
+                {
+                    FirstName = u.FirstName,
+                    MiddleName = u.MiddleName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    Username = u.Username,
+                    UserType = u.UserType.TypeName,
+                    Active = u.Active
+                })
+            );
         }
 
         public async Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto)
