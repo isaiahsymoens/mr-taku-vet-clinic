@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
 using System;
 using System.Linq;
@@ -21,50 +22,31 @@ namespace MrTakuVetClinic.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsersAsync()
-        { 
-            return Ok(await _userService.GetAllUsersAsync());
+        {
+            var response = await _userService.GetAllUsersAsync();
+            return StatusCode(response.StatusCode, response);
+
         }
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
-            try
-            {
-                return Ok(await _userService.GetUserByUsernameAsync(username));
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
+            var response = await _userService.GetUserByUsernameAsync(username);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("search")]
         public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, [FromQuery] string lastName)
         {
-            var users = await _userService.GetSearchUsersAsync(firstName, lastName);
-            if (users == null || !users.Any())
-            { 
-                return NotFound(new { Message = "User not found." });
-            }
-            return Ok(users);
+            var response = await _userService.GetSearchUsersAsync(firstName, lastName);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserDto>> PostUser(UserPostDto userPostDto)
+        public async Task<IActionResult> PostUser(UserPostDto userPostDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                return Ok(await _userService.AddUserAsync(userPostDto));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var response = await _userService.PostUserAsync(userPostDto);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPut("{username}")]

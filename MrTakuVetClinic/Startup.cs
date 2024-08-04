@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Interfaces;
 using MrTakuVetClinic.Repositories;
 using MrTakuVetClinic.Services;
+using MrTakuVetClinic.Validators;
 
 namespace MrTakuVetClinic
 {
@@ -39,6 +41,8 @@ namespace MrTakuVetClinic
             services.AddScoped<PetTypeService>();
             services.AddScoped<VisitService>();
             services.AddScoped<VisitTypeService>();
+
+            services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
             //services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
 
