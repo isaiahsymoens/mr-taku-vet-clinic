@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
@@ -21,31 +19,22 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllVisitTypesAsync()
         {
-            return Ok(await _visitTypeService.GetAllVisitTypesAsync());
+            var response = await _visitTypeService.GetAllVisitTypesAsync();
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVisitTypeById(int id)
         {
-            var visitType = await _visitTypeService.GetVisitTypeByIdAsync(id);
-            if (visitType == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(visitType);
+            var response = await _visitTypeService.GetVisitTypeByIdAsync(id);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostVisitTypeAsync(VisitType visitType)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _visitTypeService.PostVisitTypeAsync(visitType);
-            return CreatedAtAction(nameof(GetVisitTypeById), new { id = visitType.VisitTypeId }, visitType);
+            var response = await _visitTypeService.PostVisitTypeAsync(visitType);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }
