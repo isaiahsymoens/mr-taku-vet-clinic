@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Pet;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System;
 using System.Threading.Tasks;
@@ -28,14 +27,8 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPetByIdAsync(int id)
         {
-            try
-            {
-                return Ok(await _petService.GetPetByIdAsync(id));
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
+            var response = await _petService.GetPetByIdAsync(id);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost]
@@ -68,15 +61,8 @@ namespace MrTakuVetClinic.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePetRecordAsync(int id)
         {
-            try
-            {
-                await _petService.DeletePetAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var response = await _petService.DeletePetAsync(id);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }
