@@ -8,6 +8,7 @@ using MrTakuVetClinic.Interfaces;
 using MrTakuVetClinic.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -95,33 +96,36 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<IEnumerable<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        public async Task<ApiResponse<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
         {
-            var visits = await _visitRepository.SearchVisitsAsync(visitFilterDto);
-            return visits.Select(v => new VisitDto
-            {
-                VisitId = v.VisitId,
-                VisitType = v.VisitType.TypeName,
-                Date = v.Date,
-                PetId = v.PetId,
-                Pet = new PetDto
+            return ApiResponseHelper.SuccessResponse<VisitDto>(
+                200,
+                (await _visitRepository.SearchVisitsAsync(visitFilterDto))
+                .Select(v => new VisitDto
                 {
-                    PetId = v.Pet.PetId,
-                    PetName = v.Pet.PetName,
-                    Breed = v.Pet.Breed,
-                    BirthDate = v.Pet.BirthDate,
-                    User = new UserDto
+                    VisitId = v.VisitId,
+                    VisitType = v.VisitType.TypeName,
+                    Date = v.Date,
+                    PetId = v.PetId,
+                    Pet = new PetDto
                     {
-                        FirstName = v.Pet.User.FirstName,
-                        MiddleName = v.Pet.User.MiddleName,
-                        LastName = v.Pet.User.LastName,
-                        Email = v.Pet.User.Email,
-                        Username = v.Pet.User.Username,
-                        Active = v.Pet.User.Active,
-                        UserType = v.Pet.User.UserType.TypeName
+                        PetId = v.Pet.PetId,
+                        PetName = v.Pet.PetName,
+                        Breed = v.Pet.Breed,
+                        BirthDate = v.Pet.BirthDate,
+                        User = new UserDto
+                        {
+                            FirstName = v.Pet.User.FirstName,
+                            MiddleName = v.Pet.User.MiddleName,
+                            LastName = v.Pet.User.LastName,
+                            Email = v.Pet.User.Email,
+                            Username = v.Pet.User.Username,
+                            Active = v.Pet.User.Active,
+                            UserType = v.Pet.User.UserType.TypeName
+                        }
                     }
-                }
-            }).ToList();
+                }).ToList()
+            );
         }
 
         public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
