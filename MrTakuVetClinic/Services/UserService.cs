@@ -141,13 +141,13 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task UpdateUserAsync(UserUpdateDto userUpdateDto)
+        public async Task<ApiResponse<UserDto>> UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
             var existingUser = await _userRepository.GetUserByUsernameAsync(userUpdateDto.Username);
 
             if (existingUser == null)
             {
-                throw new ArgumentException("User not found.");
+                return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "User not found." });
             }
 
             if (userUpdateDto.FirstName != null)
@@ -169,7 +169,7 @@ namespace MrTakuVetClinic.Services
             {
                 if (await _userRepository.IsEmailExits(userUpdateDto.Email))
                 {
-                    throw new ArgumentException("Email is already taken.");
+                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "Email is already taken." });
                 }
                 existingUser.Email = userUpdateDto.Email;
             }
@@ -183,7 +183,7 @@ namespace MrTakuVetClinic.Services
             {
                 if (await _userRepository.IsUsernameExits(userUpdateDto.Username))
                 {
-                    throw new ArgumentException("Username is already taken.");
+                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "Username is already taken." });
                 }
                 existingUser.Username = userUpdateDto.Username;
             }
@@ -199,6 +199,10 @@ namespace MrTakuVetClinic.Services
             }
 
             await _userRepository.UpdateAsync(existingUser);
+            return ApiResponseHelper.SuccessResponse<UserDto>(
+                204,
+                null
+            );
         }
 
         public async Task DeleteUserByUsernameAsync(string username)

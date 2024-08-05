@@ -52,15 +52,8 @@ namespace MrTakuVetClinic.Controllers
         [HttpPut("{username}")]
         public async Task<IActionResult> PutUser(string username, [FromBody] UserUpdateDto user)
         {
-            try
-            {
-                await _userService.UpdateUserAsync(user);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
+            var response = await _userService.UpdateUserAsync(user);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpDelete("{username}")]
