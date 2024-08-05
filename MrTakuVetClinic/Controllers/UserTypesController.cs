@@ -19,31 +19,22 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUserTypesAsync()
         {
-            return Ok(await _userTypeService.GetAllUserTypesAsync());
+            var response = await _userTypeService.GetAllUserTypesAsync();
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserTypeById(int id)
         {
-            var userType = await _userTypeService.GetUserTypeByIdAsync(id);
-            if (userType == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(userType);
+            var response = await _userTypeService.GetUserTypeByIdAsync(id);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostUserTypeAsync(UserType userType)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _userTypeService.PostUserTypeAsync(userType);
-            return CreatedAtAction(nameof(GetUserTypeById), new { id = userType.UserTypeId }, userType);
+            var response = await _userTypeService.PostUserTypeAsync(userType);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }
