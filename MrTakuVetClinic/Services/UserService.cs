@@ -122,7 +122,7 @@ namespace MrTakuVetClinic.Services
 
             if (await _userTypeRepository.GetByIdAsync(user.UserTypeId) == null)
             {
-                return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "User type does not exist." });
+                return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User type does not exist." });
             }
 
             var userResponse = await _userRepository.AddAsync(user);
