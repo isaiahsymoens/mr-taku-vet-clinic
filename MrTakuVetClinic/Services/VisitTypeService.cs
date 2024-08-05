@@ -1,7 +1,7 @@
 ﻿using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
-using MrTakuVetClinic.Repositories;
-using System.Collections.Generic;
+using MrTakuVetClinic.Models;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
@@ -15,19 +15,28 @@ namespace MrTakuVetClinic.Services
             _visitTypeRepository = visitTypeRepository;
         }
 
-        public async Task<IEnumerable<VisitType>> GetAllVisitTypesAsync()
+        public async Task<ApiResponse<VisitType>> GetAllVisitTypesAsync()
         {
-            return await _visitTypeRepository.GetAllAsync();
+            return ApiResponseHelper
+                .SuccessResponse<VisitType>(200, await _visitTypeRepository.GetAllAsync());
         }
 
-        public async Task<VisitType> GetVisitTypeByIdAsync(int id)
+        public async Task<ApiResponse<VisitType>> GetVisitTypeByIdAsync(int id)
         {
-            return await _visitTypeRepository.GetByIdAsync(id);
+            var visitType = await _visitTypeRepository.GetByIdAsync(id);
+            if (visitType == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitType>(404, new { Message = "Visit type does not exist." });
+            }
+            return ApiResponseHelper
+                .SuccessResponse<VisitType>(200, visitType);
         }
 
-        public async Task PostVisitTypeAsync(VisitType visitType)
+        public async Task<ApiResponse<VisitType>> PostVisitTypeAsync(VisitType visitType)
         {
             await _visitTypeRepository.AddAsync(visitType);
+            return ApiResponseHelper
+                .SuccessResponse<VisitType>(204, null);
         }
     }
 }

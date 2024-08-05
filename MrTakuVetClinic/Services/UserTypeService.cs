@@ -1,7 +1,7 @@
 ﻿using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
-using System.Collections;
-using System.Collections.Generic;
+using MrTakuVetClinic.Models;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
@@ -15,19 +15,29 @@ namespace MrTakuVetClinic.Services
             _userTypeRepository = userTypeRepository;
         }
 
-        public async Task<IEnumerable<UserType>> GetAllUserTypesAsync()
+        public async Task<ApiResponse<UserType>> GetAllUserTypesAsync()
         { 
-            return await _userTypeRepository.GetAllAsync();
+            return ApiResponseHelper
+                .SuccessResponse<UserType>(200, await _userTypeRepository.GetAllAsync());
         }
 
-        public async Task<UserType> GetUserTypeByIdAsync(int id)
+        public async Task<ApiResponse<UserType>> GetUserTypeByIdAsync(int id)
         {
-            return await _userTypeRepository.GetByIdAsync(id);
+            var userType = await _userTypeRepository.GetByIdAsync(id);
+            if (userType == null)
+            {
+                return ApiResponseHelper.FailResponse<UserType>(404, new { Message = "User type does not exist." });
+
+            }
+            return ApiResponseHelper
+                .SuccessResponse<UserType>(200, userType);
         }
 
-        public async Task PostUserTypeAsync(UserType userType)
+        public async Task<ApiResponse<UserType>> PostUserTypeAsync(UserType userType)
         {
             await _userTypeRepository.AddAsync(userType);
+            return ApiResponseHelper
+                .SuccessResponse<UserType>(204, null);
         }
     }
 }
