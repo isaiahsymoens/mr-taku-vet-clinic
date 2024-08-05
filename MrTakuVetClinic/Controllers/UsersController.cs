@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
-using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -58,16 +55,9 @@ namespace MrTakuVetClinic.Controllers
 
         [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser(string username)
-        { 
-            try
-            {
-                await _userService.DeleteUserByUsernameAsync(username);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
+        {
+            var response = await _userService.DeleteUserByUsernameAsync(username);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

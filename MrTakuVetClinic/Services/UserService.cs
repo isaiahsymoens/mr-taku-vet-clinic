@@ -199,19 +199,17 @@ namespace MrTakuVetClinic.Services
             }
 
             await _userRepository.UpdateAsync(existingUser);
-            return ApiResponseHelper.SuccessResponse<UserDto>(
-                204,
-                null
-            );
+            return ApiResponseHelper.SuccessResponse<UserDto>(204, null);
         }
 
-        public async Task DeleteUserByUsernameAsync(string username)
+        public async Task<ApiResponse<UserDto>> DeleteUserByUsernameAsync(string username)
         {
             if (await _userRepository.GetUserByUsernameAsync(username) == null)
             {
-                throw new ArgumentException("User not found.");
+                return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "User not found." });
             }
             await _userRepository.DeleteUserByUsernameAsync(username);
+            return ApiResponseHelper.SuccessResponse<UserDto>(204, null);
         }
     }
 }
