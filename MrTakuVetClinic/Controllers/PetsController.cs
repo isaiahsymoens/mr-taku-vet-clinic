@@ -47,15 +47,8 @@ namespace MrTakuVetClinic.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePetRecordById(int id, [FromBody] PetUpdateDto petUpdateDto)
         {
-            try
-            {
-                await _petService.UpdatePetByIdAsync(id, petUpdateDto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var response = await _petService.UpdatePetByIdAsync(id, petUpdateDto);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpDelete("{id}")]
