@@ -1,4 +1,5 @@
-﻿using MrTakuVetClinic.DTOs.Pet;
+﻿using FluentValidation;
+using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
@@ -16,13 +17,20 @@ namespace MrTakuVetClinic.Services
         private readonly IPetTypeRepository _petTypeRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVisitRepository _visitRepository;
+        private readonly IValidator<Pet> _petValidator;
 
-        public PetService(IPetRepository petRepository, IPetTypeRepository petTypeRepository, IUserRepository userRepository, IVisitRepository visitRepository)
+        public PetService(
+            IPetRepository petRepository, 
+            IPetTypeRepository petTypeRepository, 
+            IUserRepository userRepository, 
+            IVisitRepository visitRepository,
+            IValidator<Pet> petValidator)
         {
             _petRepository = petRepository;
             _petTypeRepository = petTypeRepository;
             _userRepository = userRepository;
             _visitRepository = visitRepository;
+            _petValidator = petValidator;
         }
 
         public async Task<ApiResponse<PetDto>> GetAllPetsAsync()
@@ -112,6 +120,20 @@ namespace MrTakuVetClinic.Services
 
         public async Task<PetDto> PostPetAsync(PetPostDto petPostDto)
         {
+            //var validationResult = _userValidator.Validate(petPostDto);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ApiResponseHelper.FailResponse<UserDto>(
+            //        400,
+            //        validationResult.Errors
+            //            .GroupBy(e => e.PropertyName)
+            //            .ToDictionary(
+            //                e => e.Key,
+            //                e => e.First().ErrorMessage
+            //            )
+            //    );
+            //}
+
             if (petPostDto.Username == null)
             {
                 throw new ArgumentException("Username is required.");
