@@ -1,7 +1,9 @@
 ﻿using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,25 +26,30 @@ namespace MrTakuVetClinic.Services
             _visitRepository = visitRepository;
         }
 
-        public async Task<IEnumerable<PetDto>> GetAllPetsAsync()
+        public async Task<ApiResponse<UserDto>> GetAllPetsAsync()
         {
-            var pets = await _petRepository.GetAllPetsAsync();
-            return pets.Select(p => new PetDto { 
-                PetId = p.PetId,
-                PetName = p.PetName,
-                PetType = p.PetType.TypeName,
-                Breed = p.Breed,
-                BirthDate = p.BirthDate,
-                User = new UserDto {
-                    FirstName = p.User.FirstName,
-                    MiddleName = p.User.MiddleName,
-                    LastName = p.User.LastName,
-                    Email = p.User.Email,
-                    Username = p.User.Username,
-                    Active = p.User.Active,
-                    UserType = p.User.UserType.TypeName
-                }
-            }).ToList();
+            return ApiResponseHelper.SuccessResponse<UserDto>(
+                200,
+                (await _petRepository.GetAllPetsAsync())
+                .Select(p => new PetDto
+                {
+                    PetId = p.PetId,
+                    PetName = p.PetName,
+                    PetType = p.PetType.TypeName,
+                    Breed = p.Breed,
+                    BirthDate = p.BirthDate,
+                    User = new UserDto
+                    {
+                        FirstName = p.User.FirstName,
+                        MiddleName = p.User.MiddleName,
+                        LastName = p.User.LastName,
+                        Email = p.User.Email,
+                        Username = p.User.Username,
+                        Active = p.User.Active,
+                        UserType = p.User.UserType.TypeName
+                    }
+                }).ToList()
+            );
         }
 
         public async Task<PetDto> GetPetByIdAsync(int id)
