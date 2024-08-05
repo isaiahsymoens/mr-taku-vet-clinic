@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.DTOs.Visit;
@@ -6,9 +7,6 @@ using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
 using MrTakuVetClinic.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,13 +17,18 @@ namespace MrTakuVetClinic.Services
         private readonly IVisitRepository _visitRepository;
         private readonly IVisitTypeRepository _visitTypeRepository;
         private readonly IPetRepository _petRepository;
+        private readonly IValidator<Visit> _visitValidator;
 
-        public VisitService(IVisitRepository visitRepository, IVisitTypeRepository visitTypeRepository, IPetRepository petRepository)
+        public VisitService(
+            IVisitRepository visitRepository, 
+            IVisitTypeRepository visitTypeRepository, 
+            IPetRepository petRepository,
+            IValidator<Visit> visitValidator)
         {
             _visitRepository = visitRepository;
             _visitTypeRepository = visitTypeRepository;
             _petRepository = petRepository;
-
+            _visitValidator = visitValidator;
         }
 
         public async Task<ApiResponse<VisitDto>> GetAllVisitsAsync()
@@ -130,7 +133,28 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
         {
-            // TODO: Add fluent validation.
+            var visit = new Visit
+            {
+                VisitTypeId = visitPostDto.VisitTypeId,
+                Date = visitPostDto.Date,
+                PetId = visitPostDto.PetId,
+                Notes = visitPostDto.Notes,
+            };
+
+            var validationResult = _visitValidator.Validate(visit);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponseHelper.FailResponse<VisitDto>(
+                    400,
+                    validationResult.Errors
+                        .GroupBy(e => e.PropertyName)
+                        .ToDictionary(
+                            e => e.Key,
+                            e => e.First().ErrorMessage
+                        )
+                );
+            }
+
             if (await _petRepository.GetByIdAsync(visitPostDto.PetId) == null)
             {
                 return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Pet does not exist." });
@@ -140,7 +164,7 @@ namespace MrTakuVetClinic.Services
                 return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit type does not exist." });
             }
 
-            var visit = await _visitRepository.AddAsync(new Visit
+            var visitResponse = await _visitRepository.AddAsync(new Visit
             { 
                 VisitTypeId = visitPostDto.VisitTypeId,
                 PetId = visitPostDto.PetId,
@@ -149,7 +173,7 @@ namespace MrTakuVetClinic.Services
             });
 
             // TODO: Temporary fix to get visit complete details
-            return await GetVisitById(visit.VisitId);
+            return await GetVisitById(visitResponse.VisitId);
         }
 
         public async Task<ApiResponse<VisitDto>> DeleteVisitAsync(int id)

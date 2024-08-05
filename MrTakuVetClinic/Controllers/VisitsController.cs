@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MrTakuVetClinic.Data;
 using MrTakuVetClinic.DTOs.Visit;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,9 +10,6 @@ namespace MrTakuVetClinic.Controllers
     [ApiController]
     public class VisitsController : Controller
     {
-        // TODO:
-        // Change Post visit pet DTO response (remove pet id)
-
         private readonly VisitService _visitService;
         public VisitsController(VisitService visitService)
         {
@@ -30,7 +24,6 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("{id}")]
-        [ActionName(nameof(GetVisitByIdAsync))]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
         {
             var response = await _visitService.GetVisitById(id);
