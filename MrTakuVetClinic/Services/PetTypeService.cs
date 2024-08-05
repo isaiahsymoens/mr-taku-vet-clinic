@@ -1,11 +1,7 @@
-﻿using MrTakuVetClinic.DTOs.User;
-using MrTakuVetClinic.Entities;
+﻿using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
 using MrTakuVetClinic.Models;
-using MrTakuVetClinic.Repositories;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
