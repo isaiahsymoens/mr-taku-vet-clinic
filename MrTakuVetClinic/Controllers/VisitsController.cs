@@ -25,21 +25,16 @@ namespace MrTakuVetClinic.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllVisitsAsync()
         {
-            return Ok(await _visitService.GetAllVisitsAsync());
+            var response = await _visitService.GetAllVisitsAsync();
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
         [ActionName(nameof(GetVisitByIdAsync))]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
         {
-            try
-            {
-                return Ok(await _visitService.GetVisitById(id));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = await _visitService.GetVisitById(id);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("search")]
