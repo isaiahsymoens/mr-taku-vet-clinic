@@ -148,14 +148,14 @@ namespace MrTakuVetClinic.Services
             return await GetVisitById(visit.VisitId);
         }
 
-        public async Task DeleteVisitAsync(int id)
+        public async Task<ApiResponse<VisitDto>> DeleteVisitAsync(int id)
         {
-            var visit = await _visitRepository.GetByIdAsync(id);
-            if (visit == null)
+            if (await _visitRepository.GetByIdAsync(id) == null)
             {
-                throw new ArgumentException("Visit record not found.");
+                return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit record not found." });
             }
             await _visitRepository.DeleteAsync(id);
+            return ApiResponseHelper.SuccessResponse<VisitDto>(204 , null);
         }
     }
 }

@@ -54,28 +54,15 @@ namespace MrTakuVetClinic.Controllers
         [HttpPost]
         public async Task<ActionResult<VisitDto>> PostVisit(VisitPostDto visitPostDto)
         {
-            try
-            {
-                return Ok(await _visitService.PostVisitAsync(visitPostDto));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var response = await _visitService.PostVisitAsync(visitPostDto);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVisitRecordAsync(int id)
         {
-            try
-            {
-                await _visitService.DeleteVisitAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var response = await _visitService.DeleteVisitAsync(id);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }
