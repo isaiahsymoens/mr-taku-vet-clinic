@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.Services;
-using System;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Controllers
@@ -34,14 +33,8 @@ namespace MrTakuVetClinic.Controllers
         [HttpPost]
         public async Task<ActionResult<PetDto>> AddPetRecord([FromBody] PetPostDto petPostDto)
         {
-            try
-            {
-                return Ok(await _petService.PostPetAsync(petPostDto));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var response = await _petService.PostPetAsync(petPostDto);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPut("{id}")]

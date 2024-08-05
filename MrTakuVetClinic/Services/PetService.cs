@@ -118,31 +118,42 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<PetDto>(204, null);
         }
 
-        public async Task<PetDto> PostPetAsync(PetPostDto petPostDto)
+        public async Task<ApiResponse<PetDto>> PostPetAsync(PetPostDto petPostDto)
         {
-            //var validationResult = _userValidator.Validate(petPostDto);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ApiResponseHelper.FailResponse<UserDto>(
-            //        400,
-            //        validationResult.Errors
-            //            .GroupBy(e => e.PropertyName)
-            //            .ToDictionary(
-            //                e => e.Key,
-            //                e => e.First().ErrorMessage
-            //            )
-            //    );
-            //}
-
             if (petPostDto.Username == null)
             {
-                throw new ArgumentException("Username is required.");
+                return ApiResponseHelper.FailResponse<PetDto>(400, new { Username = "Username is required." });
+
             }
 
             var user = await _userRepository.GetUserByUsernameAsync(petPostDto.Username);
             if (user == null)
             {
-                throw new ArgumentException("User not found.");
+                return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "User not found." });
+
+            }
+
+            var pet = new Pet
+            {
+                UserId = user.UserId,
+                PetName = petPostDto.PetName,
+                PetTypeId = petPostDto.PetTypeId,
+                Breed = petPostDto.Breed,
+                BirthDate = petPostDto.BirthDate
+            };
+
+            var validationResult = _petValidator.Validate(pet);
+            if (!validationResult.IsValid)
+            {
+                return ApiResponseHelper.FailResponse<PetDto>(
+                    400,
+                    validationResult.Errors
+                        .GroupBy(e => e.PropertyName)
+                        .ToDictionary(
+                            e => e.Key,
+                            e => e.First().ErrorMessage
+                        )
+                );
             }
 
             if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
@@ -150,7 +161,7 @@ namespace MrTakuVetClinic.Services
                 throw new ArgumentException("Pet type does not exist.");
             }
 
-            var pet = await _petRepository.AddAsync(new Pet
+            var petResponse = await _petRepository.AddAsync(new Pet
             {
                 PetName = petPostDto.PetName,
                 PetTypeId = petPostDto.PetTypeId,
@@ -159,24 +170,27 @@ namespace MrTakuVetClinic.Services
                 UserId = user.UserId
             });
 
-            return new PetDto
-            {
-                PetId = pet.PetId,
-                PetName = pet.PetName,
-                PetType = pet.PetType.TypeName,
-                Breed = pet.Breed,
-                BirthDate = pet.BirthDate,
-                User = new UserDto
+            return ApiResponseHelper.SuccessResponse<PetDto>(
+                201,
+                new PetDto
                 {
-                    FirstName = pet.User.FirstName,
-                    MiddleName = pet.User.MiddleName,
-                    LastName = pet.User.LastName,
-                    Email = pet.User.Email,
-                    Username = pet.User.Username,
-                    UserType = pet.User.UserType.TypeName,
-                    Active = pet.User.Active
+                    PetId = petResponse.PetId,
+                    PetName = petResponse.PetName,
+                    PetType = petResponse.PetType.TypeName,
+                    Breed = petResponse.Breed,
+                    BirthDate = petResponse.BirthDate,
+                    User = new UserDto
+                    {
+                        FirstName = petResponse.User.FirstName,
+                        MiddleName = petResponse.User.MiddleName,
+                        LastName = petResponse.User.LastName,
+                        Email = petResponse.User.Email,
+                        Username = petResponse.User.Username,
+                        UserType = petResponse.User.UserType.TypeName,
+                        Active = petResponse.User.Active
+                    }
                 }
-            };
+            );
         }
 
         public async Task<ApiResponse<PetDto>> DeletePetAsync(int id)
