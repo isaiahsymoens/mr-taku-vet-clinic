@@ -124,15 +124,16 @@ namespace MrTakuVetClinic.Services
             }).ToList();
         }
 
-        public async Task<VisitDto> PostVisitAsync(VisitPostDto visitPostDto)
+        public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
         {
+            // TODO: Add fluent validation.
             if (await _petRepository.GetByIdAsync(visitPostDto.PetId) == null)
             {
-                throw new ArgumentException("Pet does not exist.");
+                return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Pet does not exist." });
             }
             if (await _visitTypeRepository.GetByIdAsync(visitPostDto.VisitTypeId) == null)
             {
-                throw new ArgumentException("Visit type does not exist.");
+                return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit type does not exist." });
             }
 
             var visit = await _visitRepository.AddAsync(new Visit
@@ -144,8 +145,7 @@ namespace MrTakuVetClinic.Services
             });
 
             // TODO: Temporary fix to get visit complete details
-            //return await GetVisitById(visit.VisitId);
-            return null;
+            return await GetVisitById(visit.VisitId);
         }
 
         public async Task DeleteVisitAsync(int id)
