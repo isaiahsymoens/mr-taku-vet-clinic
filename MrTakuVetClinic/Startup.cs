@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Interfaces.Repositories;
+using MrTakuVetClinic.Mappings;
 using MrTakuVetClinic.Repositories;
 using MrTakuVetClinic.Services;
 using MrTakuVetClinic.Validators;
@@ -45,6 +47,12 @@ namespace MrTakuVetClinic
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
             services.AddValidatorsFromAssemblyContaining<PetValidator>();
             services.AddValidatorsFromAssemblyContaining<VisitValidator>();
+
+            services.AddAutoMapper(typeof(UserProfile));
+            //services.AddAutoMapper(cfg =>
+            //{
+            //    cfg.AddProfile<UserProfile>();
+            //});
 
             services.AddControllers();
         }

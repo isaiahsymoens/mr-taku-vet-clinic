@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
@@ -16,12 +17,18 @@ namespace MrTakuVetClinic.Services
         private readonly IUserRepository _userRepository;
         private readonly IUserTypeRepository _userTypeRepository;
         private readonly IValidator<User> _userValidator;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IUserTypeRepository userTypeRepository, IValidator<User> userValidator)
+        public UserService(
+            IUserRepository userRepository, 
+            IUserTypeRepository userTypeRepository, 
+            IValidator<User> userValidator,
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _userTypeRepository = userTypeRepository;
             _userValidator = userValidator;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<UserDto>> GetAllUsersAsync()
