@@ -36,16 +36,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
                 (await _userRepository.GetAllUsersAsync())
-                .Select(u => new UserDto
-                {
-                    FirstName = u.FirstName,
-                    MiddleName = u.MiddleName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    Username = u.Username,
-                    UserType = u.UserType.TypeName,
-                    Active = u.Active
-                })
+                .Select(user => _mapper.Map<UserDto>(user))
             );
         }
 
@@ -56,19 +47,7 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User not found." });
             }
-            return ApiResponseHelper.SuccessResponse<UserDto>(
-                200,
-                new UserDto 
-                {
-                    FirstName = user.FirstName,
-                    MiddleName = user.MiddleName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    Username = user.Username,
-                    UserType = user.UserType.TypeName,
-                    Active = user.Active
-                }
-            );
+            return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
         public async Task<ApiResponse<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
