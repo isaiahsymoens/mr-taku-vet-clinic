@@ -50,6 +50,7 @@ namespace MrTakuVetClinic
 
             services.AddAutoMapper(typeof(UserProfile));
             services.AddAutoMapper(typeof(PetProfile));
+            services.AddAutoMapper(typeof(VisitProfile));
 
             services.AddControllers();
         }

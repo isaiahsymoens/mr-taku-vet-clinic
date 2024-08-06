@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
@@ -19,17 +20,20 @@ namespace MrTakuVetClinic.Services
         private readonly IVisitTypeRepository _visitTypeRepository;
         private readonly IPetRepository _petRepository;
         private readonly IValidator<Visit> _visitValidator;
+        private readonly IMapper _mapper;
 
         public VisitService(
             IVisitRepository visitRepository, 
             IVisitTypeRepository visitTypeRepository, 
             IPetRepository petRepository,
-            IValidator<Visit> visitValidator)
+            IValidator<Visit> visitValidator,
+            IMapper mapper)
         {
             _visitRepository = visitRepository;
             _visitTypeRepository = visitTypeRepository;
             _petRepository = petRepository;
             _visitValidator = visitValidator;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<VisitDto>> GetAllVisitsAsync()
@@ -37,30 +41,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
                 (await _visitRepository.GetAllVisitsAsync())
-                .Select(v => new VisitDto
-                {
-                    VisitId = v.VisitId,
-                    VisitType = v.VisitType.TypeName,
-                    Date = v.Date,
-                    PetId = v.PetId,
-                    Pet = new PetDto
-                    {
-                        PetId = v.Pet.PetId,
-                        PetName = v.Pet.PetName,
-                        Breed = v.Pet.Breed,
-                        BirthDate = v.Pet.BirthDate,
-                        User = new UserDto
-                        {
-                            FirstName = v.Pet.User.FirstName,
-                            MiddleName = v.Pet.User.MiddleName,
-                            LastName = v.Pet.User.LastName,
-                            Email = v.Pet.User.Email,
-                            Username = v.Pet.User.Username,
-                            Active = v.Pet.User.Active,
-                            UserType = v.Pet.User.UserType.TypeName
-                        }
-                    }
-                }).ToList()
+                .Select(visit => _mapper.Map<VisitDto>(visit)).ToList()
             );
         }
 
