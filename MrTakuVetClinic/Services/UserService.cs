@@ -16,13 +16,13 @@ namespace MrTakuVetClinic.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserTypeRepository _userTypeRepository;
-        private readonly IValidator<User> _userValidator;
+        private readonly IValidator<UserPostDto> _userValidator;
         private readonly IMapper _mapper;
 
         public UserService(
             IUserRepository userRepository, 
             IUserTypeRepository userTypeRepository, 
-            IValidator<User> userValidator,
+            IValidator<UserPostDto> userValidator,
             IMapper mapper)
         {
             _userRepository = userRepository;
@@ -91,19 +91,7 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto)
         {
-            var user = new User
-            {
-                FirstName = userPostDto.FirstName,
-                MiddleName = userPostDto.MiddleName,
-                LastName = userPostDto.LastName,
-                Email = userPostDto.Email,
-                Password = userPostDto.Password,
-                Username = userPostDto.Username,
-                UserTypeId = userPostDto.UserTypeId,
-                Active = userPostDto.Active
-            };
-
-            var validationResult = _userValidator.Validate(user);
+            var validationResult = _userValidator.Validate(userPostDto);
             if (!validationResult.IsValid)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(
@@ -117,22 +105,31 @@ namespace MrTakuVetClinic.Services
                 );
             }
 
-            if (await _userRepository.IsEmailExits(user.Email))
+            if (await _userRepository.IsEmailExits(userPostDto.Email))
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Email = "Email is already taken." });
             }
-
-            if (await _userRepository.IsUsernameExits(user.Username))
+            if (await _userRepository.IsUsernameExits(userPostDto.Username))
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Username is already taken." });
             }
-
-            if (await _userTypeRepository.GetByIdAsync(user.UserTypeId) == null)
+            if (await _userTypeRepository.GetByIdAsync(userPostDto.UserTypeId) == null)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User type does not exist." });
             }
 
-            var userResponse = await _userRepository.AddAsync(user);
+            var userResponse = await _userRepository.AddAsync(new User
+            {
+                FirstName = userPostDto.FirstName,
+                MiddleName = userPostDto.MiddleName,
+                LastName = userPostDto.LastName,
+                Email = userPostDto.Email,
+                Password = userPostDto.Password,
+                Username = userPostDto.Username,
+                UserTypeId = userPostDto.UserTypeId,
+                Active = userPostDto.Active
+            });
+
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 201, 
                 new UserDto
