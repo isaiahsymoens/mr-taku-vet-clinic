@@ -3,7 +3,7 @@ using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
 using System;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MrTakuVetClinic.Data;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Repositories;
 using MrTakuVetClinic.Services;
 using MrTakuVetClinic.Validators;
