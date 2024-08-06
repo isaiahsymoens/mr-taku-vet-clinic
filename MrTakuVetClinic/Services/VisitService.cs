@@ -41,30 +41,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
                 (await _visitRepository.GetAllVisitsAsync())
-                .Select(v => new VisitDto
-                {
-                    VisitId = v.VisitId,
-                    VisitType = v.VisitType.TypeName,
-                    Date = v.Date,
-                    PetId = v.PetId,
-                    Pet = new PetDto
-                    {
-                        PetId = v.Pet.PetId,
-                        PetName = v.Pet.PetName,
-                        Breed = v.Pet.Breed,
-                        BirthDate = v.Pet.BirthDate,
-                        User = new UserDto
-                        {
-                            FirstName = v.Pet.User.FirstName,
-                            MiddleName = v.Pet.User.MiddleName,
-                            LastName = v.Pet.User.LastName,
-                            Email = v.Pet.User.Email,
-                            Username = v.Pet.User.Username,
-                            Active = v.Pet.User.Active,
-                            UserType = v.Pet.User.UserType.TypeName
-                        }
-                    }
-                }).ToList()
+                .Select(v => _mapper.Map<VisitDto>(v)).ToList()
             );
         }
 
