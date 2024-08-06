@@ -9,8 +9,8 @@ namespace MrTakuVetClinic.Validators
         {
             RuleFor(v => v.VisitTypeId)
                 .NotEmpty().WithMessage("Visit type ID is required.");
-            RuleFor(v => v.Date)
-                    .NotEmpty().WithMessage("Date is required.");
+            //RuleFor(v => v.Date)
+            //        .NotEmpty().WithMessage("Date is required.");
             RuleFor(v => v.PetId)
                .NotEmpty().WithMessage("Pet ID is required.");
             RuleFor(v => v.Notes)

@@ -41,7 +41,30 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
                 (await _visitRepository.GetAllVisitsAsync())
-                .Select(visit => _mapper.Map<VisitDto>(visit)).ToList()
+                .Select(v => new VisitDto
+                {
+                    VisitId = v.VisitId,
+                    VisitType = v.VisitType.TypeName,
+                    Date = v.Date,
+                    PetId = v.PetId,
+                    Pet = new PetDto
+                    {
+                        PetId = v.Pet.PetId,
+                        PetName = v.Pet.PetName,
+                        Breed = v.Pet.Breed,
+                        BirthDate = v.Pet.BirthDate,
+                        User = new UserDto
+                        {
+                            FirstName = v.Pet.User.FirstName,
+                            MiddleName = v.Pet.User.MiddleName,
+                            LastName = v.Pet.User.LastName,
+                            Email = v.Pet.User.Email,
+                            Username = v.Pet.User.Username,
+                            Active = v.Pet.User.Active,
+                            UserType = v.Pet.User.UserType.TypeName
+                        }
+                    }
+                }).ToList()
             );
         }
 
@@ -52,7 +75,33 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit record not found." });
             }
-            return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
+            return ApiResponseHelper.SuccessResponse<VisitDto>(
+                200,
+                new VisitDto
+                {
+                    VisitId = visit.VisitId,
+                    VisitType = visit.VisitType.TypeName,
+                    Date = visit.Date,
+                    PetId = visit.PetId,
+                    Pet = new PetDto
+                    {
+                        PetId = visit.PetId,
+                        PetName = visit.Pet.PetName,
+                        Breed = visit.Pet.Breed,
+                        BirthDate = visit.Pet.BirthDate,
+                        User = new UserDto
+                        {
+                            FirstName = visit.Pet.User.FirstName,
+                            MiddleName = visit.Pet.User.MiddleName,
+                            LastName = visit.Pet.User.LastName,
+                            Email = visit.Pet.User.Email,
+                            Username = visit.Pet.User.Username,
+                            Active = visit.Pet.User.Active,
+                            UserType = visit.Pet.User.UserType.TypeName
+                        }
+                    }
+                }
+            );
         }
 
         public async Task<ApiResponse<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
@@ -60,7 +109,30 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
                 (await _visitRepository.SearchVisitsAsync(visitFilterDto))
-                .Select(v => _mapper.Map<VisitDto>(v)).ToList()
+                .Select(v => new VisitDto
+                {
+                    VisitId = v.VisitId,
+                    VisitType = v.VisitType.TypeName,
+                    Date = v.Date,
+                    PetId = v.PetId,
+                    Pet = new PetDto
+                    {
+                        PetId = v.Pet.PetId,
+                        PetName = v.Pet.PetName,
+                        Breed = v.Pet.Breed,
+                        BirthDate = v.Pet.BirthDate,
+                        User = new UserDto
+                        {
+                            FirstName = v.Pet.User.FirstName,
+                            MiddleName = v.Pet.User.MiddleName,
+                            LastName = v.Pet.User.LastName,
+                            Email = v.Pet.User.Email,
+                            Username = v.Pet.User.Username,
+                            Active = v.Pet.User.Active,
+                            UserType = v.Pet.User.UserType.TypeName
+                        }
+                    }
+                }).ToList()
             );
         }
 
