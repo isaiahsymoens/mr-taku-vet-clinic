@@ -17,7 +17,7 @@ namespace MrTakuVetClinic.Services
         private readonly IPetTypeRepository _petTypeRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVisitRepository _visitRepository;
-        private readonly IValidator<Pet> _petValidator;
+        private readonly IValidator<PetPostDto> _petValidator;
         private readonly IMapper _mapper;
 
         public PetService(
@@ -25,7 +25,7 @@ namespace MrTakuVetClinic.Services
             IPetTypeRepository petTypeRepository, 
             IUserRepository userRepository, 
             IVisitRepository visitRepository,
-            IValidator<Pet> petValidator,
+            IValidator<PetPostDto> petValidator,
             IMapper mapper)
         {
             _petRepository = petRepository;
@@ -86,33 +86,7 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<PetDto>> PostPetAsync(PetPostDto petPostDto)
         {
-            if (petPostDto.Username == null)
-            {
-                return ApiResponseHelper.FailResponse<PetDto>(400, new { Username = "Username is required." });
-
-            }
-
-            var user = await _userRepository.GetUserByUsernameAsync(petPostDto.Username);
-            if (user == null)
-            {
-                return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "User not found." });
-
-            }
-
-            var petMapper = _mapper.Map<Pet>(petPostDto);
-            petMapper.UserId = user.UserId;
-
-            // TODO: Validator - Use PetDto instead.
-            var pet = new Pet
-            {
-                UserId = user.UserId,
-                PetName = petPostDto.PetName,
-                PetTypeId = petPostDto.PetTypeId,
-                Breed = petPostDto.Breed,
-                BirthDate = petPostDto.BirthDate
-            };
-
-            var validationResult = _petValidator.Validate(pet);
+            var validationResult = _petValidator.Validate(petPostDto);
             if (!validationResult.IsValid)
             {
                 return ApiResponseHelper.FailResponse<PetDto>(
@@ -125,15 +99,22 @@ namespace MrTakuVetClinic.Services
                         )
                 );
             }
-            // End
 
+            var user = await _userRepository.GetUserByUsernameAsync(petPostDto.Username);
+            if (user == null)
+            {
+                return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "User not found." });
+
+            }
             if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
             {
                 return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "Pet type does not exist." });
             }
 
-            var petResponse = await _petRepository.AddAsync(petMapper);
+            var petMapper = (_mapper.Map<Pet>(petPostDto));
+            petMapper.UserId = user.UserId;
 
+            var petResponse = await _petRepository.AddAsync(petMapper);
             return ApiResponseHelper.SuccessResponse<PetDto>(201, _mapper.Map<PetDto>(petResponse));
         }
 
@@ -142,7 +123,6 @@ namespace MrTakuVetClinic.Services
             if (await _petRepository.GetPetByIdAsync(id) == null)
             {
                 return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "Pet record not found." });
-
             }
             if ((await _visitRepository.GetAllVisitsAsync()).FirstOrDefault(p => p.PetId == id) != null)
             {
