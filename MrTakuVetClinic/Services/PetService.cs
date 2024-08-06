@@ -4,6 +4,7 @@ using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
 using System;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class PetService
+    public class PetService : IPetService
     {
         private readonly IPetRepository _petRepository;
         private readonly IPetTypeRepository _petTypeRepository;
