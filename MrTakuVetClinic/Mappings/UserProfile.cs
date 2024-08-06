@@ -9,6 +9,7 @@ namespace MrTakuVetClinic.Mappings
         public UserProfile()
         {
             CreateMap<User, UserDto>();
+            CreateMap<UserPostDto, User>();
             CreateMap<UserDto, User>();
         }
     }

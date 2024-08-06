@@ -118,30 +118,10 @@ namespace MrTakuVetClinic.Services
                 return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User type does not exist." });
             }
 
-            var userResponse = await _userRepository.AddAsync(new User
-            {
-                FirstName = userPostDto.FirstName,
-                MiddleName = userPostDto.MiddleName,
-                LastName = userPostDto.LastName,
-                Email = userPostDto.Email,
-                Password = userPostDto.Password,
-                Username = userPostDto.Username,
-                UserTypeId = userPostDto.UserTypeId,
-                Active = userPostDto.Active
-            });
-
+            var userResponse = await _userRepository.AddAsync(_mapper.Map<User>(userPostDto));
             return ApiResponseHelper.SuccessResponse<UserDto>(
-                201, 
-                new UserDto
-                {
-                    FirstName = userResponse.FirstName,
-                    MiddleName = userResponse.MiddleName,
-                    LastName = userResponse.LastName,
-                    Email = userResponse.Email,
-                    Username = userResponse.Username,
-                    UserType = userResponse.UserType.TypeName,
-                    Active = userResponse.Active
-                }
+                201,
+                _mapper.Map<UserDto>(userResponse)
             );
         }
 
