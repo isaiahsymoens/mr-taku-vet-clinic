@@ -8,7 +8,8 @@ namespace MrTakuVetClinic.Mappings
     {
         public PetProfile()
         {
-            CreateMap<Pet, PetDto>();
+            CreateMap<Pet, PetDto>()
+                .ForMember(dest => dest.PetType, opt => opt.MapFrom(src => src.PetType.TypeName));
             CreateMap<PetPostDto, Pet>();
             CreateMap<PetDto, Pet>();
         }

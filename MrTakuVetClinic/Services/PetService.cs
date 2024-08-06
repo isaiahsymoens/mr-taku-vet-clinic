@@ -99,6 +99,10 @@ namespace MrTakuVetClinic.Services
 
             }
 
+            var petMapper = _mapper.Map<Pet>(petPostDto);
+            petMapper.UserId = user.UserId;
+
+            // TODO: Validator - Use PetDto instead.
             var pet = new Pet
             {
                 UserId = user.UserId,
@@ -121,19 +125,14 @@ namespace MrTakuVetClinic.Services
                         )
                 );
             }
+            // End
+
             if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
             {
                 return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "Pet type does not exist." });
             }
 
-            var petResponse = await _petRepository.AddAsync(new Pet
-            {
-                PetName = petPostDto.PetName,
-                PetTypeId = petPostDto.PetTypeId,
-                Breed = petPostDto.Breed,
-                BirthDate = petPostDto.BirthDate,
-                UserId = user.UserId
-            });
+            var petResponse = await _petRepository.AddAsync(petMapper);
 
             return ApiResponseHelper.SuccessResponse<PetDto>(201, _mapper.Map<PetDto>(petResponse));
         }
