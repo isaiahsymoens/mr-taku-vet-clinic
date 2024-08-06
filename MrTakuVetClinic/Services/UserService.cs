@@ -36,7 +36,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
                 (await _userRepository.GetAllUsersAsync())
-                .Select(user => _mapper.Map<UserDto>(user))
+                .Select(u => _mapper.Map<UserDto>(u))
             );
         }
 
@@ -55,7 +55,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
                 (await _userRepository.GetSearchUsersAsync(firstName, lastName))
-                .Select(user => _mapper.Map<UserDto>(user))
+                .Select(u => _mapper.Map<UserDto>(u))
             );
         }
 

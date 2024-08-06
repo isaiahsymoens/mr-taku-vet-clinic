@@ -43,7 +43,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<PetDto>(
                 200,
                 (await _petRepository.GetAllPetsAsync())
-                .Select(pet => _mapper.Map<PetDto>(pet)).ToList()
+                .Select(p => _mapper.Map<PetDto>(p)).ToList()
             );
         }
 
