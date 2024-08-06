@@ -6,13 +6,14 @@ using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class VisitService
+    public class VisitService : IVisitService
     {
         private readonly IVisitRepository _visitRepository;
         private readonly IVisitTypeRepository _visitTypeRepository;

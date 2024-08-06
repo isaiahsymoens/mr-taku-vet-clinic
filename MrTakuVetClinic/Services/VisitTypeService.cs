@@ -1,12 +1,13 @@
 ﻿using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class VisitTypeService
+    public class VisitTypeService : IVisitTytpeService
     {
         private readonly IVisitTypeRepository _visitTypeRepository;
 
