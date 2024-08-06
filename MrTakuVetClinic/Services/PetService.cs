@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
@@ -19,19 +20,22 @@ namespace MrTakuVetClinic.Services
         private readonly IUserRepository _userRepository;
         private readonly IVisitRepository _visitRepository;
         private readonly IValidator<Pet> _petValidator;
+        private readonly IMapper _mapper;
 
         public PetService(
             IPetRepository petRepository, 
             IPetTypeRepository petTypeRepository, 
             IUserRepository userRepository, 
             IVisitRepository visitRepository,
-            IValidator<Pet> petValidator)
+            IValidator<Pet> petValidator,
+            IMapper mapper)
         {
             _petRepository = petRepository;
             _petTypeRepository = petTypeRepository;
             _userRepository = userRepository;
             _visitRepository = visitRepository;
             _petValidator = petValidator;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<PetDto>> GetAllPetsAsync()
@@ -39,24 +43,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<PetDto>(
                 200,
                 (await _petRepository.GetAllPetsAsync())
-                .Select(p => new PetDto
-                {
-                    PetId = p.PetId,
-                    PetName = p.PetName,
-                    PetType = p.PetType.TypeName,
-                    Breed = p.Breed,
-                    BirthDate = p.BirthDate,
-                    User = new UserDto
-                    {
-                        FirstName = p.User.FirstName,
-                        MiddleName = p.User.MiddleName,
-                        LastName = p.User.LastName,
-                        Email = p.User.Email,
-                        Username = p.User.Username,
-                        Active = p.User.Active,
-                        UserType = p.User.UserType.TypeName
-                    }
-                }).ToList()
+                .Select(pet => _mapper.Map<PetDto>(pet)).ToList()
             );
         }
 

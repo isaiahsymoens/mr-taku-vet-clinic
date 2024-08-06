@@ -49,10 +49,7 @@ namespace MrTakuVetClinic
             services.AddValidatorsFromAssemblyContaining<VisitValidator>();
 
             services.AddAutoMapper(typeof(UserProfile));
-            //services.AddAutoMapper(cfg =>
-            //{
-            //    cfg.AddProfile<UserProfile>();
-            //});
+            services.AddAutoMapper(typeof(PetProfile));
 
             services.AddControllers();
         }
