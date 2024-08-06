@@ -4,14 +4,14 @@ using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserTypeRepository _userTypeRepository;
