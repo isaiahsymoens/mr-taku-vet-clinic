@@ -123,10 +123,9 @@ namespace MrTakuVetClinic.Services
                         )
                 );
             }
-
             if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
             {
-                throw new ArgumentException("Pet type does not exist.");
+                return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "Pet type does not exist." });
             }
 
             var petResponse = await _petRepository.AddAsync(new Pet
@@ -138,27 +137,7 @@ namespace MrTakuVetClinic.Services
                 UserId = user.UserId
             });
 
-            return ApiResponseHelper.SuccessResponse<PetDto>(
-                201,
-                new PetDto
-                {
-                    PetId = petResponse.PetId,
-                    PetName = petResponse.PetName,
-                    PetType = petResponse.PetType.TypeName,
-                    Breed = petResponse.Breed,
-                    BirthDate = petResponse.BirthDate,
-                    User = new UserDto
-                    {
-                        FirstName = petResponse.User.FirstName,
-                        MiddleName = petResponse.User.MiddleName,
-                        LastName = petResponse.User.LastName,
-                        Email = petResponse.User.Email,
-                        Username = petResponse.User.Username,
-                        UserType = petResponse.User.UserType.TypeName,
-                        Active = petResponse.User.Active
-                    }
-                }
-            );
+            return ApiResponseHelper.SuccessResponse<PetDto>(201, _mapper.Map<PetDto>(petResponse));
         }
 
         public async Task<ApiResponse<PetDto>> DeletePetAsync(int id)
@@ -176,11 +155,9 @@ namespace MrTakuVetClinic.Services
                 );
 
             }
+
             await _petRepository.DeleteAsync(id);
-            return ApiResponseHelper.SuccessResponse<PetDto>(
-                204,
-                null
-            );
+            return ApiResponseHelper.SuccessResponse<PetDto>(204, null);
         }
     }
 }
