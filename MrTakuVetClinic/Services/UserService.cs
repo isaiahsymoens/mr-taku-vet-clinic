@@ -76,16 +76,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
                 (await _userRepository.GetSearchUsersAsync(firstName, lastName))
-                .Select(u => new UserDto
-                {
-                    FirstName = u.FirstName,
-                    MiddleName = u.MiddleName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    Username = u.Username,
-                    UserType = u.UserType.TypeName,
-                    Active = u.Active
-                })
+                .Select(user => _mapper.Map<UserDto>(user))
             );
         }
 
