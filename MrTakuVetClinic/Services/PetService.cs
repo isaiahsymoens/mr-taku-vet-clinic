@@ -55,27 +55,7 @@ namespace MrTakuVetClinic.Services
                 return ApiResponseHelper.FailResponse<PetDto>(400, new { Message = "Pet not found." });
 
             }
-            return ApiResponseHelper.SuccessResponse<PetDto>(
-                200,
-                new PetDto
-                {
-                    PetId = pet.PetId,
-                    PetName = pet.PetName,
-                    PetType = pet.PetType.TypeName,
-                    Breed = pet.Breed,
-                    BirthDate = pet.BirthDate,
-                    User = new UserDto
-                    {
-                        FirstName = pet.User.FirstName,
-                        MiddleName = pet.User.MiddleName,
-                        LastName = pet.User.LastName,
-                        Email = pet.User.Email,
-                        Username = pet.User.Username,
-                        Active = pet.User.Active,
-                        UserType = pet.User.UserType.TypeName
-                    }
-                }
-            );
+            return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(pet));
         }
 
         public async Task<ApiResponse<PetDto>> UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto)
