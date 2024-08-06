@@ -43,8 +43,8 @@ namespace MrTakuVetClinic
             services.AddScoped<VisitTypeService>();
 
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
-
-            //services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
+            services.AddValidatorsFromAssemblyContaining<PetValidator>();
+            services.AddValidatorsFromAssemblyContaining<VisitValidator>();
 
             services.AddControllers();
         }
