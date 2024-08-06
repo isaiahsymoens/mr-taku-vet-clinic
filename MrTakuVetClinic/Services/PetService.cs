@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MrTakuVetClinic.DTOs.Pet;
-using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 

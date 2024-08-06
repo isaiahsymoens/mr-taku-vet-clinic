@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using MrTakuVetClinic.DTOs.Pet;
-using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
