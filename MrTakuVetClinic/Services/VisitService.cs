@@ -17,14 +17,14 @@ namespace MrTakuVetClinic.Services
         private readonly IVisitRepository _visitRepository;
         private readonly IVisitTypeRepository _visitTypeRepository;
         private readonly IPetRepository _petRepository;
-        private readonly IValidator<Visit> _visitValidator;
+        private readonly IValidator<VisitPostDto> _visitValidator;
         private readonly IMapper _mapper;
 
         public VisitService(
             IVisitRepository visitRepository, 
             IVisitTypeRepository visitTypeRepository, 
             IPetRepository petRepository,
-            IValidator<Visit> visitValidator,
+            IValidator<VisitPostDto> visitValidator,
             IMapper mapper)
         {
             _visitRepository = visitRepository;
@@ -64,7 +64,7 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
         {
-            var validationResult = _visitValidator.Validate(_mapper.Map<Visit>(visitPostDto));
+            var validationResult = _visitValidator.Validate(visitPostDto);
             if (!validationResult.IsValid)
             {
                 return ApiResponseHelper.FailResponse<VisitDto>(
