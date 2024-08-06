@@ -1,34 +1,37 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using MrTakuVetClinic.DTOs.Pet;
-using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class VisitService
+    public class VisitService : IVisitService
     {
         private readonly IVisitRepository _visitRepository;
         private readonly IVisitTypeRepository _visitTypeRepository;
         private readonly IPetRepository _petRepository;
-        private readonly IValidator<Visit> _visitValidator;
+        private readonly IValidator<VisitPostDto> _visitValidator;
+        private readonly IMapper _mapper;
 
         public VisitService(
             IVisitRepository visitRepository, 
             IVisitTypeRepository visitTypeRepository, 
             IPetRepository petRepository,
-            IValidator<Visit> visitValidator)
+            IValidator<VisitPostDto> visitValidator,
+            IMapper mapper)
         {
             _visitRepository = visitRepository;
             _visitTypeRepository = visitTypeRepository;
             _petRepository = petRepository;
             _visitValidator = visitValidator;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<VisitDto>> GetAllVisitsAsync()
@@ -36,30 +39,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
                 (await _visitRepository.GetAllVisitsAsync())
-                .Select(v => new VisitDto
-                {
-                    VisitId = v.VisitId,
-                    VisitType = v.VisitType.TypeName,
-                    Date = v.Date,
-                    PetId = v.PetId,
-                    Pet = new PetDto
-                    {
-                        PetId = v.Pet.PetId,
-                        PetName = v.Pet.PetName,
-                        Breed = v.Pet.Breed,
-                        BirthDate = v.Pet.BirthDate,
-                        User = new UserDto
-                        {
-                            FirstName = v.Pet.User.FirstName,
-                            MiddleName = v.Pet.User.MiddleName,
-                            LastName = v.Pet.User.LastName,
-                            Email = v.Pet.User.Email,
-                            Username = v.Pet.User.Username,
-                            Active = v.Pet.User.Active,
-                            UserType = v.Pet.User.UserType.TypeName
-                        }
-                    }
-                }).ToList()
+                .Select(v => _mapper.Map<VisitDto>(v)).ToList()
             );
         }
 
@@ -70,33 +50,7 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit record not found." });
             }
-            return ApiResponseHelper.SuccessResponse<VisitDto>(
-                200,
-                new VisitDto
-                {
-                    VisitId = visit.VisitId,
-                    VisitType = visit.VisitType.TypeName,
-                    Date = visit.Date,
-                    PetId = visit.PetId,
-                    Pet = new PetDto
-                    {
-                        PetId = visit.PetId,
-                        PetName = visit.Pet.PetName,
-                        Breed = visit.Pet.Breed,
-                        BirthDate = visit.Pet.BirthDate,
-                        User = new UserDto
-                        {
-                            FirstName = visit.Pet.User.FirstName,
-                            MiddleName = visit.Pet.User.MiddleName,
-                            LastName = visit.Pet.User.LastName,
-                            Email = visit.Pet.User.Email,
-                            Username = visit.Pet.User.Username,
-                            Active = visit.Pet.User.Active,
-                            UserType = visit.Pet.User.UserType.TypeName
-                        }
-                    }
-                }
-            );
+            return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
         }
 
         public async Task<ApiResponse<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
@@ -104,44 +58,13 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
                 (await _visitRepository.SearchVisitsAsync(visitFilterDto))
-                .Select(v => new VisitDto
-                {
-                    VisitId = v.VisitId,
-                    VisitType = v.VisitType.TypeName,
-                    Date = v.Date,
-                    PetId = v.PetId,
-                    Pet = new PetDto
-                    {
-                        PetId = v.Pet.PetId,
-                        PetName = v.Pet.PetName,
-                        Breed = v.Pet.Breed,
-                        BirthDate = v.Pet.BirthDate,
-                        User = new UserDto
-                        {
-                            FirstName = v.Pet.User.FirstName,
-                            MiddleName = v.Pet.User.MiddleName,
-                            LastName = v.Pet.User.LastName,
-                            Email = v.Pet.User.Email,
-                            Username = v.Pet.User.Username,
-                            Active = v.Pet.User.Active,
-                            UserType = v.Pet.User.UserType.TypeName
-                        }
-                    }
-                }).ToList()
+                .Select(v => _mapper.Map<VisitDto>(v)).ToList()
             );
         }
 
         public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
         {
-            var visit = new Visit
-            {
-                VisitTypeId = visitPostDto.VisitTypeId,
-                Date = visitPostDto.Date,
-                PetId = visitPostDto.PetId,
-                Notes = visitPostDto.Notes,
-            };
-
-            var validationResult = _visitValidator.Validate(visit);
+            var validationResult = _visitValidator.Validate(visitPostDto);
             if (!validationResult.IsValid)
             {
                 return ApiResponseHelper.FailResponse<VisitDto>(
@@ -164,13 +87,7 @@ namespace MrTakuVetClinic.Services
                 return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit type does not exist." });
             }
 
-            var visitResponse = await _visitRepository.AddAsync(new Visit
-            { 
-                VisitTypeId = visitPostDto.VisitTypeId,
-                PetId = visitPostDto.PetId,
-                Date = visitPostDto.Date,
-                Notes = visitPostDto.Notes
-            });
+            var visitResponse = await _visitRepository.AddAsync(_mapper.Map<Visit>(_mapper.Map<Visit>(visitPostDto)));
 
             // TODO: Temporary fix to get visit complete details
             return await GetVisitById(visitResponse.VisitId);

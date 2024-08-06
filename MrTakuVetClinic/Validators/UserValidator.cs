@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.DTOs.User;
 
 namespace MrTakuVetClinic.Validators
 {
-    public class UserValidator : AbstractValidator<User>
+    public class UserValidator : AbstractValidator<UserPostDto>
     {
         public UserValidator()
         {

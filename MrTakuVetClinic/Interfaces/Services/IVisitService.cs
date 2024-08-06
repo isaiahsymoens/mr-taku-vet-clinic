@@ -1,0 +1,16 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.Visit;
+using MrTakuVetClinic.Models;
+using System.Threading.Tasks;
+
+namespace MrTakuVetClinic.Interfaces.Services
+{
+    public interface IVisitService
+    {
+        Task<ApiResponse<VisitDto>> GetAllVisitsAsync();
+        Task<ApiResponse<VisitDto>> GetVisitById(int id);
+        Task<ApiResponse<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto);
+        Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto);
+        Task<ApiResponse<VisitDto>> DeleteVisitAsync(int id);
+    }
+}

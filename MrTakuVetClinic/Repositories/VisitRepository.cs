@@ -5,7 +5,7 @@ using MrTakuVetClinic.DTOs.Pet;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
-using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.DTOs.Pet;
 
 namespace MrTakuVetClinic.Validators
 {
-    public class PetValidator : AbstractValidator<Pet>
+    public class PetValidator : AbstractValidator<PetPostDto>
     {
         public PetValidator()
         {
-            RuleFor(p => p.UserId)
-                .NotEmpty().WithMessage("User ID is required.");
+            RuleFor(p => p.Username)
+                .NotEmpty().WithMessage("Username is required.");
             RuleFor(p => p.PetName)
                 .NotEmpty().WithMessage("Pet name is required.")
                 .MaximumLength(50).WithMessage("Pet name cannot exceed 50 characters.");

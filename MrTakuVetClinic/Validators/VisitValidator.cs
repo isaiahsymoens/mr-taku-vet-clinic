@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.DTOs.Visit;
 
 namespace MrTakuVetClinic.Validators
 {
-    public class VisitValidator : AbstractValidator<Visit>
+    public class VisitValidator : AbstractValidator<VisitPostDto>
     {
         public VisitValidator()
         {

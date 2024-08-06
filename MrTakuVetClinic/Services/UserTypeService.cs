@@ -1,12 +1,13 @@
 ﻿using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class UserTypeService
+    public class UserTypeService : IUserTypeService
     {
         private readonly IUserTypeRepository _userTypeRepository;
 

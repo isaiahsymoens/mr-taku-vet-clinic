@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MrTakuVetClinic.Interfaces
+namespace MrTakuVetClinic.Interfaces.Repositories
 {
     public interface IPetRepository : IRepository<Pet>
     {

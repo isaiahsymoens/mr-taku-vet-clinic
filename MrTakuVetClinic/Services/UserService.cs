@@ -1,27 +1,34 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
-using MrTakuVetClinic.Interfaces;
+using MrTakuVetClinic.Interfaces.Repositories;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserTypeRepository _userTypeRepository;
-        private readonly IValidator<User> _userValidator;
+        private readonly IValidator<UserPostDto> _userValidator;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IUserTypeRepository userTypeRepository, IValidator<User> userValidator)
+        public UserService(
+            IUserRepository userRepository, 
+            IUserTypeRepository userTypeRepository, 
+            IValidator<UserPostDto> userValidator,
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _userTypeRepository = userTypeRepository;
             _userValidator = userValidator;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<UserDto>> GetAllUsersAsync()
@@ -29,16 +36,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
                 (await _userRepository.GetAllUsersAsync())
-                .Select(u => new UserDto
-                {
-                    FirstName = u.FirstName,
-                    MiddleName = u.MiddleName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    Username = u.Username,
-                    UserType = u.UserType.TypeName,
-                    Active = u.Active
-                })
+                .Select(u => _mapper.Map<UserDto>(u))
             );
         }
 
@@ -49,19 +47,7 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User not found." });
             }
-            return ApiResponseHelper.SuccessResponse<UserDto>(
-                200,
-                new UserDto 
-                {
-                    FirstName = user.FirstName,
-                    MiddleName = user.MiddleName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    Username = user.Username,
-                    UserType = user.UserType.TypeName,
-                    Active = user.Active
-                }
-            );
+            return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
         public async Task<ApiResponse<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
@@ -69,34 +55,13 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
                 (await _userRepository.GetSearchUsersAsync(firstName, lastName))
-                .Select(u => new UserDto
-                {
-                    FirstName = u.FirstName,
-                    MiddleName = u.MiddleName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    Username = u.Username,
-                    UserType = u.UserType.TypeName,
-                    Active = u.Active
-                })
+                .Select(u => _mapper.Map<UserDto>(u))
             );
         }
 
         public async Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto)
         {
-            var user = new User
-            {
-                FirstName = userPostDto.FirstName,
-                MiddleName = userPostDto.MiddleName,
-                LastName = userPostDto.LastName,
-                Email = userPostDto.Email,
-                Password = userPostDto.Password,
-                Username = userPostDto.Username,
-                UserTypeId = userPostDto.UserTypeId,
-                Active = userPostDto.Active
-            };
-
-            var validationResult = _userValidator.Validate(user);
+            var validationResult = _userValidator.Validate(userPostDto);
             if (!validationResult.IsValid)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(
@@ -110,34 +75,23 @@ namespace MrTakuVetClinic.Services
                 );
             }
 
-            if (await _userRepository.IsEmailExits(user.Email))
+            if (await _userRepository.IsEmailExits(userPostDto.Email))
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Email = "Email is already taken." });
             }
-
-            if (await _userRepository.IsUsernameExits(user.Username))
+            if (await _userRepository.IsUsernameExits(userPostDto.Username))
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Username is already taken." });
             }
-
-            if (await _userTypeRepository.GetByIdAsync(user.UserTypeId) == null)
+            if (await _userTypeRepository.GetByIdAsync(userPostDto.UserTypeId) == null)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User type does not exist." });
             }
 
-            var userResponse = await _userRepository.AddAsync(user);
+            var userResponse = await _userRepository.AddAsync(_mapper.Map<User>(userPostDto));
             return ApiResponseHelper.SuccessResponse<UserDto>(
-                201, 
-                new UserDto
-                {
-                    FirstName = userResponse.FirstName,
-                    MiddleName = userResponse.MiddleName,
-                    LastName = userResponse.LastName,
-                    Email = userResponse.Email,
-                    Username = userResponse.Username,
-                    UserType = userResponse.UserType.TypeName,
-                    Active = userResponse.Active
-                }
+                201,
+                _mapper.Map<UserDto>(userResponse)
             );
         }
 
