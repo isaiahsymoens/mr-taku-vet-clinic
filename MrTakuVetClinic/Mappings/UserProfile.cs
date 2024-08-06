@@ -8,7 +8,8 @@ namespace MrTakuVetClinic.Mappings
     {
         public UserProfile()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.UserType, opt => opt.MapFrom(src => src.UserType.TypeName));
             CreateMap<UserPostDto, User>();
             CreateMap<UserDto, User>();
         }
