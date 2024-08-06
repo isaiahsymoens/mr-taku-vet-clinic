@@ -66,15 +66,7 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
         {
-            var visit = new Visit
-            {
-                VisitTypeId = visitPostDto.VisitTypeId,
-                Date = visitPostDto.Date,
-                PetId = visitPostDto.PetId,
-                Notes = visitPostDto.Notes,
-            };
-
-            var validationResult = _visitValidator.Validate(visit);
+            var validationResult = _visitValidator.Validate(_mapper.Map<Visit>(visitPostDto));
             if (!validationResult.IsValid)
             {
                 return ApiResponseHelper.FailResponse<VisitDto>(
@@ -97,7 +89,7 @@ namespace MrTakuVetClinic.Services
                 return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit type does not exist." });
             }
 
-            var visitResponse = await _visitRepository.AddAsync(_mapper.Map<Visit>(visit));
+            var visitResponse = await _visitRepository.AddAsync(_mapper.Map<Visit>(_mapper.Map<Visit>(visitPostDto)));
 
             // TODO: Temporary fix to get visit complete details
             return await GetVisitById(visitResponse.VisitId);
