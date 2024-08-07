@@ -69,25 +69,35 @@ namespace MrTakuVetClinic.Data
             modelBuilder.Entity<UserType>()
                 .HasKey(u => u.UserTypeId);
 
-            modelBuilder.Entity<Pet>()
-                .HasKey(p => p.PetId);
+            modelBuilder.Entity<Pet>(entity =>
+            { 
+                entity.HasKey(p => p.PetId);
+
+                entity.Property(p => p.UserId)
+                    .IsRequired();
+
+                entity.Property(p => p.PetName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(p => p.PetTypeId)
+                    .IsRequired();
+
+                entity.HasMany(p => p.Visits)
+                    .WithOne(p => p.Pet)
+                    .HasForeignKey(p => p.PetId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(p => p.PetType)
+                    .WithMany()
+                    .HasForeignKey(p => p.PetTypeId);
+            });
 
             modelBuilder.Entity<PetType>()
                 .HasKey(p => p.PetTypeId);
 
             modelBuilder.Entity<VisitType>()
                 .HasKey(v => v.VisitTypeId);
-
-            modelBuilder.Entity<Pet>()
-                .HasMany(p => p.Visits)
-                .WithOne(p => p.Pet)
-                .HasForeignKey(p => p.PetId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Pet>()
-                .HasOne(p => p.PetType)
-                .WithMany()
-                .HasForeignKey(p => p.PetTypeId);
 
             modelBuilder.Entity<Visit>()
                 .HasOne(v => v.VisitType)

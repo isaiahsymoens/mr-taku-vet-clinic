@@ -8,12 +8,8 @@ namespace MrTakuVetClinic.Entities
     {
         [Key]
         public int PetId { get; set; }
-        [Required]
         public int UserId { get; set; }
-        [Required]
-        [StringLength(100)]
         public string PetName { get; set; }
-        [Required]
         public int PetTypeId { get; set; }
         public string Breed { get; set; }
         public DateTime BirthDate { get; set; }
