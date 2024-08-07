@@ -14,7 +14,7 @@ namespace MrTakuVetClinic.Repositories
 
         public async Task<bool> IsTypeNameExits(string typeName)
         {
-            return await _context.UserTypes.AnyAsync(u => u.TypeName == typeName);
+            return await _context.UserTypes.AnyAsync(u => u.TypeName.ToLower().Trim() == typeName.ToLower().Trim());
         }
     }
 }

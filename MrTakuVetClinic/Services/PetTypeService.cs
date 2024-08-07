@@ -54,6 +54,10 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetType petType)
         {
+            if (await _petTypeRepository.IsTypeNameExits(petType.TypeName))
+            {
+                return ApiResponseHelper.FailResponse<PetTypeDto>(400, new { TypeName = "Type name already exists." });
+            }
             await _petTypeRepository.AddAsync(petType);
             return ApiResponseHelper
                 .SuccessResponse<PetTypeDto>(204, null);
