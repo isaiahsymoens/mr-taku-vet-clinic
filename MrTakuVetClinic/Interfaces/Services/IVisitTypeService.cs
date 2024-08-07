@@ -10,5 +10,6 @@ namespace MrTakuVetClinic.Interfaces.Services
         Task<ApiResponse<VisitTypeDto>> GetAllVisitTypesAsync();
         Task<ApiResponse<VisitTypeDto>> GetVisitTypeByIdAsync(int id);
         Task<ApiResponse<VisitTypeDto>> PostVisitTypeAsync(VisitType visitType);
+        Task<ApiResponse<VisitTypeDto>> DeleteVisitTypeAsync(int id);
     }
 }

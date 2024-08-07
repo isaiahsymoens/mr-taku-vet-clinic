@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.Entities;
+using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -34,6 +35,13 @@ namespace MrTakuVetClinic.Controllers
         public async Task<IActionResult> PostPetTypeAsync(PetType petType)
         {
             var response = await _petTypeService.PostPetTypeAsync(petType);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeletePetTypeAsync(int id)
+        {
+            var response = await _petTypeService.DeletePetTypeAsync(id);
             return StatusCode(response.StatusCode, response);
         }
     }

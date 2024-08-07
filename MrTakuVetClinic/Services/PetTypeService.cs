@@ -58,5 +58,15 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper
                 .SuccessResponse<PetTypeDto>(204, null);
         }
+
+        public async Task<ApiResponse<PetTypeDto>> DeletePetTypeAsync(int id)
+        {
+            if (await _petTypeRepository.GetByIdAsync(id) == null)
+            {
+                return ApiResponseHelper.FailResponse<PetTypeDto>(404, new { Message = "Pet type not found." });
+            }
+            await _petTypeRepository.DeleteAsync(id);
+            return ApiResponseHelper.SuccessResponse<PetTypeDto>(204, null);
+        }
     }
 }
