@@ -37,23 +37,27 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<UserType>> GetUserTypeByIdAsync(int id)
+        public async Task<ApiResponse<UserTypeDto>> GetUserTypeByIdAsync(int id)
         {
             var userType = await _userTypeRepository.GetByIdAsync(id);
             if (userType == null)
             {
-                return ApiResponseHelper.FailResponse<UserType>(404, new { Message = "User type does not exist." });
+                return ApiResponseHelper.FailResponse<UserTypeDto>(
+                    404, 
+                    new { Message = "User type does not exist." }
+                );
 
             }
-            return ApiResponseHelper
-                .SuccessResponse<UserType>(200, userType);
+            return ApiResponseHelper.SuccessResponse<UserTypeDto>(
+                200, 
+                _mapper.Map<UserTypeDto>(userType)
+            );
         }
 
         public async Task<ApiResponse<UserType>> PostUserTypeAsync(UserType userType)
         {
             await _userTypeRepository.AddAsync(userType);
-            return ApiResponseHelper
-                .SuccessResponse<UserType>(204, null);
+            return ApiResponseHelper.SuccessResponse<UserType>(204, null);
         }
     }
 }
