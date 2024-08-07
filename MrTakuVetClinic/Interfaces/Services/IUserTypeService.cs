@@ -9,6 +9,6 @@ namespace MrTakuVetClinic.Interfaces.Services
     {
         Task<ApiResponse<UserTypeDto>> GetAllUserTypesAsync();
         Task<ApiResponse<UserTypeDto>> GetUserTypeByIdAsync(int id);
-        Task<ApiResponse<UserType>> PostUserTypeAsync(UserType userType);
+        Task<ApiResponse<UserTypeDto>> PostUserTypeAsync(UserType userType);
     }
 }

@@ -51,11 +51,11 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<VisitTypeDto>(200, _mapper.Map<VisitTypeDto>(visitType));
         }
 
-        public async Task<ApiResponse<VisitType>> PostVisitTypeAsync(VisitType visitType)
+        public async Task<ApiResponse<VisitTypeDto>> PostVisitTypeAsync(VisitType visitType)
         {
             await _visitTypeRepository.AddAsync(visitType);
             return ApiResponseHelper
-                .SuccessResponse<VisitType>(204, null);
+                .SuccessResponse<VisitTypeDto>(204, null);
         }
     }
 }

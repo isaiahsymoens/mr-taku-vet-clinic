@@ -9,6 +9,6 @@ namespace MrTakuVetClinic.Interfaces.Services
     {
         Task<ApiResponse<PetTypeDto>> GetAllPetTypesAsync();
         Task<ApiResponse<PetTypeDto>> GetPetTypeByIdAsync(int id);
-        Task<ApiResponse<PetType>> PostPetTypeAsync(PetType petType);
+        Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetType petType);
     }
 }

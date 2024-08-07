@@ -54,10 +54,10 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<UserType>> PostUserTypeAsync(UserType userType)
+        public async Task<ApiResponse<UserTypeDto>> PostUserTypeAsync(UserType userType)
         {
             await _userTypeRepository.AddAsync(userType);
-            return ApiResponseHelper.SuccessResponse<UserType>(204, null);
+            return ApiResponseHelper.SuccessResponse<UserTypeDto>(204, null);
         }
     }
 }

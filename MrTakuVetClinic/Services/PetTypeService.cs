@@ -52,11 +52,11 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<PetTypeDto>(200, _mapper.Map<PetTypeDto>(petType));
         }
 
-        public async Task<ApiResponse<PetType>> PostPetTypeAsync(PetType petType)
+        public async Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetType petType)
         {
             await _petTypeRepository.AddAsync(petType);
             return ApiResponseHelper
-                .SuccessResponse<PetType>(204, null);
+                .SuccessResponse<PetTypeDto>(204, null);
         }
     }
 }
