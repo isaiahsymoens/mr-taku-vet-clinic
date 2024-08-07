@@ -45,12 +45,18 @@ namespace MrTakuVetClinic
             services.AddScoped<VisitTypeService>();
 
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserTypeValidator>();
             services.AddValidatorsFromAssemblyContaining<PetValidator>();
+            services.AddValidatorsFromAssemblyContaining<PetTypeValidator>();
             services.AddValidatorsFromAssemblyContaining<VisitValidator>();
+            services.AddValidatorsFromAssemblyContaining<VisitTypeValidator>();
 
             services.AddAutoMapper(typeof(UserProfile));
+            services.AddAutoMapper(typeof(UserTypeProfile));
             services.AddAutoMapper(typeof(PetProfile));
+            services.AddAutoMapper(typeof(PetTypeProfile));
             services.AddAutoMapper(typeof(VisitProfile));
+            services.AddAutoMapper(typeof(VisitTypeProfile));
 
             services.AddControllers();
         }
