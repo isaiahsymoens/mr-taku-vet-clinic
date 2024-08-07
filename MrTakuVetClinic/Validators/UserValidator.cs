@@ -22,7 +22,8 @@ namespace MrTakuVetClinic.Validators
                 .NotEmpty().WithMessage("Username is required.")
                 .MaximumLength(30).WithMessage("Username cannot exceed 30 characters.");
             RuleFor(u => u.Password)
-                .NotEmpty().WithMessage("Password is required.");
+                .NotEmpty().WithMessage("Password is required.")
+                .MaximumLength(100).WithMessage("Password cannot exceed 100 characters.");
             RuleFor(u => u.UserTypeId)
                 .NotEmpty().WithMessage("User type id is required.");
         }

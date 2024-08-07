@@ -36,5 +36,12 @@ namespace MrTakuVetClinic.Controllers
             var response = await _userTypeService.PostUserTypeAsync(userType);
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserTypeAsync(int id)
+        {
+            var response = await _userTypeService.DeleteUserTypeAsync(id);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

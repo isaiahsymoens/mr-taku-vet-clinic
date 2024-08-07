@@ -20,55 +20,127 @@ namespace MrTakuVetClinic.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.UserId);
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.UserId);
 
-            modelBuilder.Entity<UserType>()
-                .HasKey(u => u.UserTypeId);
+                entity.Property(u => u.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-            modelBuilder.Entity<Pet>()
-                .HasKey(p => p.PetId);
+                entity.Property(u => u.MiddleName)
+                    .HasMaxLength(50);
 
-            modelBuilder.Entity<PetType>()
-                .HasKey(p => p.PetTypeId);
+                entity.Property(u => u.LastName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-            modelBuilder.Entity<VisitType>()
-                .HasKey(v => v.VisitTypeId);
+                entity.Property(u => u.Email)
+                    .IsRequired()
+                    .HasAnnotation("EmailAddress", true);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Pets)
-                .WithOne(u => u.User)
-                .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(u => u.Email)
+                    .IsUnique();
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.UserType)
-                .WithMany()
-                .HasForeignKey(u => u.UserTypeId);
+                entity.Property(u => u.Username)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+                entity.HasIndex(u => u.Username)
+                    .IsUnique();
 
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
+                entity.Property(u => u.Password)
+                    .IsRequired()
+                    .HasMaxLength(100);
 
-            modelBuilder.Entity<Pet>()
-                .HasMany(p => p.Visits)
-                .WithOne(p => p.Pet)
-                .HasForeignKey(p => p.PetId)
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.Property(u => u.UserTypeId)
+                    .IsRequired();
 
-            modelBuilder.Entity<Pet>()
-                .HasOne(p => p.PetType)
-                .WithMany()
-                .HasForeignKey(p => p.PetTypeId);
+                entity.HasMany(u => u.Pets)
+                    .WithOne(u => u.User)
+                    .HasForeignKey(u => u.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Visit>()
-                .HasOne(v => v.VisitType)
-                .WithMany()
-                .HasForeignKey(v => v.VisitTypeId);
+                entity.HasOne(u => u.UserType)
+                    .WithMany()
+                    .HasForeignKey(u => u.UserTypeId);
+            });
+
+            modelBuilder.Entity<UserType>(entity =>
+            {
+                entity.HasKey(u => u.UserTypeId);
+
+                entity.Property(u => u.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+            });
+
+            modelBuilder.Entity<Pet>(entity =>
+            { 
+                entity.HasKey(p => p.PetId);
+
+                entity.Property(p => p.UserId)
+                    .IsRequired();
+
+                entity.Property(p => p.PetName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(p => p.PetTypeId)
+                    .IsRequired();
+
+                entity.HasMany(p => p.Visits)
+                    .WithOne(p => p.Pet)
+                    .HasForeignKey(p => p.PetId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(p => p.PetType)
+                    .WithMany()
+                    .HasForeignKey(p => p.PetTypeId);
+            });
+
+            modelBuilder.Entity<PetType>(entity =>
+            {
+                entity.HasKey(p => p.PetTypeId);
+
+                entity.Property(p => p.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+            });
+
+            modelBuilder.Entity<Visit>(entity =>
+            { 
+                entity.HasKey(v => v.VisitId);
+
+                entity.Property(v => v.VisitTypeId)
+                    .IsRequired();
+
+                entity.Property(v => v.Date)
+                    .IsRequired();
+
+                entity.Property(v => v.PetId)
+                    .IsRequired();
+
+                entity.Property(v => v.Notes)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(v => v.VisitType)
+                    .WithMany()
+                    .HasForeignKey(v => v.VisitTypeId);
+            });
+
+            modelBuilder.Entity<VisitType>(entity =>
+            {
+                entity.HasKey(v => v.VisitTypeId);
+
+                entity.Property(v => v.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+            });
         }
     }
 }
