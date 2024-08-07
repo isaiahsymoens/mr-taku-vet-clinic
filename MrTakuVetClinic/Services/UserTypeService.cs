@@ -59,5 +59,15 @@ namespace MrTakuVetClinic.Services
             await _userTypeRepository.AddAsync(userType);
             return ApiResponseHelper.SuccessResponse<UserTypeDto>(204, null);
         }
+
+        public async Task<ApiResponse<UserTypeDto>> DeleteUserTypeAsync(int id)
+        {
+            if (await _userTypeRepository.GetByIdAsync(id) == null)
+            {
+                return ApiResponseHelper.FailResponse<UserTypeDto>(404, new { Message = "User type not found." });
+            }
+            await _userTypeRepository.DeleteAsync(id);
+            return ApiResponseHelper.SuccessResponse<UserTypeDto>(204, null);
+        }
     }
 }
