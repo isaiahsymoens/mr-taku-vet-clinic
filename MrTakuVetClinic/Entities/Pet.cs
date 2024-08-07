@@ -6,7 +6,6 @@ namespace MrTakuVetClinic.Entities
 {
     public class Pet
     {
-        [Key]
         public int PetId { get; set; }
         public int UserId { get; set; }
         public string PetName { get; set; }
