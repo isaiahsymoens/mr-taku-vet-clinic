@@ -66,8 +66,15 @@ namespace MrTakuVetClinic.Data
                     .HasForeignKey(u => u.UserTypeId);
             });
 
-            modelBuilder.Entity<UserType>()
-                .HasKey(u => u.UserTypeId);
+            modelBuilder.Entity<UserType>(entity =>
+            {
+                entity.HasKey(u => u.UserTypeId);
+
+                entity.Property(u => u.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+            });
 
             modelBuilder.Entity<Pet>(entity =>
             { 
@@ -93,8 +100,15 @@ namespace MrTakuVetClinic.Data
                     .HasForeignKey(p => p.PetTypeId);
             });
 
-            modelBuilder.Entity<PetType>()
-                .HasKey(p => p.PetTypeId);
+            modelBuilder.Entity<PetType>(entity =>
+            {
+                entity.HasKey(p => p.PetTypeId);
+
+                entity.Property(p => p.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+            });
 
             modelBuilder.Entity<Visit>(entity =>
             { 
@@ -118,8 +132,15 @@ namespace MrTakuVetClinic.Data
                     .HasForeignKey(v => v.VisitTypeId);
             });
 
-            modelBuilder.Entity<VisitType>()
-                .HasKey(v => v.VisitTypeId);
+            modelBuilder.Entity<VisitType>(entity =>
+            {
+                entity.HasKey(v => v.VisitTypeId);
+
+                entity.Property(v => v.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+            });
         }
     }
 }
