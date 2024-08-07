@@ -96,13 +96,30 @@ namespace MrTakuVetClinic.Data
             modelBuilder.Entity<PetType>()
                 .HasKey(p => p.PetTypeId);
 
+            modelBuilder.Entity<Visit>(entity =>
+            { 
+                entity.HasKey(v => v.VisitId);
+
+                entity.Property(v => v.VisitTypeId)
+                    .IsRequired();
+
+                entity.Property(v => v.Date)
+                    .IsRequired();
+
+                entity.Property(v => v.PetId)
+                    .IsRequired();
+
+                entity.Property(v => v.Notes)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(v => v.VisitType)
+                    .WithMany()
+                    .HasForeignKey(v => v.VisitTypeId);
+            });
+
             modelBuilder.Entity<VisitType>()
                 .HasKey(v => v.VisitTypeId);
-
-            modelBuilder.Entity<Visit>()
-                .HasOne(v => v.VisitType)
-                .WithMany()
-                .HasForeignKey(v => v.VisitTypeId);
         }
     }
 }
