@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using MrTakuVetClinic.Data;
-using MrTakuVetClinic.DTOs.Pet;
-using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,7 +21,8 @@ namespace MrTakuVetClinic.Repositories
             return await _context.Visits
                 .Include(v => v.VisitType)
                 .Include(v => v.Pet)
-                .ThenInclude(v => v.User)
+                .ThenInclude(v => v.PetType)
+                .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
                 .ToListAsync();
         }
@@ -35,7 +32,8 @@ namespace MrTakuVetClinic.Repositories
             var test = await _context.Visits
                 .Include(v => v.VisitType)
                 .Include(v => v.Pet)
-                .ThenInclude(v => v.User)
+                .ThenInclude(v => v.PetType)
+                .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
                 .ToListAsync();
 
@@ -87,7 +85,8 @@ namespace MrTakuVetClinic.Repositories
             return await _context.Visits
                 .Include(v => v.VisitType)
                 .Include(v => v.Pet)
-                .ThenInclude(v => v.User)
+                .ThenInclude(v => v.PetType)
+                .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
                 .FirstOrDefaultAsync(v => v.VisitId == id);
         }
