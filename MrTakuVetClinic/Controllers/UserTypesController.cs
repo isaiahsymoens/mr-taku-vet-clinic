@@ -32,9 +32,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUserTypeAsync(UserType userType)
+        public async Task<IActionResult> PostUserTypeAsync(UserTypePostDto userTypePostDto)
         {
-            var response = await _userTypeService.PostUserTypeAsync(userType);
+            var response = await _userTypeService.PostUserTypeAsync(userTypePostDto);
             return StatusCode(response.StatusCode, response);
         }
 

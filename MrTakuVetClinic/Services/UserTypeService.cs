@@ -54,15 +54,15 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<UserTypeDto>> PostUserTypeAsync(UserType userType)
+        public async Task<ApiResponse<UserTypeDto>> PostUserTypeAsync(UserTypePostDto userTypePostDto)
         {
-            if (await _userTypeRepository.IsTypeNameExits(userType.TypeName))
+            if (await _userTypeRepository.IsTypeNameExits(userTypePostDto.TypeName))
             {
                 return ApiResponseHelper.FailResponse<UserTypeDto>(400, new { TypeName = "Type name already exists." });
             }
             return ApiResponseHelper.SuccessResponse<UserTypeDto>(
-                201, 
-                _mapper.Map<UserTypeDto>(await _userTypeRepository.AddAsync(userType))
+                201,
+                _mapper.Map<UserTypeDto>(await _userTypeRepository.AddAsync(_mapper.Map<UserType>(userTypePostDto)))
             );
         }
 
