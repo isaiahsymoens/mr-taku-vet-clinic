@@ -50,7 +50,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
-        public async Task<ApiResponse<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<ApiResponse<UserDto>> GetSearchUsersAsync(string firstName, string lastName)
         {
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,

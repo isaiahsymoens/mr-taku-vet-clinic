@@ -53,7 +53,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
         }
 
-        public async Task<ApiResponse<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        public async Task<ApiResponse<VisitDto>> SearchVisitsAsync(VisitFilterDto visitFilterDto)
         {
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,

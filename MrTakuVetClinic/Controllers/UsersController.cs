@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -33,7 +32,7 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<User>> GetSearchUsers([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<ActionResult<UserDto>> GetSearchUsers([FromQuery] string firstName, [FromQuery] string lastName)
         {
             var response = await _userService.GetSearchUsersAsync(firstName, lastName);
             return StatusCode(response.StatusCode, response);
