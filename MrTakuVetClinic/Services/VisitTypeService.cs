@@ -62,6 +62,22 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<VisitTypeDto>(204, null);
         }
 
+        public async Task<ApiResponse<VisitTypeDto>> UpdateVisitTypeAsync(int id, VisitTypeUpdateDto visitTypeUpdateDto)
+        {
+            var existingVisitType = await _visitTypeRepository.GetByIdAsync(id);
+            if (existingVisitType == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitTypeDto>(404, new { Message = "Visit type not found." });
+            }
+            if (visitTypeUpdateDto.TypeName == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitTypeDto>(400, new { Message = "No changes detected." });
+            }
+            existingVisitType.TypeName = visitTypeUpdateDto.TypeName;
+            await _visitTypeRepository.UpdateAsync(existingVisitType);
+            return ApiResponseHelper.SuccessResponse<VisitTypeDto>(204, null);
+        }
+
         public async Task<ApiResponse<VisitTypeDto>> DeleteVisitTypeAsync(int id)
         {
             if (await _visitTypeRepository.GetByIdAsync(id) == null)
