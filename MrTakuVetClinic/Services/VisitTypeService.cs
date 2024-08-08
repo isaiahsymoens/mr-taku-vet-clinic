@@ -57,9 +57,10 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<VisitTypeDto>(400, new { TypeName = "Type name already exists." });
             }
-            await _visitTypeRepository.AddAsync(visitType);
-            return ApiResponseHelper
-                .SuccessResponse<VisitTypeDto>(204, null);
+            return ApiResponseHelper.SuccessResponse<VisitTypeDto>(
+                201,
+                _mapper.Map<VisitTypeDto>(await _visitTypeRepository.AddAsync(visitType))
+            );
         }
 
         public async Task<ApiResponse<VisitTypeDto>> UpdateVisitTypeAsync(int id, VisitTypeUpdateDto visitTypeUpdateDto)
