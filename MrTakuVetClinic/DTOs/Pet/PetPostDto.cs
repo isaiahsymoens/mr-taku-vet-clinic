@@ -1,5 +1,4 @@
-﻿using MrTakuVetClinic.DTOs.User;
-using System;
+﻿using System;
 
 namespace MrTakuVetClinic.DTOs.Pet
 {

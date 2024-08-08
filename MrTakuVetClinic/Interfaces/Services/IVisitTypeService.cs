@@ -1,5 +1,4 @@
 ﻿using MrTakuVetClinic.DTOs.VisitType;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Models;
 using System.Threading.Tasks;
 
