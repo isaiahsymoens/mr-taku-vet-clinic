@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.PetType;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
