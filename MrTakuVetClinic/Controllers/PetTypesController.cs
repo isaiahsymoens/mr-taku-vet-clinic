@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.PetType;
 using MrTakuVetClinic.Entities;
-using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -35,6 +35,13 @@ namespace MrTakuVetClinic.Controllers
         public async Task<IActionResult> PostPetTypeAsync(PetType petType)
         {
             var response = await _petTypeService.PostPetTypeAsync(petType);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPetTypeAsync(int id, [FromBody] PetTypeUpdateDto petTypeUpdateDto)
+        {
+            var response = await _petTypeService.UpdatePetTypeAsync(id, petTypeUpdateDto);
             return StatusCode(response.StatusCode, response);
         }
 

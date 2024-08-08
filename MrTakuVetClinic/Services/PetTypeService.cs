@@ -63,6 +63,22 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<PetTypeDto>(204, null);
         }
 
+        public async Task<ApiResponse<PetTypeDto>> UpdatePetTypeAsync(int id, PetTypeUpdateDto petTypeUpdateDto)
+        {
+            var existingPetType = await _petTypeRepository.GetByIdAsync(id);
+            if (existingPetType == null)
+            {
+                return ApiResponseHelper.FailResponse<PetTypeDto>(404, new { Message = "Pet type not found." });
+            }
+            if (petTypeUpdateDto.TypeName == null)
+            {
+                return ApiResponseHelper.FailResponse<PetTypeDto>(400, new { Message = "No changes detected." });
+            }
+            existingPetType.TypeName = petTypeUpdateDto.TypeName;
+            await _petTypeRepository.UpdateAsync(existingPetType);
+            return ApiResponseHelper.SuccessResponse<PetTypeDto>(204, null);
+        }
+
         public async Task<ApiResponse<PetTypeDto>> DeletePetTypeAsync(int id)
         {
             if (await _petTypeRepository.GetByIdAsync(id) == null)
