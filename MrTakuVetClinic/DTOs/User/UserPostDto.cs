@@ -1,6 +1,4 @@
-﻿using MrTakuVetClinic.Entities;
-
-namespace MrTakuVetClinic.DTOs.User
+﻿namespace MrTakuVetClinic.DTOs.User
 {
     public class UserPostDto
     {

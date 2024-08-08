@@ -54,13 +54,31 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<UserTypeDto>> PostUserTypeAsync(UserType userType)
+        public async Task<ApiResponse<UserTypeDto>> PostUserTypeAsync(UserTypePostDto userTypePostDto)
         {
-            if (await _userTypeRepository.IsTypeNameExits(userType.TypeName))
+            if (await _userTypeRepository.IsTypeNameExits(userTypePostDto.TypeName))
             {
                 return ApiResponseHelper.FailResponse<UserTypeDto>(400, new { TypeName = "Type name already exists." });
             }
-            await _userTypeRepository.AddAsync(userType);
+            return ApiResponseHelper.SuccessResponse<UserTypeDto>(
+                201,
+                _mapper.Map<UserTypeDto>(await _userTypeRepository.AddAsync(_mapper.Map<UserType>(userTypePostDto)))
+            );
+        }
+
+        public async Task<ApiResponse<UserTypeDto>> UpdateUserTypeAsync(int id, UserTypeUpdateDto userTypeUpdateDto)
+        {
+            var existingUserType = await _userTypeRepository.GetByIdAsync(id);
+            if (existingUserType == null)
+            {
+                return ApiResponseHelper.FailResponse<UserTypeDto>(404, new { Message = "User type not found." });
+            }
+            if (userTypeUpdateDto.TypeName == null)
+            {
+                return ApiResponseHelper.FailResponse<UserTypeDto>(400, new { Message = "No changes detected." });
+            }
+            existingUserType.TypeName = userTypeUpdateDto.TypeName;
+            await _userTypeRepository.UpdateAsync(existingUserType);
             return ApiResponseHelper.SuccessResponse<UserTypeDto>(204, null);
         }
 

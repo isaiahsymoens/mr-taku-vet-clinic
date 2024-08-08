@@ -52,15 +52,32 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<PetTypeDto>(200, _mapper.Map<PetTypeDto>(petType));
         }
 
-        public async Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetType petType)
+        public async Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetTypePostDto petTypePostDto)
         {
-            if (await _petTypeRepository.IsTypeNameExits(petType.TypeName))
+            if (await _petTypeRepository.IsTypeNameExits(petTypePostDto.TypeName))
             {
                 return ApiResponseHelper.FailResponse<PetTypeDto>(400, new { TypeName = "Type name already exists." });
             }
-            await _petTypeRepository.AddAsync(petType);
-            return ApiResponseHelper
-                .SuccessResponse<PetTypeDto>(204, null);
+            return ApiResponseHelper.SuccessResponse<PetTypeDto>(
+                201, 
+                _mapper.Map<PetTypeDto>(await _petTypeRepository.AddAsync(_mapper.Map<PetType>(petTypePostDto)))    
+            );
+        }
+
+        public async Task<ApiResponse<PetTypeDto>> UpdatePetTypeAsync(int id, PetTypeUpdateDto petTypeUpdateDto)
+        {
+            var existingPetType = await _petTypeRepository.GetByIdAsync(id);
+            if (existingPetType == null)
+            {
+                return ApiResponseHelper.FailResponse<PetTypeDto>(404, new { Message = "Pet type not found." });
+            }
+            if (petTypeUpdateDto.TypeName == null)
+            {
+                return ApiResponseHelper.FailResponse<PetTypeDto>(400, new { Message = "No changes detected." });
+            }
+            existingPetType.TypeName = petTypeUpdateDto.TypeName;
+            await _petTypeRepository.UpdateAsync(existingPetType);
+            return ApiResponseHelper.SuccessResponse<PetTypeDto>(204, null);
         }
 
         public async Task<ApiResponse<PetTypeDto>> DeletePetTypeAsync(int id)

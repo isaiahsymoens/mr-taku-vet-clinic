@@ -51,15 +51,32 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<VisitTypeDto>(200, _mapper.Map<VisitTypeDto>(visitType));
         }
 
-        public async Task<ApiResponse<VisitTypeDto>> PostVisitTypeAsync(VisitType visitType)
+        public async Task<ApiResponse<VisitTypeDto>> PostVisitTypeAsync(VisitTypePostDto visitTypePostDto)
         {
-            if (await _visitTypeRepository.IsTypeNameExits(visitType.TypeName))
+            if (await _visitTypeRepository.IsTypeNameExits(visitTypePostDto.TypeName))
             {
                 return ApiResponseHelper.FailResponse<VisitTypeDto>(400, new { TypeName = "Type name already exists." });
             }
-            await _visitTypeRepository.AddAsync(visitType);
-            return ApiResponseHelper
-                .SuccessResponse<VisitTypeDto>(204, null);
+            return ApiResponseHelper.SuccessResponse<VisitTypeDto>(
+                201,
+                _mapper.Map<VisitTypeDto>(await _visitTypeRepository.AddAsync(_mapper.Map<VisitType>(visitTypePostDto)))
+            );
+        }
+
+        public async Task<ApiResponse<VisitTypeDto>> UpdateVisitTypeAsync(int id, VisitTypeUpdateDto visitTypeUpdateDto)
+        {
+            var existingVisitType = await _visitTypeRepository.GetByIdAsync(id);
+            if (existingVisitType == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitTypeDto>(404, new { Message = "Visit type not found." });
+            }
+            if (visitTypeUpdateDto.TypeName == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitTypeDto>(400, new { Message = "No changes detected." });
+            }
+            existingVisitType.TypeName = visitTypeUpdateDto.TypeName;
+            await _visitTypeRepository.UpdateAsync(existingVisitType);
+            return ApiResponseHelper.SuccessResponse<VisitTypeDto>(204, null);
         }
 
         public async Task<ApiResponse<VisitTypeDto>> DeleteVisitTypeAsync(int id)

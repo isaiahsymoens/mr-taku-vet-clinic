@@ -1,5 +1,4 @@
 ﻿using MrTakuVetClinic.DTOs.VisitType;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Models;
 using System.Threading.Tasks;
 
@@ -9,7 +8,8 @@ namespace MrTakuVetClinic.Interfaces.Services
     {
         Task<ApiResponse<VisitTypeDto>> GetAllVisitTypesAsync();
         Task<ApiResponse<VisitTypeDto>> GetVisitTypeByIdAsync(int id);
-        Task<ApiResponse<VisitTypeDto>> PostVisitTypeAsync(VisitType visitType);
+        Task<ApiResponse<VisitTypeDto>> PostVisitTypeAsync(VisitTypePostDto visitTypePostDto);
+        Task<ApiResponse<VisitTypeDto>> UpdateVisitTypeAsync(int id, VisitTypeUpdateDto visitTypeUpdateDto);
         Task<ApiResponse<VisitTypeDto>> DeleteVisitTypeAsync(int id);
     }
 }

@@ -20,6 +20,39 @@ namespace MrTakuVetClinic.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<UserType>().HasData(
+                new UserType { UserTypeId = 1, TypeName = "Owner" },
+                new UserType { UserTypeId = 2, TypeName = "Doctor" },
+                new UserType { UserTypeId = 3, TypeName = "Pet Owner" },
+                new UserType { UserTypeId = 4, TypeName = "Veterinary Assistant" },
+                new UserType { UserTypeId = 5, TypeName = "Groomer" }
+            );
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    UserId = 1,
+                    FirstName = "Admin",
+                    LastName = "Admin",
+                    Email = "admin@gmail.com",
+                    Username = "admin",
+                    Password = "admin",
+                    UserTypeId = 1,
+                    Active = true,
+                }
+            );
+
+            modelBuilder.Entity<PetType>().HasData(
+                new PetType { PetTypeId = 1, TypeName = "Dog" },
+                new PetType { PetTypeId = 2, TypeName = "Cat" }
+            );
+
+            modelBuilder.Entity<VisitType>().HasData(
+                new VisitType { VisitTypeId = 1, TypeName = "Consultation" },
+                new VisitType { VisitTypeId = 2, TypeName = "Dental care" },
+                new VisitType { VisitTypeId = 3, TypeName = "Grooming" }
+            );
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.UserId);

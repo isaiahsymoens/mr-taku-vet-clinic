@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
@@ -50,7 +49,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
-        public async Task<ApiResponse<UserDto>> GetSearchUsersAsync([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<ApiResponse<UserDto>> GetSearchUsersAsync(string firstName, string lastName)
         {
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 200,
@@ -103,22 +102,18 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "User not found." });
             }
-
             if (userUpdateDto.FirstName != null)
             {
                 existingUser.FirstName = userUpdateDto.FirstName;
             }
-
             if (userUpdateDto.MiddleName != null)
             {
                 existingUser.MiddleName = userUpdateDto.MiddleName;
             }
-
             if (userUpdateDto.LastName != null)
             {
                 existingUser.LastName = userUpdateDto.LastName;
             }
-
             if (userUpdateDto.Email != null)
             {
                 if (await _userRepository.IsEmailExits(userUpdateDto.Email))
@@ -127,12 +122,10 @@ namespace MrTakuVetClinic.Services
                 }
                 existingUser.Email = userUpdateDto.Email;
             }
-
             if (userUpdateDto.Password != null)
             {
                 existingUser.Password = userUpdateDto.Password;
             }
-
             if (userUpdateDto.Username != null)
             {
                 if (await _userRepository.IsUsernameExits(userUpdateDto.Username))
@@ -141,12 +134,10 @@ namespace MrTakuVetClinic.Services
                 }
                 existingUser.Username = userUpdateDto.Username;
             }
-
             if (userUpdateDto.UserTypeId != null)
             {
                 existingUser.UserTypeId = userUpdateDto.UserTypeId.Value;
             }
-
             if (userUpdateDto.Active != null)
             {
                 existingUser.Active = userUpdateDto.Active.Value;

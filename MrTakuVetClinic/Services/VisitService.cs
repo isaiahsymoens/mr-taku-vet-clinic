@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
@@ -53,7 +52,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
         }
 
-        public async Task<ApiResponse<VisitDto>> SearchVisitsAsync([FromQuery] VisitFilterDto visitFilterDto)
+        public async Task<ApiResponse<VisitDto>> SearchVisitsAsync(VisitFilterDto visitFilterDto)
         {
             return ApiResponseHelper.SuccessResponse<VisitDto>(
                 200,
@@ -88,8 +87,6 @@ namespace MrTakuVetClinic.Services
             }
 
             var visitResponse = await _visitRepository.AddAsync(_mapper.Map<Visit>(_mapper.Map<Visit>(visitPostDto)));
-
-            // TODO: Temporary fix to get visit complete details
             return await GetVisitById(visitResponse.VisitId);
         }
 
