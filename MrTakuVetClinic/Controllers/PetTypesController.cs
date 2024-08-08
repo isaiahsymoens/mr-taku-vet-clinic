@@ -32,9 +32,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostPetTypeAsync(PetType petType)
+        public async Task<IActionResult> PostPetTypeAsync(PetTypePostDto petTypePostDto)
         {
-            var response = await _petTypeService.PostPetTypeAsync(petType);
+            var response = await _petTypeService.PostPetTypeAsync(petTypePostDto);
             return StatusCode(response.StatusCode, response);
         }
 

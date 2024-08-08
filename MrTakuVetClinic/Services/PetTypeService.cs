@@ -52,15 +52,15 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<PetTypeDto>(200, _mapper.Map<PetTypeDto>(petType));
         }
 
-        public async Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetType petType)
+        public async Task<ApiResponse<PetTypeDto>> PostPetTypeAsync(PetTypePostDto petTypePostDto)
         {
-            if (await _petTypeRepository.IsTypeNameExits(petType.TypeName))
+            if (await _petTypeRepository.IsTypeNameExits(petTypePostDto.TypeName))
             {
                 return ApiResponseHelper.FailResponse<PetTypeDto>(400, new { TypeName = "Type name already exists." });
             }
             return ApiResponseHelper.SuccessResponse<PetTypeDto>(
                 201, 
-                _mapper.Map<PetTypeDto>(await _petTypeRepository.AddAsync(petType))    
+                _mapper.Map<PetTypeDto>(await _petTypeRepository.AddAsync(_mapper.Map<PetType>(petTypePostDto)))    
             );
         }
 
