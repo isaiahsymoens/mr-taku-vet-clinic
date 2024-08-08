@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.VisitType;
-using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -32,9 +31,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostVisitTypeAsync(VisitType visitType)
+        public async Task<IActionResult> PostVisitTypeAsync(VisitTypePostDto visitTypePostDto)
         {
-            var response = await _visitTypeService.PostVisitTypeAsync(visitType);
+            var response = await _visitTypeService.PostVisitTypeAsync(visitTypePostDto);
             return StatusCode(response.StatusCode, response);
         }
 
