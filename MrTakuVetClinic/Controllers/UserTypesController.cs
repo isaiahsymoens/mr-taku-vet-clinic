@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MrTakuVetClinic.DTOs.UserType;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
@@ -34,6 +35,13 @@ namespace MrTakuVetClinic.Controllers
         public async Task<IActionResult> PostUserTypeAsync(UserType userType)
         {
             var response = await _userTypeService.PostUserTypeAsync(userType);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUserTypeAsync(int id, [FromBody] UserTypeUpdateDto userTypeUpdateDto)
+        {
+            var response = await _userTypeService.UpdateUserTypeAsync(id, userTypeUpdateDto);
             return StatusCode(response.StatusCode, response);
         }
 
