@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MrTakuVetClinic.Data;
+using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces.Repositories;
 using System.Collections.Generic;
@@ -28,14 +29,14 @@ namespace MrTakuVetClinic.Repositories
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<IEnumerable<User>> GetSearchUsersAsync(string firstName, string lastName)
+        public async Task<IEnumerable<User>> GetSearchUsersAsync(UserSearchDto userSearchDto)
         {
             var query = _context.Users.AsQueryable();
-            if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            if (!string.IsNullOrEmpty(userSearchDto.FirstName) || !string.IsNullOrEmpty(userSearchDto.LastName))
             {
                 query = query.Where(u =>
-                    (string.IsNullOrEmpty(firstName) || u.FirstName.ToLower().Contains(firstName.ToLower())) &&
-                    (string.IsNullOrEmpty(lastName) || u.LastName.ToLower().Contains(lastName.ToLower()))
+                    (string.IsNullOrEmpty(userSearchDto.FirstName) || u.FirstName.ToLower().Contains(userSearchDto.FirstName.ToLower())) &&
+                    (string.IsNullOrEmpty(userSearchDto.LastName) || u.LastName.ToLower().Contains(userSearchDto.LastName.ToLower()))
                 );
             }
             return await query

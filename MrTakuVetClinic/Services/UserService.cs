@@ -50,11 +50,11 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
-        public async Task<ApiResponse<IEnumerable<UserDto>>> GetSearchUsersAsync(string firstName, string lastName)
+        public async Task<ApiResponse<IEnumerable<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto)
         {
             return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>>(
                 200,
-                (await _userRepository.GetSearchUsersAsync(firstName, lastName))
+                (await _userRepository.GetSearchUsersAsync(userSearchDto))
                 .Select(u => _mapper.Map<UserDto>(u))
             );
         }

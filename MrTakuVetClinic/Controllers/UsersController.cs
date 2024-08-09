@@ -32,9 +32,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<UserDto>> GetSearchUsers([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<ActionResult<UserDto>> GetSearchUsers([FromBody] UserSearchDto userSearchDto)
         {
-            var response = await _userService.GetSearchUsersAsync(firstName, lastName);
+            var response = await _userService.GetSearchUsersAsync(userSearchDto);
             return StatusCode(response.StatusCode, response);
         }
 
