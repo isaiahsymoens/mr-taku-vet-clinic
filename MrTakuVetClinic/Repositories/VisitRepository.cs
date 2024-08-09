@@ -26,7 +26,7 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Visit>> SearchVisitsAsync(VisitFilterDto visitFilterDto)
+        public async Task<IEnumerable<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto)
         {
             var visits = await _context.Visits
                 .Include(v => v.VisitType)
@@ -37,13 +37,13 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
 
             return (visits.AsQueryable()).Where(v =>
-                (string.IsNullOrEmpty(visitFilterDto.FirstName) || v.Pet.User.FirstName.ToLower().Contains(visitFilterDto.FirstName.ToLower())) &&
-                (string.IsNullOrEmpty(visitFilterDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitFilterDto.LastName.ToLower())) &&
-                (string.IsNullOrEmpty(visitFilterDto.PetName) || v.Pet.PetName.ToLower().Contains(visitFilterDto.PetName.ToLower())) &&
-                (string.IsNullOrEmpty(visitFilterDto.PetType) || v.Pet.PetType.TypeName.ToLower().Contains(visitFilterDto.PetType.ToLower())) &&
-                (string.IsNullOrEmpty(visitFilterDto.VisitType) || v.VisitType.TypeName.ToLower().Contains(visitFilterDto.VisitType.ToLower())) &&
-                (!visitFilterDto.VisitDateFrom.HasValue || v.Date >= visitFilterDto.VisitDateFrom.Value) &&
-                (!visitFilterDto.VisitDateTo.HasValue || v.Date <= visitFilterDto.VisitDateTo.Value)
+                (string.IsNullOrEmpty(visitSearchDto.FirstName) || v.Pet.User.FirstName.ToLower().Contains(visitSearchDto.FirstName.ToLower())) &&
+                (string.IsNullOrEmpty(visitSearchDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitSearchDto.LastName.ToLower())) &&
+                (string.IsNullOrEmpty(visitSearchDto.PetName) || v.Pet.PetName.ToLower().Contains(visitSearchDto.PetName.ToLower())) &&
+                (string.IsNullOrEmpty(visitSearchDto.PetType) || v.Pet.PetType.TypeName.ToLower().Contains(visitSearchDto.PetType.ToLower())) &&
+                (string.IsNullOrEmpty(visitSearchDto.VisitType) || v.VisitType.TypeName.ToLower().Contains(visitSearchDto.VisitType.ToLower())) &&
+                (!visitSearchDto.VisitDateFrom.HasValue || v.Date >= visitSearchDto.VisitDateFrom.Value) &&
+                (!visitSearchDto.VisitDateTo.HasValue || v.Date <= visitSearchDto.VisitDateTo.Value)
             );
         }
 
