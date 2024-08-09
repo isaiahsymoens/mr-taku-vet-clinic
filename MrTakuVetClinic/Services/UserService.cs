@@ -6,6 +6,7 @@ using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,9 +31,9 @@ namespace MrTakuVetClinic.Services
             _mapper = mapper;
         }
 
-        public async Task<ApiResponse<UserDto>> GetAllUsersAsync()
+        public async Task<ApiResponse<IEnumerable<UserDto>>> GetAllUsersAsync()
         {
-            return ApiResponseHelper.SuccessResponse<UserDto>(
+            return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>> (
                 200,
                 (await _userRepository.GetAllUsersAsync())
                 .Select(u => _mapper.Map<UserDto>(u))
@@ -49,9 +50,9 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
-        public async Task<ApiResponse<UserDto>> GetSearchUsersAsync(string firstName, string lastName)
+        public async Task<ApiResponse<IEnumerable<UserDto>>> GetSearchUsersAsync(string firstName, string lastName)
         {
-            return ApiResponseHelper.SuccessResponse<UserDto>(
+            return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>>(
                 200,
                 (await _userRepository.GetSearchUsersAsync(firstName, lastName))
                 .Select(u => _mapper.Map<UserDto>(u))

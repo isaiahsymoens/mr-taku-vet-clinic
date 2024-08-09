@@ -4,7 +4,7 @@ namespace MrTakuVetClinic.Helpers
 {
     public class ApiResponseHelper
     {
-        public static ApiResponse<T> SuccessResponse<T>(int statusCode, object data)
+        public static ApiResponse<T> SuccessResponse<T>(int statusCode, T data)
         {
             return new ApiResponse<T>
             {

@@ -6,6 +6,7 @@ using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,9 +34,9 @@ namespace MrTakuVetClinic.Services
             _mapper = mapper;
         }
 
-        public async Task<ApiResponse<VisitDto>> GetAllVisitsAsync()
+        public async Task<ApiResponse<IEnumerable<VisitDto>>> GetAllVisitsAsync()
         {   
-            return ApiResponseHelper.SuccessResponse<VisitDto>(
+            return ApiResponseHelper.SuccessResponse<IEnumerable<VisitDto>>(
                 200,
                 (await _visitRepository.GetAllVisitsAsync())
                 .Select(v => _mapper.Map<VisitDto>(v)).ToList()
@@ -52,9 +53,9 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
         }
 
-        public async Task<ApiResponse<VisitDto>> SearchVisitsAsync(VisitFilterDto visitFilterDto)
+        public async Task<ApiResponse<IEnumerable<VisitDto>>> SearchVisitsAsync(VisitFilterDto visitFilterDto)
         {
-            return ApiResponseHelper.SuccessResponse<VisitDto>(
+            return ApiResponseHelper.SuccessResponse<IEnumerable<VisitDto>>(
                 200,
                 (await _visitRepository.SearchVisitsAsync(visitFilterDto))
                 .Select(v => _mapper.Map<VisitDto>(v)).ToList()
