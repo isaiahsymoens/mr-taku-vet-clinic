@@ -2,7 +2,7 @@
 
 namespace MrTakuVetClinic.DTOs.Visit
 {
-    public class VisitFilterDto
+    public class VisitSearchDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
