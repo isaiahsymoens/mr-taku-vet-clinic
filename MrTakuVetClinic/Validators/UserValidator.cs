@@ -16,8 +16,8 @@ namespace MrTakuVetClinic.Validators
                .NotEmpty().WithMessage("Last name is required.")
                .MaximumLength(50).WithMessage("Last name cannot exceed 50 characters.");
             RuleFor(u => u.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("A valid email is required.");
+                .NotEmpty().WithMessage("Email is required.");
+                //.EmailAddress().WithMessage("A valid email is required.");
             RuleFor(u => u.Username)
                 .NotEmpty().WithMessage("Username is required.")
                 .MaximumLength(30).WithMessage("Username cannot exceed 30 characters.");
