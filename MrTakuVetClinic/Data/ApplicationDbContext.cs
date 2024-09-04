@@ -21,22 +21,19 @@ namespace MrTakuVetClinic.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserType>().HasData(
-                new UserType { UserTypeId = 1, TypeName = "Owner" },
-                new UserType { UserTypeId = 2, TypeName = "Doctor" },
-                new UserType { UserTypeId = 3, TypeName = "Pet Owner" },
-                new UserType { UserTypeId = 4, TypeName = "Veterinary Assistant" },
-                new UserType { UserTypeId = 5, TypeName = "Groomer" }
+                new UserType { UserTypeId = 1, TypeName = "Administrator" },
+                new UserType { UserTypeId = 2, TypeName = "Pet Owner" }
             );
 
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
                     UserId = 1,
-                    FirstName = "Admin",
-                    LastName = "Admin",
-                    Email = "admin@gmail.com",
-                    Username = "admin",
-                    Password = "admin",
+                    FirstName = "Administrator",
+                    LastName = "Administrator",
+                    Email = "administrator@gmail.com",
+                    Username = "administrator",
+                    Password = "administrator",
                     UserTypeId = 1,
                     Active = true,
                 }

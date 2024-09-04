@@ -36,6 +36,8 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>> (
                 200,
                 (await _userRepository.GetAllUsersAsync())
+                .Where(u => u.UserTypeId != 1)
+                .OrderBy(u => u.UserId)
                 .Select(u => _mapper.Map<UserDto>(u))
             );
         }
@@ -61,6 +63,7 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto)
         {
+            userPostDto.UserTypeId = 2; // Temporary fix
             var validationResult = _userValidator.Validate(userPostDto);
             if (!validationResult.IsValid)
             {

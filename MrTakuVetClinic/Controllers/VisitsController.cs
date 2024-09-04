@@ -30,6 +30,13 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpGet("petvisits/{id}")]
+        public async Task<IActionResult> GetPetVisitsByIdAsync(int id)
+        {
+            var response = await _visitService.GetPetVisitsByIdAsync(id);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> SearchVisitsAsync([FromBody] VisitSearchDto visitSearchDto)
         {

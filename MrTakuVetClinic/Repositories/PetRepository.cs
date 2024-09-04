@@ -3,6 +3,7 @@ using MrTakuVetClinic.Data;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces.Repositories;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MrTakuVetClinic.Repositories
@@ -16,6 +17,16 @@ namespace MrTakuVetClinic.Repositories
         public async Task<IEnumerable<Pet>> GetAllPetsAsync()
         {
             return await _context.Pets
+                .Include(p => p.PetType)
+                .Include(p => p.User)
+                .ThenInclude(p => p.UserType)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Pet>> GetAllUserPetsAsync(string username)
+        {
+            return await _context.Pets
+                .Where(p => p.User.Username == username)
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)

@@ -59,6 +59,17 @@ namespace MrTakuVetClinic
             services.AddAutoMapper(typeof(VisitTypeProfile));
 
             services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:5173")
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +83,8 @@ namespace MrTakuVetClinic
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("AllowReactApp");
 
             app.UseAuthorization();
 

@@ -23,10 +23,17 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<IActionResult> GetPetByIdAsync(int id)
         {
             var response = await _petService.GetPetByIdAsync(id);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("username/{username}")]
+        public async Task<IActionResult> GetUserPetsByUsernameAsync(string username)
+        {
+            var response = await _petService.GetUserPetsByUsernameAsync(username);
             return StatusCode(response.StatusCode, response);
         }
 
