@@ -6,6 +6,7 @@ using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,6 +56,16 @@ namespace MrTakuVetClinic.Services
 
             }
             return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(pet));
+        }
+
+        public async Task<ApiResponse<IEnumerable<PetDto>>> GetUserPetsByUsernameAsync(string username)
+        {
+            if (await _userRepository.GetUserByUsernameAsync(username) == null)
+            {
+                return ApiResponseHelper.FailResponse<IEnumerable<PetDto>>(400, new { Message = "User not found." });
+            }
+            var userPets = await _petRepository.GetAllUserPetsAsync(username);
+            return ApiResponseHelper.SuccessResponse<IEnumerable<PetDto>>(200, userPets.Select(p => _mapper.Map<PetDto>(p)).ToList());
         }
 
         public async Task<ApiResponse<PetDto>> UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto)
