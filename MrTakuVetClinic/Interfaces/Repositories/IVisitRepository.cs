@@ -9,6 +9,7 @@ namespace MrTakuVetClinic.Interfaces.Repositories
     {
         Task<IEnumerable<Visit>> GetAllVisitsAsync();
         Task<Visit> GetVisitByIdAsync(int id);
+        Task<IEnumerable<Visit>> GetPetVisitsByIdAsync(int id);
         Task<IEnumerable<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto);
     }
 }

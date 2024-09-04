@@ -10,6 +10,7 @@ namespace MrTakuVetClinic.Interfaces.Services
     {
         Task<ApiResponse<IEnumerable<VisitDto>>> GetAllVisitsAsync();
         Task<ApiResponse<VisitDto>> GetVisitById(int id);
+        Task<ApiResponse<IEnumerable<VisitDto>>> GetPetVisitsByIdAsync(int id);
         Task<ApiResponse<IEnumerable<VisitDto>>> SearchVisitsAsync([FromQuery] VisitSearchDto visitSearchDto);
         Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto);
         Task<ApiResponse<VisitDto>> DeleteVisitAsync(int id);
