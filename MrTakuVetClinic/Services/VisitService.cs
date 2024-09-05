@@ -100,6 +100,36 @@ namespace MrTakuVetClinic.Services
             return await GetVisitById(visitResponse.VisitId);
         }
 
+        public async Task<ApiResponse<VisitDto>> UpdatePetByIdAsync(int id, VisitUpdateDto visitUpdateDto)
+        {
+            var existingVisit = await _visitRepository.GetByIdAsync(id);
+            if (existingVisit == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit record not found." });
+            }
+
+            if (visitUpdateDto.VisitTypeId != null)
+            {
+                existingVisit.VisitTypeId = visitUpdateDto.VisitTypeId.Value;
+            }
+            if (visitUpdateDto.Date != null)
+            { 
+                existingVisit.Date = visitUpdateDto.Date;
+            }
+            if (visitUpdateDto.PetId != null)
+            { 
+                existingVisit.PetId = visitUpdateDto.PetId.Value;
+            }
+            if (visitUpdateDto.Notes != null)
+            { 
+                existingVisit.Notes = visitUpdateDto.Notes;
+            }
+            await _visitRepository.UpdateAsync(existingVisit);
+            var visit = await _visitRepository.GetVisitByIdAsync(id);
+
+            return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
+        }
+
         public async Task<ApiResponse<VisitDto>> DeleteVisitAsync(int id)
         {
             if (await _visitRepository.GetByIdAsync(id) == null)
