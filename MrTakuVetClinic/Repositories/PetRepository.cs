@@ -17,6 +17,7 @@ namespace MrTakuVetClinic.Repositories
         public async Task<IEnumerable<Pet>> GetAllPetsAsync()
         {
             return await _context.Pets
+                .Include(p => p.Visits)
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)
@@ -27,6 +28,7 @@ namespace MrTakuVetClinic.Repositories
         {
             return await _context.Pets
                 .Where(p => p.User.Username == username)
+                .Include(p => p.Visits)
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)

@@ -10,6 +10,7 @@ namespace MrTakuVetClinic.DTOs.Pet
         public string PetType { get; set; }
         public string Breed { get; set; }
         public DateTime BirthDate { get; set; }
+        public int NumberOfVisits { get; set; }
         public UserDto User { get; set; }
     }
 }
