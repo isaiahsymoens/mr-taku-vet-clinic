@@ -1,4 +1,5 @@
 ﻿using MrTakuVetClinic.DTOs.User;
+using MrTakuVetClinic.DTOs.PetType;
 using System;
 
 namespace MrTakuVetClinic.DTOs.Pet
@@ -7,7 +8,7 @@ namespace MrTakuVetClinic.DTOs.Pet
     {
         public int PetId { get; set; }
         public string PetName { get; set; }
-        public string PetType { get; set; }
+        public PetTypeDto PetType { get; set; }
         public string Breed { get; set; }
         public DateTime BirthDate { get; set; }
         public int NumberOfVisits { get; set; }

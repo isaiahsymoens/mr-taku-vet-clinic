@@ -91,9 +91,8 @@ namespace MrTakuVetClinic.Services
             {
                 existingPet.BirthDate = petUpdateDto.BirthDate;
             }
-
             await _petRepository.UpdateAsync(existingPet);
-            return ApiResponseHelper.SuccessResponse<PetDto>(204, null);
+            return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(await _petRepository.GetPetByIdAsync(id)));
         }
 
         public async Task<ApiResponse<PetDto>> PostPetAsync(PetPostDto petPostDto)

@@ -146,9 +146,9 @@ namespace MrTakuVetClinic.Services
             {
                 existingUser.Active = userUpdateDto.Active.Value;
             }
-
             await _userRepository.UpdateAsync(existingUser);
-            return ApiResponseHelper.SuccessResponse<UserDto>(204, null);
+            return ApiResponseHelper.SuccessResponse<UserDto>
+                (200, _mapper.Map<UserDto>(_userRepository.GetUserByUsernameAsync(existingUser.Username)));
         }
 
         public async Task<ApiResponse<UserDto>> DeleteUserByUsernameAsync(string username)
