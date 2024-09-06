@@ -6,6 +6,7 @@ using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,10 +99,9 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<UserDto>> UpdateUserAsync(UserUpdateDto userUpdateDto)
+        public async Task<ApiResponse<UserDto>> UpdateUserAsync(String username, UserUpdateDto userUpdateDto)
         {
-            var existingUser = await _userRepository.GetUserByUsernameAsync(userUpdateDto.Username);
-
+            var existingUser = await _userRepository.GetUserByUsernameAsync(username);
             if (existingUser == null)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "User not found." });
@@ -148,7 +148,7 @@ namespace MrTakuVetClinic.Services
             }
             await _userRepository.UpdateAsync(existingUser);
             return ApiResponseHelper.SuccessResponse<UserDto>
-                (200, _mapper.Map<UserDto>(_userRepository.GetUserByUsernameAsync(existingUser.Username)));
+                (200, _mapper.Map<UserDto>(await _userRepository.GetUserByUsernameAsync(existingUser.Username)));
         }
 
         public async Task<ApiResponse<UserDto>> DeleteUserByUsernameAsync(string username)
