@@ -38,6 +38,13 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpGet("userpassword/{username}")]
+        public async Task<IActionResult> GetUserPasswordByUsername(string username)
+        {
+            var response = await _userService.GetUserPasswordByUsernameAsync(username);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostUser(UserPostDto userPostDto)
         {

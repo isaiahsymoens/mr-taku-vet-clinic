@@ -62,6 +62,16 @@ namespace MrTakuVetClinic.Services
             );
         }
 
+        public async Task<ApiResponse<UserPassword>> GetUserPasswordByUsernameAsync(string username)
+        {
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null)
+            {
+                return ApiResponseHelper.FailResponse<UserPassword>(404, new { Message = "User not found." });
+            }
+            return ApiResponseHelper.SuccessResponse<UserPassword>(200, _mapper.Map<UserPassword>(user));
+        }
+
         public async Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto)
         {
             userPostDto.UserTypeId = 2; // Temporary fix
@@ -122,7 +132,7 @@ namespace MrTakuVetClinic.Services
             {
                 if (await _userRepository.IsEmailExits(userUpdateDto.Email))
                 {
-                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "Email is already taken." });
+                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Email = "Email is already taken." });
                 }
                 existingUser.Email = userUpdateDto.Email;
             }
@@ -134,7 +144,7 @@ namespace MrTakuVetClinic.Services
             {
                 if (await _userRepository.IsUsernameExits(userUpdateDto.Username))
                 {
-                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "Username is already taken." });
+                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Username is already taken." });
                 }
                 existingUser.Username = userUpdateDto.Username;
             }
