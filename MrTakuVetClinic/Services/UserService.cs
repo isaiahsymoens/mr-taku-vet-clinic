@@ -88,19 +88,25 @@ namespace MrTakuVetClinic.Services
                 );
             }
 
+            var errors = new Dictionary<string, string>();
             if (await _userRepository.IsEmailExits(userPostDto.Email))
             {
-                return ApiResponseHelper.FailResponse<UserDto>(400, new { Email = "Email is already taken." });
+                errors["Email"] = "Email is already taken.";
             }
             if (await _userRepository.IsUsernameExits(userPostDto.Username))
             {
-                return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Username is already taken." });
+                errors["Username"] = "Username is already taken.";
             }
             if (await _userTypeRepository.GetByIdAsync(userPostDto.UserTypeId) == null)
             {
-                return ApiResponseHelper.FailResponse<UserDto>(404, new { Message = "User type does not exist." });
+                errors["UserType"] = "User type does not exist.";
             }
 
+            if (errors.Any())
+            {
+                return ApiResponseHelper.FailResponse<UserDto>(404, errors);
+            }
+            
             var userResponse = await _userRepository.AddAsync(_mapper.Map<User>(userPostDto));
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 201,
