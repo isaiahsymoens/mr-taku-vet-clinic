@@ -38,7 +38,6 @@ namespace MrTakuVetClinic.Services
                 200,
                 (await _userRepository.GetAllUsersAsync())
                 .Where(u => u.UserTypeId != 1)
-                .OrderBy(u => u.UserId)
                 .Select(u => _mapper.Map<UserDto>(u))
             );
         }

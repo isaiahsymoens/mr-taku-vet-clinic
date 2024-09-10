@@ -20,6 +20,8 @@ namespace MrTakuVetClinic.Repositories
             return await _context.Users
                 .Include(u => u.Pets)
                 .Include(u => u.UserType)
+                .OrderBy(u => u.FirstName)
+                .ThenBy(u => u.LastName)
                 .ToListAsync();
         }
 
@@ -42,6 +44,8 @@ namespace MrTakuVetClinic.Repositories
             }
             return await query
                 .Include(u => u.UserType)
+                .OrderBy(u => u.FirstName)
+                .ThenBy(u => u.LastName)
                 .ToListAsync();
         }
 

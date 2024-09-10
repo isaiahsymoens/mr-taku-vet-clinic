@@ -21,6 +21,7 @@ namespace MrTakuVetClinic.Repositories
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)
+                .OrderBy(p => p.PetName)
                 .ToListAsync();
         }
 
@@ -32,6 +33,7 @@ namespace MrTakuVetClinic.Repositories
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)
+                .OrderBy(p => p.PetName)
                 .ToListAsync();
         }
 
