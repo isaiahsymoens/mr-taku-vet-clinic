@@ -121,6 +121,8 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Message = "User not found." });
             }
+
+            var errors = new Dictionary<string, string>();
             if (userUpdateDto.FirstName != null)
             {
                 existingUser.FirstName = userUpdateDto.FirstName;
@@ -137,7 +139,7 @@ namespace MrTakuVetClinic.Services
             {
                 if (await _userRepository.IsEmailExits(userUpdateDto.Email))
                 {
-                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Email = "Email is already taken." });
+                    errors["Email"] = "Email is already taken.";
                 }
                 existingUser.Email = userUpdateDto.Email;
             }
@@ -149,7 +151,7 @@ namespace MrTakuVetClinic.Services
             {
                 if (await _userRepository.IsUsernameExits(userUpdateDto.Username))
                 {
-                    return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Username is already taken." });
+                    errors["Username"] = "Username is already taken.";
                 }
                 existingUser.Username = userUpdateDto.Username;
             }
@@ -161,6 +163,12 @@ namespace MrTakuVetClinic.Services
             {
                 existingUser.Active = userUpdateDto.Active.Value;
             }
+
+            if (errors.Any())
+            {
+                return ApiResponseHelper.FailResponse<UserDto>(400, errors);
+            }
+
             await _userRepository.UpdateAsync(existingUser);
             return ApiResponseHelper.SuccessResponse<UserDto>
                 (200, _mapper.Map<UserDto>(await _userRepository.GetUserByUsernameAsync(existingUser.Username)));
