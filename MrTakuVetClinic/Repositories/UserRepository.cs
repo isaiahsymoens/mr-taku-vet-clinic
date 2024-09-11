@@ -35,11 +35,11 @@ namespace MrTakuVetClinic.Repositories
         public async Task<IEnumerable<User>> GetSearchUsersAsync(UserSearchDto userSearchDto)
         {
             var query = _context.Users.AsQueryable();
-            if (!string.IsNullOrEmpty(userSearchDto.FirstName) || !string.IsNullOrEmpty(userSearchDto.LastName))
+            if (!string.IsNullOrEmpty(userSearchDto.Name))
             {
+                var name = userSearchDto.Name.Trim().ToLower();
                 query = query.Where(u =>
-                    (string.IsNullOrEmpty(userSearchDto.FirstName) || u.FirstName.ToLower().Contains(userSearchDto.FirstName.ToLower())) &&
-                    (string.IsNullOrEmpty(userSearchDto.LastName) || u.LastName.ToLower().Contains(userSearchDto.LastName.ToLower()))
+                    (u.FirstName + " " + (u.MiddleName ?? "") + u.LastName).ToLower().Contains(name)
                 );
             }
             return await query
