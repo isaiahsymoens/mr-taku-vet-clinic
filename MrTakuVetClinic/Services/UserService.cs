@@ -57,6 +57,7 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>>(
                 200,
                 (await _userRepository.GetSearchUsersAsync(userSearchDto))
+                .Where(u => u.UserTypeId != 1)
                 .Select(u => _mapper.Map<UserDto>(u))
             );
         }

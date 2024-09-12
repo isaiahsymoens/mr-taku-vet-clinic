@@ -26,9 +26,9 @@ namespace MrTakuVetClinic.Validators
                 .NotEmpty().WithMessage("Password is required.")
                 .MinimumLength(6).WithMessage("Password must be at least 6 characters long.")
                 .MaximumLength(100).WithMessage("Password cannot exceed 100 characters.")
-                .Matches(@"[0-9]").WithMessage("Password must contain at least one number")
-                .Matches(@"[\W]").WithMessage("Password must contain at least one special character")
-                .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter.");
+                .Matches(@"[0-9]").WithMessage("Password must include an uppercase, a number, and a special character.")
+                .Matches(@"[\W]").WithMessage("Password must include an uppercase, a number, and a special character.")
+                .Matches(@"[A-Z]").WithMessage("Password must include an uppercase, a number, and a special character.");
             RuleFor(u => u.UserTypeId)
                 .NotEmpty().WithMessage("User type id is required.");
         }
