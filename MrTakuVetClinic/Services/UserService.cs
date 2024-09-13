@@ -38,7 +38,6 @@ namespace MrTakuVetClinic.Services
             var paginatedResponse = new PaginatedResponse<UserDto>(
                 paginatedUsers
                     .Data
-                    .Where(u => u.UserTypeId != 1)
                     .Select(u => _mapper.Map<UserDto>(u)), 
                 paginatedUsers.PageNumber, 
                 paginatedUsers.PageSize, 

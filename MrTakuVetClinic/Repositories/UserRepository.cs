@@ -17,20 +17,20 @@ namespace MrTakuVetClinic.Repositories
         {
         }
 
-        public async Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParameters)
+        public async Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParams)
         {
             var totalItems = await _context.Users.CountAsync();
-
             var users = await _context.Users
                 .Include(u => u.Pets)
                 .Include(u => u.UserType)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
-                .Skip((paginationParameters.PageNumber - 1) * paginationParameters.PageSize)
-                .Take(paginationParameters.PageSize)
+                .Where(u => u.UserTypeId != 1)
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
                 .ToListAsync();
 
-            return new PaginatedResponse<User>(users, paginationParameters.PageNumber, paginationParameters.PageSize, totalItems);
+            return new PaginatedResponse<User>(users, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()

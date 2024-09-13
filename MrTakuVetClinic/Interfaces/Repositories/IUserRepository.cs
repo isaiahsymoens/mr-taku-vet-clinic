@@ -8,7 +8,7 @@ namespace MrTakuVetClinic.Interfaces.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParameters);
+        Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParams);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByUsernameAsync(string username);
         Task<IEnumerable<User>> GetSearchUsersAsync(UserSearchDto userSearchDto);
