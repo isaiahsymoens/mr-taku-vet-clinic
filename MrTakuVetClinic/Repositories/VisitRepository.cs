@@ -3,6 +3,7 @@ using MrTakuVetClinic.Data;
 using MrTakuVetClinic.DTOs.Visit;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces.Repositories;
+using MrTakuVetClinic.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +25,21 @@ namespace MrTakuVetClinic.Repositories
                 .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
                 .ToListAsync();
+        }
+
+        public async Task<PaginatedResponse<Visit>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams)
+        {
+            var totalItems = await _context.Visits.CountAsync();
+            var visits = await _context.Visits
+                .Include(v => v.VisitType)
+                .Include(v => v.Pet)
+                .ThenInclude(v => v.PetType)
+                .Include(v => v.Pet.User)
+                .ThenInclude(v => v.UserType)
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
+                .ToListAsync();
+            return new PaginatedResponse<Visit>(visits, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<IEnumerable<Visit>> GetPetVisitsByIdAsync(int id)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Visit;
+using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,6 +21,13 @@ namespace MrTakuVetClinic.Controllers
         public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllVisitsAsync()
         {
             var response = await _visitService.GetAllVisitsAsync();
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("paginated")]
+        public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllPaginatedVisitsAsync([FromQuery] PaginationParameters paginationParams)
+        {
+            var response = await _visitService.GetAllPaginatedVisitsAsync(paginationParams);
             return StatusCode(response.StatusCode, response);
         }
 
