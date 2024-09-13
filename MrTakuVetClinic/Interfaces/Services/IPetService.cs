@@ -8,6 +8,7 @@ namespace MrTakuVetClinic.Interfaces.Services
     public interface IPetService
     {
         Task<ApiResponse<IEnumerable<PetDto>>> GetAllPetsAsync();
+        Task<ApiResponse<PaginatedResponse<PetDto>>> GetAllPaginatedPetsAsync(PaginationParameters paginationParams);
         Task<ApiResponse<PetDto>> GetPetByIdAsync(int id);
         Task<ApiResponse<IEnumerable<PetDto>>> GetUserPetsByUsernameAsync(string username);
         Task<ApiResponse<PetDto>> UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto);

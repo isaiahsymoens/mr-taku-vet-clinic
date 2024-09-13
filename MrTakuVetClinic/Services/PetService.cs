@@ -47,6 +47,18 @@ namespace MrTakuVetClinic.Services
             );
         }
 
+        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetAllPaginatedPetsAsync(PaginationParameters paginationParams)
+        {
+            var paginatedPets = await _petRepository.GetPaginatedPetsAsync(paginationParams);
+            var paginatedResponse = new PaginatedResponse<PetDto>(
+                paginatedPets.Data.Select(p => _mapper.Map<PetDto>(p)),
+                paginatedPets.PageNumber,
+                paginatedPets.PageSize,
+                paginatedPets.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<PetDto>>(200, paginatedResponse);
+        }
+
         public async Task<ApiResponse<PetDto>> GetPetByIdAsync(int id)
         {
             var pet = await _petRepository.GetPetByIdAsync(id);
