@@ -40,6 +40,7 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
             return new PaginatedResponse<Pet>(pets, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
+
         public async Task<IEnumerable<Pet>> GetAllUserPetsAsync(string username)
         {
             return await _context.Pets

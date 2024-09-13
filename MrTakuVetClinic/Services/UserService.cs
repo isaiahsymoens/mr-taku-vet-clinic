@@ -32,9 +32,9 @@ namespace MrTakuVetClinic.Services
             _mapper = mapper;
         }
 
-        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParameters)
+        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParams)
         {
-            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(paginationParameters);
+            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(paginationParams);
             var paginatedResponse = new PaginatedResponse<UserDto>(
                 paginatedUsers
                     .Data

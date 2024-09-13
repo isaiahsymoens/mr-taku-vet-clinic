@@ -26,9 +26,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("paginated")]
-        public async Task<IActionResult> GetAllPaginatedUsersAsync([FromQuery] PaginationParameters paginationParameters)
+        public async Task<IActionResult> GetAllPaginatedUsersAsync([FromQuery] PaginationParameters paginationParams)
         {
-            var response = await _userService.GetAllPaginatedUsersAsync(paginationParameters);
+            var response = await _userService.GetAllPaginatedUsersAsync(paginationParams);
             return StatusCode(response.StatusCode, response);
         }
 
