@@ -32,6 +32,21 @@ namespace MrTakuVetClinic.Services
             _mapper = mapper;
         }
 
+        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParameters)
+        {
+            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(paginationParameters);
+            var paginatedResponse = new PaginatedResponse<UserDto>(
+                paginatedUsers
+                    .Data
+                    .Where(u => u.UserTypeId != 1)
+                    .Select(u => _mapper.Map<UserDto>(u)), 
+                paginatedUsers.PageNumber, 
+                paginatedUsers.PageSize, 
+                paginatedUsers.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<UserDto>>(200, paginatedResponse);
+        }
+
         public async Task<ApiResponse<IEnumerable<UserDto>>> GetAllUsersAsync()
         {
             return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>> (

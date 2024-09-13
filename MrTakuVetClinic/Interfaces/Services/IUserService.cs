@@ -8,6 +8,7 @@ namespace MrTakuVetClinic.Interfaces.Services
 {
     public interface IUserService
     {
+        Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParameters);
         Task<ApiResponse<IEnumerable<UserDto>>> GetAllUsersAsync();
         Task<ApiResponse<UserDto>> GetUserByUsernameAsync(string username);
         Task<ApiResponse<IEnumerable<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto);

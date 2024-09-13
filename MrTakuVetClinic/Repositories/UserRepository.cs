@@ -3,6 +3,8 @@ using MrTakuVetClinic.Data;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces.Repositories;
+using MrTakuVetClinic.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +15,22 @@ namespace MrTakuVetClinic.Repositories
     {
         public UserRepository(ApplicationDbContext context) : base(context)
         {
+        }
+
+        public async Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParameters)
+        {
+            var totalItems = await _context.Users.CountAsync();
+
+            var users = await _context.Users
+                .Include(u => u.Pets)
+                .Include(u => u.UserType)
+                .OrderBy(u => u.FirstName)
+                .ThenBy(u => u.LastName)
+                .Skip((paginationParameters.PageNumber - 1) * paginationParameters.PageSize)
+                .Take(paginationParameters.PageSize)
+                .ToListAsync();
+
+            return new PaginatedResponse<User>(users, paginationParameters.PageNumber, paginationParameters.PageSize, totalItems);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()

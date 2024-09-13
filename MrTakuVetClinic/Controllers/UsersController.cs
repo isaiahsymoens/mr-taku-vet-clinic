@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
+using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -22,6 +23,13 @@ namespace MrTakuVetClinic.Controllers
             var response = await _userService.GetAllUsersAsync();
             return StatusCode(response.StatusCode, response);
 
+        }
+
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetAllPaginatedUsersAsync([FromQuery] PaginationParameters paginationParameters)
+        {
+            var response = await _userService.GetAllPaginatedUsersAsync(paginationParameters);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{username}")]
