@@ -70,14 +70,20 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(pet));
         }
 
-        public async Task<ApiResponse<IEnumerable<PetDto>>> GetUserPetsByUsernameAsync(string username)
+        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetUserPetsByUsernameAsync(string username, PaginationParameters paginationParams)
         {
             if (await _userRepository.GetUserByUsernameAsync(username) == null)
             {
-                return ApiResponseHelper.FailResponse<IEnumerable<PetDto>>(400, new { Message = "User not found." });
+                return ApiResponseHelper.FailResponse<PaginatedResponse<PetDto>>(400, new { Message = "User not found." });
             }
-            var userPets = await _petRepository.GetAllUserPetsAsync(username);
-            return ApiResponseHelper.SuccessResponse<IEnumerable<PetDto>>(200, userPets.Select(p => _mapper.Map<PetDto>(p)).ToList());
+            var paginatedPets = await _petRepository.GetAllUserPetsAsync(username, paginationParams);
+            var paginatedResponse = new PaginatedResponse<PetDto>(
+                paginatedPets.Data.Select(p => _mapper.Map<PetDto>(p)),
+                paginatedPets.PageNumber,
+                paginatedPets.PageSize,
+                paginatedPets.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<PetDto>>(200, paginatedResponse);
         }
 
         public async Task<ApiResponse<PetDto>> UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto)

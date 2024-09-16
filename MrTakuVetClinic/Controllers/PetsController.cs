@@ -39,9 +39,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("username/{username}")]
-        public async Task<IActionResult> GetUserPetsByUsernameAsync(string username)
+        public async Task<IActionResult> GetUserPetsByUsernameAsync(string username, [FromQuery] PaginationParameters paginationParams)
         {
-            var response = await _petService.GetUserPetsByUsernameAsync(username);
+            var response = await _petService.GetUserPetsByUsernameAsync(username, paginationParams);
             return StatusCode(response.StatusCode, response);
         }
 

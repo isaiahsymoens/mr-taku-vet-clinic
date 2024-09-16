@@ -41,16 +41,24 @@ namespace MrTakuVetClinic.Repositories
             return new PaginatedResponse<Pet>(pets, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
-        public async Task<IEnumerable<Pet>> GetAllUserPetsAsync(string username)
+        public async Task<PaginatedResponse<Pet>> GetAllUserPetsAsync(string username, PaginationParameters paginationParams)
         {
-            return await _context.Pets
+            var query = _context.Pets
                 .Where(p => p.User.Username == username)
                 .Include(p => p.Visits)
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)
                 .OrderBy(p => p.PetName)
+                .AsQueryable();
+
+            var totalItems = await query.CountAsync();
+            var pets = await query
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
                 .ToListAsync();
+
+            return new PaginatedResponse<Pet>(pets, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<Pet> GetPetByIdAsync(int id)
