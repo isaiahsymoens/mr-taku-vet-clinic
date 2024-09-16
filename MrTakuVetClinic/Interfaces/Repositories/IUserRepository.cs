@@ -11,7 +11,7 @@ namespace MrTakuVetClinic.Interfaces.Repositories
         Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParams);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> GetUserByUsernameAsync(string username);
-        Task<IEnumerable<User>> GetSearchUsersAsync(UserSearchDto userSearchDto);
+        Task<PaginatedResponse<User>> GetSearchUsersAsync(UserSearchDto userSearchDto);
         Task DeleteUserByUsernameAsync(string username);
         Task<bool> IsEmailExits(string email);
         Task<bool> IsUsernameExits(string username);

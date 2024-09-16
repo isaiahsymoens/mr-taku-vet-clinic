@@ -51,7 +51,6 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>> (
                 200,
                 (await _userRepository.GetAllUsersAsync())
-                .Where(u => u.UserTypeId != 1)
                 .Select(u => _mapper.Map<UserDto>(u))
             );
         }
@@ -66,14 +65,18 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
-        public async Task<ApiResponse<IEnumerable<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto)
+        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto)
         {
-            return ApiResponseHelper.SuccessResponse<IEnumerable<UserDto>>(
-                200,
-                (await _userRepository.GetSearchUsersAsync(userSearchDto))
-                .Where(u => u.UserTypeId != 1)
-                .Select(u => _mapper.Map<UserDto>(u))
+            var paginatedUsers = await _userRepository.GetSearchUsersAsync(userSearchDto);
+            var paginatedResponse = new PaginatedResponse<UserDto>(
+                paginatedUsers
+                    .Data
+                    .Select(u => _mapper.Map<UserDto>(u)),
+                paginatedUsers.PageNumber,
+                paginatedUsers.PageSize,
+                paginatedUsers.TotalItems
             );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<UserDto>>(200, paginatedResponse);
         }
 
         public async Task<ApiResponse<UserPassword>> GetUserPasswordByUsernameAsync(string username)

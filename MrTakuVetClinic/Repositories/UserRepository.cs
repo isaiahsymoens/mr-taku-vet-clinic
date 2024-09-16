@@ -19,7 +19,7 @@ namespace MrTakuVetClinic.Repositories
 
         public async Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParams)
         {
-            var totalItems = await _context.Users.CountAsync();
+            var totalItems = await _context.Users.Where(u => u.UserId != 1).CountAsync();
             var users = await _context.Users
                 .Include(u => u.Pets)
                 .Include(u => u.UserType)
@@ -50,8 +50,9 @@ namespace MrTakuVetClinic.Repositories
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<IEnumerable<User>> GetSearchUsersAsync(UserSearchDto userSearchDto)
+        public async Task<PaginatedResponse<User>> GetSearchUsersAsync(UserSearchDto userSearchDto)
         {
+            var paginationParams = new PaginationParameters();
             var query = _context.Users.AsQueryable();
             if (!string.IsNullOrEmpty(userSearchDto.Name))
             {
@@ -60,11 +61,17 @@ namespace MrTakuVetClinic.Repositories
                     (u.FirstName + " " + (u.MiddleName ?? "") + u.LastName).ToLower().Contains(name)
                 );
             }
-            return await query
+            var totalItems = await query.Where(u => u.UserTypeId != 1).CountAsync();
+            var users = await query
                 .Include(u => u.UserType)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
+                .Where(u => u.UserTypeId != 1)
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
                 .ToListAsync();
+
+            return new PaginatedResponse<User>(users, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task DeleteUserByUsernameAsync(string username)
