@@ -70,13 +70,22 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(pet));
         }
 
-        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetUserPetsByUsernameAsync(string username, PaginationParameters paginationParams)
+        public async Task<ApiResponse<IEnumerable<PetDto>>> GetUserPetsByUsernameAsync(string username)
+        {
+            return ApiResponseHelper.SuccessResponse<IEnumerable<PetDto>>(
+                200,
+                (await _petRepository.GetAllUserPetsAsync(username))
+                .Select(p => _mapper.Map<PetDto>(p)).ToList()
+            );
+        }
+
+        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetPaginatedUserPetsByUsernameAsync(string username, PaginationParameters paginationParams)
         {
             if (await _userRepository.GetUserByUsernameAsync(username) == null)
             {
                 return ApiResponseHelper.FailResponse<PaginatedResponse<PetDto>>(400, new { Message = "User not found." });
             }
-            var paginatedPets = await _petRepository.GetAllUserPetsAsync(username, paginationParams);
+            var paginatedPets = await _petRepository.GetAllPaginatedUserPetsAsync(username, paginationParams);
             var paginatedResponse = new PaginatedResponse<PetDto>(
                 paginatedPets.Data.Select(p => _mapper.Map<PetDto>(p)),
                 paginatedPets.PageNumber,

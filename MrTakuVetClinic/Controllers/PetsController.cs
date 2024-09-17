@@ -38,10 +38,17 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("username/{username}")]
-        public async Task<IActionResult> GetUserPetsByUsernameAsync(string username, [FromQuery] PaginationParameters paginationParams)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserPetsByUsernameAsync(string username)
         {
-            var response = await _petService.GetUserPetsByUsernameAsync(username, paginationParams);
+            var response = await _petService.GetUserPetsByUsernameAsync(username);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("paginated/{username}")]
+        public async Task<IActionResult> GetPaginatedUserPetsByUsernameAsync(string username, [FromQuery] PaginationParameters paginationParams)
+        {
+            var response = await _petService.GetPaginatedUserPetsByUsernameAsync(username, paginationParams);
             return StatusCode(response.StatusCode, response);
         }
 
