@@ -54,17 +54,17 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto)
+        public async Task<PaginatedResponse<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams)
         {
-            var visits = await _context.Visits
+            var query = _context.Visits
                 .Include(v => v.VisitType)
                 .Include(v => v.Pet)
                 .ThenInclude(v => v.PetType)
                 .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
-                .ToListAsync();
+                .AsQueryable();
 
-            return (visits.AsQueryable()).Where(v =>
+            query = (query.AsQueryable()).Where(v =>
                 (string.IsNullOrEmpty(visitSearchDto.FirstName) || v.Pet.User.FirstName.ToLower().Contains(visitSearchDto.FirstName.ToLower())) &&
                 (string.IsNullOrEmpty(visitSearchDto.LastName) || v.Pet.User.LastName.ToLower().Contains(visitSearchDto.LastName.ToLower())) &&
                 (string.IsNullOrEmpty(visitSearchDto.PetName) || v.Pet.PetName.ToLower().Contains(visitSearchDto.PetName.ToLower())) &&
@@ -73,6 +73,18 @@ namespace MrTakuVetClinic.Repositories
                 (!visitSearchDto.VisitDateFrom.HasValue || v.Date >= visitSearchDto.VisitDateFrom.Value) &&
                 (!visitSearchDto.VisitDateTo.HasValue || v.Date <= visitSearchDto.VisitDateTo.Value)
             );
+
+            if (paginationParams.PageSize > 0)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+
+            var totalItems = await query.CountAsync();
+            var visits = await query.ToListAsync();
+
+            return new PaginatedResponse<Visit>(visits, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<Visit> GetVisitByIdAsync(int id)

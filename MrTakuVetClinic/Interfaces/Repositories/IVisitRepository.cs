@@ -12,6 +12,6 @@ namespace MrTakuVetClinic.Interfaces.Repositories
         Task<PaginatedResponse<Visit>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams);
         Task<Visit> GetVisitByIdAsync(int id);
         Task<IEnumerable<Visit>> GetPetVisitsByIdAsync(int id);
-        Task<IEnumerable<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto);
+        Task<PaginatedResponse<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams);
     }
 }
