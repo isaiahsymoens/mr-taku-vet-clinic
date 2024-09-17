@@ -39,9 +39,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("petvisits/{id}")]
-        public async Task<IActionResult> GetPetVisitsByIdAsync(int id)
+        public async Task<IActionResult> GetPetVisitsByIdAsync(int id, [FromQuery] PaginationParameters paginationParams)
         {
-            var response = await _visitService.GetPetVisitsByIdAsync(id);
+            var response = await _visitService.GetPetVisitsByIdAsync(id, paginationParams);
             return StatusCode(response.StatusCode, response);
         }
 
