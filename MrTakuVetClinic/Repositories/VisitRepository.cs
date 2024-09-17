@@ -74,14 +74,13 @@ namespace MrTakuVetClinic.Repositories
                 (!visitSearchDto.VisitDateTo.HasValue || v.Date <= visitSearchDto.VisitDateTo.Value)
             );
 
+            var totalItems = await query.CountAsync();
             if (paginationParams.PageSize > 0)
             {
                 query = query
                     .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                     .Take(paginationParams.PageSize);
             }
-
-            var totalItems = await query.CountAsync();
             var visits = await query.ToListAsync();
 
             return new PaginatedResponse<Visit>(visits, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
