@@ -44,7 +44,7 @@ namespace MrTakuVetClinic.Repositories
             return new PaginatedResponse<Visit>(await visits.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
-        public async Task<PaginatedResponse<Visit>> GetPetVisitsByIdAsync(int id, PaginationParameters paginationParams)
+        public async Task<PaginatedResponse<Visit>> GetPetVisitsByIdAsync(int id, PaginationParameters paginationParams, VisitSortDto visitSortDto)
         {
             var query = _context.Visits
                 .Where(v => v.PetId == id)
@@ -56,6 +56,9 @@ namespace MrTakuVetClinic.Repositories
                 .AsQueryable();
 
             var totalItems = await query.CountAsync();
+
+            query = ApplyOrderBy(query, visitSortDto.SortBy, visitSortDto.Ascending);
+
             var visits = await query
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
