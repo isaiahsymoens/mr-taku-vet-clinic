@@ -43,9 +43,9 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams)
+        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams, VisitSortDto visitSortDto)
         {
-            var paginatedVisits = await _visitRepository.GetAllPaginatedVisitsAsync(paginationParams);
+            var paginatedVisits = await _visitRepository.GetAllPaginatedVisitsAsync(paginationParams, visitSortDto);
             var paginatedResponse = new PaginatedResponse<VisitDto>(
                 paginatedVisits.Data.Select(v => _mapper.Map<VisitDto>(v)),
                 paginatedVisits.PageNumber,
@@ -77,9 +77,9 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<PaginatedResponse<VisitDto>>(200, paginatedResponse);
         }
 
-        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams)
+        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams, VisitSortDto visitSortDto)
         {
-            var paginatedVisits = await _visitRepository.SearchVisitsAsync(visitSearchDto, paginationParams);
+            var paginatedVisits = await _visitRepository.SearchVisitsAsync(visitSearchDto, paginationParams, visitSortDto);
             var paginatedResponse = new PaginatedResponse<VisitDto>(
                 paginatedVisits.Data.Select(v => _mapper.Map<VisitDto>(v)),
                 paginatedVisits.PageNumber,

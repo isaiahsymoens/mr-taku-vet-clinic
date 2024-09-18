@@ -27,19 +27,21 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
         }
 
-        public async Task<PaginatedResponse<Visit>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams)
+        public async Task<PaginatedResponse<Visit>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams, VisitSortDto visitSortDto)
         {
             var totalItems = await _context.Visits.CountAsync();
-            var visits = await _context.Visits
+            var visits = _context.Visits
                 .Include(v => v.VisitType)
                 .Include(v => v.Pet)
                 .ThenInclude(v => v.PetType)
                 .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                .Take(paginationParams.PageSize)
-                .ToListAsync();
-            return new PaginatedResponse<Visit>(visits, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
+                .Take(paginationParams.PageSize);
+
+            visits = ApplyOrderBy(visits, visitSortDto.SortBy, visitSortDto.Ascending);
+
+            return new PaginatedResponse<Visit>(await visits.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<PaginatedResponse<Visit>> GetPetVisitsByIdAsync(int id, PaginationParameters paginationParams)
@@ -62,7 +64,7 @@ namespace MrTakuVetClinic.Repositories
             return new PaginatedResponse<Visit>(visits, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
-        public async Task<PaginatedResponse<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams)
+        public async Task<PaginatedResponse<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams, VisitSortDto visitSortDto)
         {
             var query = _context.Visits
                 .Include(v => v.VisitType)
@@ -89,9 +91,9 @@ namespace MrTakuVetClinic.Repositories
                     .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                     .Take(paginationParams.PageSize);
             }
-            var visits = await query.ToListAsync();
+            var visits = ApplyOrderBy(query, visitSortDto.SortBy, visitSortDto.Ascending);
 
-            return new PaginatedResponse<Visit>(visits, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
+            return new PaginatedResponse<Visit>(await visits.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<Visit> GetVisitByIdAsync(int id)
@@ -103,6 +105,23 @@ namespace MrTakuVetClinic.Repositories
                 .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
                 .FirstOrDefaultAsync(v => v.VisitId == id);
+        }
+
+        private IQueryable<Visit> ApplyOrderBy(IQueryable<Visit> query, string sortBy, bool ascending)
+        {
+            switch (sortBy)
+            {
+                case "Owner":
+                    return ascending ? query.OrderBy(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName) : query.OrderByDescending(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName);
+                case "Pet":
+                    return ascending ? query.OrderBy(v => v.Pet.PetName) : query.OrderByDescending(v => v.Pet.PetName);
+                case "VisitType":
+                    return ascending ? query.OrderBy(v => v.VisitType.TypeName) : query.OrderByDescending(v => v.VisitType.TypeName);
+                case "VisitDate":
+                    return ascending ? query.OrderBy(v => v.Date) : query.OrderByDescending(v => v.Date);
+                default:
+                    return ascending ? query.OrderBy(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName) : query.OrderByDescending(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName);
+            }
         }
     }
 }

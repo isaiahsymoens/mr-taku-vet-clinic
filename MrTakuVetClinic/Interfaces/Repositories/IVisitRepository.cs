@@ -9,9 +9,9 @@ namespace MrTakuVetClinic.Interfaces.Repositories
     public interface IVisitRepository : IRepository<Visit>
     {
         Task<IEnumerable<Visit>> GetAllVisitsAsync();
-        Task<PaginatedResponse<Visit>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams);
+        Task<PaginatedResponse<Visit>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams, VisitSortDto visitSortDto);
         Task<Visit> GetVisitByIdAsync(int id);
         Task<PaginatedResponse<Visit>> GetPetVisitsByIdAsync(int id, PaginationParameters paginationParams);
-        Task<PaginatedResponse<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams);
+        Task<PaginatedResponse<Visit>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams, VisitSortDto visitSortDto);
     }
 }

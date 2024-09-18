@@ -25,9 +25,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpGet("paginated")]
-        public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllPaginatedVisitsAsync([FromQuery] PaginationParameters paginationParams)
+        public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllPaginatedVisitsAsync([FromQuery] PaginationParameters paginationParams, [FromQuery] VisitSortDto visitSortDto)
         {
-            var response = await _visitService.GetAllPaginatedVisitsAsync(paginationParams);
+            var response = await _visitService.GetAllPaginatedVisitsAsync(paginationParams, visitSortDto);
             return StatusCode(response.StatusCode, response);
         }
 
@@ -46,9 +46,9 @@ namespace MrTakuVetClinic.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> SearchVisitsAsync([FromBody] VisitSearchDto visitSearchDto, [FromQuery] PaginationParameters paginationParams)
+        public async Task<IActionResult> SearchVisitsAsync([FromBody] VisitSearchDto visitSearchDto, [FromQuery] PaginationParameters paginationParams, [FromQuery] VisitSortDto visitSortDto)
         {
-            var response = await _visitService.SearchVisitsAsync(visitSearchDto, paginationParams);
+            var response = await _visitService.SearchVisitsAsync(visitSearchDto, paginationParams, visitSortDto);
             return StatusCode(response.StatusCode, response);
         }
 
