@@ -91,7 +91,6 @@ namespace MrTakuVetClinic.Services
 
         public async Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto)
         {
-            userPostDto.UserTypeId = 2; // Temporary fix
             var validationResult = _userValidator.Validate(userPostDto);
             if (!validationResult.IsValid)
             {
