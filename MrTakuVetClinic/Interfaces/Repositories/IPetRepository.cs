@@ -14,6 +14,5 @@ namespace MrTakuVetClinic.Interfaces.Repositories
         Task<IEnumerable<Pet>> GetAllUserPetsAsync(string username);
         Task<PaginatedResponse<Pet>> GetAllPaginatedUserPetsAsync(string username, PaginationParameters paginationParams);
         Task<Pet> GetPetByIdAsync(int id);
-        IQueryable<Pet> ApplyOrderBy(IQueryable<Pet> query, string sortBy, bool ascending);
     }
 }
