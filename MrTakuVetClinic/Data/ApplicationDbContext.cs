@@ -154,8 +154,7 @@ namespace MrTakuVetClinic.Data
                     .IsRequired();
 
                 entity.Property(v => v.Notes)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                    .IsRequired();
 
                 entity.HasOne(v => v.VisitType)
                     .WithMany()

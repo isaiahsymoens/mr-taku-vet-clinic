@@ -13,8 +13,7 @@ namespace MrTakuVetClinic.Validators
                 .NotEmpty().WithMessage("Date is required.");
             RuleFor(v => v.PetId)
                 .NotEmpty().WithMessage("Pet ID is required.");
-            RuleFor(v => v.Notes)
-                .MaximumLength(100).WithMessage("Notes cannot exceed 100 characters.");
+            RuleFor(v => v.Notes);
         }
     }
 }
