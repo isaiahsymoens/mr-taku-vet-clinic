@@ -4,7 +4,6 @@ using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,19 +97,19 @@ namespace MrTakuVetClinic.Repositories
 
         private IQueryable<User> ApplyOrderBy(IQueryable<User> query, string sortBy, bool ascending)
         {
-            switch (sortBy)
+            switch (sortBy.ToLower())
             {
-                case "Name":
+                case "name":
                     return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
-                case "FirstName":
+                case "firstname":
                     return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
-                case "LastName":
+                case "lastname":
                     return ascending ? query.OrderBy(u => u.LastName).ThenBy(u => u.FirstName) : query.OrderByDescending(u => u.LastName).ThenBy(u => u.FirstName);
-                case "Email":
+                case "email":
                     return ascending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
-                case "PetOwned":
-                    return ascending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
-                case "Active":
+                case "petowned":
+                    return ascending ? query.OrderBy(u => u.Pets.Count) : query.OrderByDescending(u => u.Pets.Count);
+                case "active":
                     return ascending ? query.OrderBy(u => u.Active) : query.OrderByDescending(u => u.Active);
                 default:
                     return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
