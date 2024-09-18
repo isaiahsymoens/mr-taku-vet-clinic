@@ -32,9 +32,9 @@ namespace MrTakuVetClinic.Services
             _mapper = mapper;
         }
 
-        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParams)
+        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParams, UserSortDto userSortDto)
         {
-            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(paginationParams);
+            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(paginationParams, userSortDto);
             var paginatedResponse = new PaginatedResponse<UserDto>(
                 paginatedUsers
                     .Data
@@ -65,9 +65,9 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<UserDto>(200, _mapper.Map<UserDto>(user));
         }
 
-        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto)
+        public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto, UserSortDto userSortDto)
         {
-            var paginatedUsers = await _userRepository.GetSearchUsersAsync(userSearchDto);
+            var paginatedUsers = await _userRepository.GetSearchUsersAsync(userSearchDto, userSortDto);
             var paginatedResponse = new PaginatedResponse<UserDto>(
                 paginatedUsers
                     .Data

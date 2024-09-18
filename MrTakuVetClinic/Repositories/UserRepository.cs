@@ -17,20 +17,21 @@ namespace MrTakuVetClinic.Repositories
         {
         }
 
-        public async Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParams)
+        public async Task<PaginatedResponse<User>> GetPaginatedUsersAsync(PaginationParameters paginationParams, UserSortDto userSortDto)
         {
             var totalItems = await _context.Users.Where(u => u.UserId != 1).CountAsync();
-            var users = await _context.Users
+            var users = _context.Users
                 .Include(u => u.Pets)
                 .Include(u => u.UserType)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
                 .Where(u => u.UserTypeId != 1)
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                .Take(paginationParams.PageSize)
-                .ToListAsync();
+                .Take(paginationParams.PageSize);
 
-            return new PaginatedResponse<User>(users, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
+            users = ApplyOrderBy(users, userSortDto.SortBy, userSortDto.Ascending);
+
+            return new PaginatedResponse<User>(await users.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
@@ -50,7 +51,7 @@ namespace MrTakuVetClinic.Repositories
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<PaginatedResponse<User>> GetSearchUsersAsync(UserSearchDto userSearchDto)
+        public async Task<PaginatedResponse<User>> GetSearchUsersAsync(UserSearchDto userSearchDto, UserSortDto userSortDto)
         {
             var paginationParams = new PaginationParameters();
             var query = _context.Users.AsQueryable();
@@ -62,16 +63,17 @@ namespace MrTakuVetClinic.Repositories
                 );
             }
             var totalItems = await query.Where(u => u.UserTypeId != 1).CountAsync();
-            var users = await query
+            var users = query
                 .Include(u => u.UserType)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
                 .Where(u => u.UserTypeId != 1)
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                .Take(paginationParams.PageSize)
-                .ToListAsync();
+                .Take(paginationParams.PageSize);
 
-            return new PaginatedResponse<User>(users, paginationParams.PageNumber, paginationParams.PageSize, totalItems);
+            users = ApplyOrderBy(users, userSortDto.SortBy, userSortDto.Ascending);
+
+            return new PaginatedResponse<User>(await users.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
 
         public async Task DeleteUserByUsernameAsync(string username)
@@ -92,6 +94,27 @@ namespace MrTakuVetClinic.Repositories
         public async Task<bool> IsUsernameExits(string username)
         {
             return await _context.Users.AnyAsync(u => u.Username == username);
+        }
+
+        private IQueryable<User> ApplyOrderBy(IQueryable<User> query, string sortBy, bool ascending)
+        {
+            switch (sortBy)
+            {
+                case "Name":
+                    return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
+                case "FirstName":
+                    return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
+                case "LastName":
+                    return ascending ? query.OrderBy(u => u.LastName).ThenBy(u => u.FirstName) : query.OrderByDescending(u => u.LastName).ThenBy(u => u.FirstName);
+                case "Email":
+                    return ascending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
+                case "PetOwned":
+                    return ascending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
+                case "Active":
+                    return ascending ? query.OrderBy(u => u.Active) : query.OrderByDescending(u => u.Active);
+                default:
+                    return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
+            }
         }
     }
 }
