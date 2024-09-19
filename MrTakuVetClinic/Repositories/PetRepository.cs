@@ -56,7 +56,7 @@ namespace MrTakuVetClinic.Repositories
                 .ToListAsync();
         }
 
-        public async Task<PaginatedResponse<Pet>> GetAllPaginatedUserPetsAsync(string username, PaginationParameters paginationParams)
+        public async Task<PaginatedResponse<Pet>> GetAllPaginatedUserPetsAsync(string username, PaginationParameters paginationParams, PetSortDto petSortDto)
         {
             var query = _context.Pets
                 .Where(p => p.User.Username == username)
@@ -66,8 +66,8 @@ namespace MrTakuVetClinic.Repositories
                 .ThenInclude(p => p.UserType)
                 .OrderBy(p => p.PetName)
                 .AsQueryable();
-
             var totalItems = await query.CountAsync();
+            query = ApplyOrderBy(query, petSortDto.SortBy, petSortDto.Ascending);
             var pets = await query
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
@@ -87,14 +87,14 @@ namespace MrTakuVetClinic.Repositories
 
         private IQueryable<Pet> ApplyOrderBy(IQueryable<Pet> query, string sortBy, bool ascending)
         {
-            switch (sortBy)
+            switch (sortBy.ToLower())
             {
-                case "PetName":
+                case "petname":
                     return ascending ? query.OrderBy(p => p.PetName) : query.OrderByDescending(p => p.PetName);
-                case "BirthDate":
+                case "birthdate":
                     return ascending ? query.OrderBy(p => p.BirthDate) : query.OrderByDescending(p => p.BirthDate);
-                case "NoOfVisits":
-                    return ascending ? query.OrderBy(p => p.PetName) : query.OrderByDescending(p => p.PetName);
+                case "noofvisits":
+                    return ascending ? query.OrderBy(p => p.Visits.Count) : query.OrderByDescending(p => p.Visits.Count);
                 default:
                     return ascending ? query.OrderBy(p => p.PetName) : query.OrderByDescending(p => p.PetName);
             }

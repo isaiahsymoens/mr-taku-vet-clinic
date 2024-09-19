@@ -6,7 +6,6 @@ using MrTakuVetClinic.Helpers;
 using MrTakuVetClinic.Interfaces.Repositories;
 using MrTakuVetClinic.Interfaces.Services;
 using MrTakuVetClinic.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,13 +78,13 @@ namespace MrTakuVetClinic.Services
             );
         }
 
-        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetPaginatedUserPetsByUsernameAsync(string username, PaginationParameters paginationParams)
+        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetPaginatedUserPetsByUsernameAsync(string username, PaginationParameters paginationParams, PetSortDto petSortDto)
         {
             if (await _userRepository.GetUserByUsernameAsync(username) == null)
             {
                 return ApiResponseHelper.FailResponse<PaginatedResponse<PetDto>>(400, new { Message = "User not found." });
             }
-            var paginatedPets = await _petRepository.GetAllPaginatedUserPetsAsync(username, paginationParams);
+            var paginatedPets = await _petRepository.GetAllPaginatedUserPetsAsync(username, paginationParams, petSortDto);
             var paginatedResponse = new PaginatedResponse<PetDto>(
                 paginatedPets.Data.Select(p => _mapper.Map<PetDto>(p)),
                 paginatedPets.PageNumber,
@@ -142,7 +141,6 @@ namespace MrTakuVetClinic.Services
             if (user == null)
             {
                 return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "User not found." });
-
             }
             if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
             {

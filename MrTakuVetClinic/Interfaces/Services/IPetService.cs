@@ -11,7 +11,7 @@ namespace MrTakuVetClinic.Interfaces.Services
         Task<ApiResponse<PaginatedResponse<PetDto>>> GetAllPaginatedPetsAsync(PaginationParameters paginationParams, PetSortDto petSortDto);
         Task<ApiResponse<PetDto>> GetPetByIdAsync(int id);
         Task<ApiResponse<IEnumerable<PetDto>>> GetUserPetsByUsernameAsync(string username);
-        Task<ApiResponse<PaginatedResponse<PetDto>>> GetPaginatedUserPetsByUsernameAsync(string username, PaginationParameters paginationParams);
+        Task<ApiResponse<PaginatedResponse<PetDto>>> GetPaginatedUserPetsByUsernameAsync(string username, PaginationParameters paginationParams, PetSortDto petSortDto);
         Task<ApiResponse<PetDto>> UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto);
         Task<ApiResponse<PetDto>> PostPetAsync(PetPostDto petPostDto);
         Task<ApiResponse<PetDto>> DeletePetAsync(int id);

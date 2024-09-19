@@ -12,7 +12,7 @@ namespace MrTakuVetClinic.Interfaces.Repositories
         Task<IEnumerable<Pet>> GetAllPetsAsync();
         Task<PaginatedResponse<Pet>> GetPaginatedPetsAsync(PaginationParameters paginationParams, PetSortDto petSortDto);
         Task<IEnumerable<Pet>> GetAllUserPetsAsync(string username);
-        Task<PaginatedResponse<Pet>> GetAllPaginatedUserPetsAsync(string username, PaginationParameters paginationParams);
+        Task<PaginatedResponse<Pet>> GetAllPaginatedUserPetsAsync(string username, PaginationParameters paginationParams, PetSortDto petSortDto);
         Task<Pet> GetPetByIdAsync(int id);
     }
 }
