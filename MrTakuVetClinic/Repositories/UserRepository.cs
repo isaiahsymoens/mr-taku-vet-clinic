@@ -63,6 +63,7 @@ namespace MrTakuVetClinic.Repositories
             }
             var totalItems = await query.Where(u => u.UserTypeId != 1).CountAsync();
             var users = query
+                .Include(u => u.Pets)
                 .Include(u => u.UserType)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
