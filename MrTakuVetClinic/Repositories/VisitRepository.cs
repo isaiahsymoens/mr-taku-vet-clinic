@@ -112,15 +112,19 @@ namespace MrTakuVetClinic.Repositories
 
         private IQueryable<Visit> ApplyOrderBy(IQueryable<Visit> query, string sortBy, bool ascending)
         {
-            switch (sortBy)
+            switch (sortBy.ToLower())
             {
-                case "Owner":
+                case "owner":
+                case "pet.user.name":
                     return ascending ? query.OrderBy(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName) : query.OrderByDescending(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName);
                 case "Pet":
+                case "pet.petname":
                     return ascending ? query.OrderBy(v => v.Pet.PetName) : query.OrderByDescending(v => v.Pet.PetName);
                 case "VisitType":
+                case "visittype.typename":
                     return ascending ? query.OrderBy(v => v.VisitType.TypeName) : query.OrderByDescending(v => v.VisitType.TypeName);
-                case "VisitDate":
+                case "Visitdate":
+                case "date":
                     return ascending ? query.OrderBy(v => v.Date) : query.OrderByDescending(v => v.Date);
                 default:
                     return ascending ? query.OrderBy(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName) : query.OrderByDescending(v => v.Pet.User.FirstName).ThenBy(v => v.Pet.User.LastName);
