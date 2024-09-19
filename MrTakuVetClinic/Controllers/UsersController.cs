@@ -60,6 +60,13 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> PostLoginUser([FromBody] UserLoginDto userLoginDto)
+        {
+            var response = await _userService.PostLoginUserAsync(userLoginDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpPut("{username}")]
         public async Task<IActionResult> PutUser(string username, [FromBody] UserUpdateDto user)
         {

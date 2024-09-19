@@ -131,6 +131,21 @@ namespace MrTakuVetClinic.Services
             );
         }
 
+         public async Task<ApiResponse<UserDto>> PostLoginUserAsync(UserLoginDto userLoginDto)
+        {
+            var user = await _userRepository.GetUserByUsernameAsync(userLoginDto.UserName);
+            if (await _userRepository.GetUserByUsernameAsync(userLoginDto.UserName) == null)
+            {
+                return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Couldn't find your Account." });
+            }
+            var userPassword = await GetUserPasswordByUsernameAsync(userLoginDto.UserName);
+            if (userPassword.Data.Password != userLoginDto.Password)
+            {
+                return ApiResponseHelper.FailResponse<UserDto>(400, new { Password = "Incorrect Password." });
+            }
+            return ApiResponseHelper.SuccessResponse<UserDto>(201, _mapper.Map<UserDto>(user));
+        }
+
         public async Task<ApiResponse<UserDto>> UpdateUserAsync(String username, UserUpdateDto userUpdateDto)
         {
             var existingUser = await _userRepository.GetUserByUsernameAsync(username);

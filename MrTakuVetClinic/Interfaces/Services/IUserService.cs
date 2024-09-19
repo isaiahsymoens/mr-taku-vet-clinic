@@ -15,6 +15,7 @@ namespace MrTakuVetClinic.Interfaces.Services
         Task<ApiResponse<PaginatedResponse<UserDto>>> GetSearchUsersAsync(UserSearchDto userSearchDto, UserSortDto userSortDto);
         Task<ApiResponse<UserPassword>> GetUserPasswordByUsernameAsync(string username);
         Task<ApiResponse<UserDto>> PostUserAsync(UserPostDto userPostDto);
+        Task<ApiResponse<UserDto>> PostLoginUserAsync(UserLoginDto userLoginDto);
         Task<ApiResponse<UserDto>> UpdateUserAsync(String username, UserUpdateDto userUpdateDto);
         Task<ApiResponse<UserDto>> DeleteUserByUsernameAsync(string username);
     }
