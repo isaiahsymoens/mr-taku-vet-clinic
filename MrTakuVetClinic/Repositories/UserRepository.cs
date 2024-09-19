@@ -109,9 +109,9 @@ namespace MrTakuVetClinic.Repositories
                 case "email":
                     return ascending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
                 case "petowned":
-                    return ascending ? query.OrderBy(u => u.Pets.Count) : query.OrderByDescending(u => u.Pets.Count);
+                    return ascending ? query.OrderByDescending(u => u.Pets.Count) : query.OrderBy(u => u.Pets.Count);
                 case "active":
-                    return ascending ? query.OrderBy(u => u.Active) : query.OrderByDescending(u => u.Active);
+                    return ascending ? query.OrderByDescending(u => u.Active) : query.OrderBy(u => u.Active);
                 default:
                     return ascending ? query.OrderBy(u => u.FirstName).ThenBy(u => u.LastName) : query.OrderByDescending(u => u.FirstName).ThenBy(u => u.LastName);
             }

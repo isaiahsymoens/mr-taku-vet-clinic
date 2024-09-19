@@ -94,7 +94,8 @@ namespace MrTakuVetClinic.Repositories
                 case "birthdate":
                     return ascending ? query.OrderBy(p => p.BirthDate) : query.OrderByDescending(p => p.BirthDate);
                 case "noofvisits":
-                    return ascending ? query.OrderBy(p => p.Visits.Count) : query.OrderByDescending(p => p.Visits.Count);
+                case "numberofvisits":
+                    return ascending ? query.OrderByDescending(p => p.Visits.Count) : query.OrderBy(p => p.Visits.Count);
                 default:
                     return ascending ? query.OrderBy(p => p.PetName) : query.OrderByDescending(p => p.PetName);
             }
