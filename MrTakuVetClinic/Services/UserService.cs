@@ -141,7 +141,7 @@ namespace MrTakuVetClinic.Services
             var userPassword = await GetUserPasswordByUsernameAsync(userLoginDto.UserName);
             if (userPassword.Data.Password != userLoginDto.Password)
             {
-                return ApiResponseHelper.FailResponse<UserDto>(400, new { Password = "Incorrect Password." });
+                return ApiResponseHelper.FailResponse<UserDto>(400, new { Password = "Incorrect password." });
             }
             return ApiResponseHelper.SuccessResponse<UserDto>(201, _mapper.Map<UserDto>(user));
         }

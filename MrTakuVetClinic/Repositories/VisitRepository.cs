@@ -83,8 +83,8 @@ namespace MrTakuVetClinic.Repositories
                 (string.IsNullOrEmpty(visitSearchDto.PetName) || v.Pet.PetName.ToLower().Contains(visitSearchDto.PetName.ToLower())) &&
                 (string.IsNullOrEmpty(visitSearchDto.PetType) || v.Pet.PetType.TypeName.ToLower().Contains(visitSearchDto.PetType.ToLower())) &&
                 (string.IsNullOrEmpty(visitSearchDto.VisitType) || v.VisitType.TypeName.ToLower().Contains(visitSearchDto.VisitType.ToLower())) &&
-                (!visitSearchDto.VisitDateFrom.HasValue || v.Date >= visitSearchDto.VisitDateFrom.Value) &&
-                (!visitSearchDto.VisitDateTo.HasValue || v.Date <= visitSearchDto.VisitDateTo.Value)
+                (!visitSearchDto.VisitDateFrom.HasValue || v.Date.Date >= visitSearchDto.VisitDateFrom.Value.Date) &&
+                (!visitSearchDto.VisitDateTo.HasValue || v.Date.Date <= visitSearchDto.VisitDateTo.Value.Date)
             );
 
             var totalItems = await query.CountAsync();
