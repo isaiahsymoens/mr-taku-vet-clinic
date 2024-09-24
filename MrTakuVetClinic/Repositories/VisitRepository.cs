@@ -53,6 +53,7 @@ namespace MrTakuVetClinic.Repositories
                 .ThenInclude(v => v.PetType)
                 .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .AsQueryable();
 
             var totalItems = await query.CountAsync();
@@ -60,7 +61,6 @@ namespace MrTakuVetClinic.Repositories
             query = ApplyOrderBy(query, visitSortDto.SortBy, visitSortDto.Ascending);
 
             var visits = await query
-                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
                 .ToListAsync();
 
