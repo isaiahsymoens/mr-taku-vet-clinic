@@ -187,7 +187,7 @@ namespace MrTakuVetClinic.Services
             }
             if (userUpdateDto.Password != null)
             {
-                existingUser.Password = _passwordHasher.HashPassword(existingUser, userUpdateDto.Password);
+                existingUser.Password = userUpdateDto.Password;
             }
             if (userUpdateDto.Username != null)
             {
@@ -209,6 +209,25 @@ namespace MrTakuVetClinic.Services
             if (errors.Any())
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, errors);
+            }
+
+            var validationResult = _userValidator.Validate(_mapper.Map<UserPostDto>(existingUser));
+            if (!validationResult.IsValid)
+            {
+                return ApiResponseHelper.FailResponse<UserDto>(
+                    400,
+                    validationResult.Errors
+                        .GroupBy(e => e.PropertyName)
+                        .ToDictionary(
+                            e => e.Key,
+                            e => e.First().ErrorMessage
+                        )
+                );
+            }
+
+            if (userUpdateDto.Password != null)
+            {
+                existingUser.Password = _passwordHasher.HashPassword(existingUser, userUpdateDto.Password);
             }
 
             await _userRepository.UpdateAsync(existingUser);

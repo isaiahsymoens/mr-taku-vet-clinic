@@ -12,6 +12,7 @@ namespace MrTakuVetClinic.Mappings
                 .ForMember(dest => dest.UserType, opt => opt.MapFrom(src => src.UserType.TypeName))
                 .ForMember(dest => dest.PetOwned, opt => opt.MapFrom(src => src.Pets.Count));
             CreateMap<UserPostDto, User>();
+            CreateMap<User, UserPostDto>();
             CreateMap<UserDto, User>();
             CreateMap<User, UserPassword>();
         }
