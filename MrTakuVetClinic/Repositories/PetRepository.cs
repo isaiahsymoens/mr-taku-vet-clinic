@@ -35,7 +35,6 @@ namespace MrTakuVetClinic.Repositories
                 .Include(p => p.PetType)
                 .Include(p => p.User)
                 .ThenInclude(p => p.UserType)
-                .OrderBy(p => p.PetName)
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize);
 
@@ -60,16 +59,15 @@ namespace MrTakuVetClinic.Repositories
         {
             var query = _context.Pets
                 .Where(p => p.User.Username == username)
-                .Include(p => p.Visits)
-                .Include(p => p.PetType)
-                .Include(p => p.User)
-                .ThenInclude(p => p.UserType)
-                .OrderBy(p => p.PetName)
-                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .AsQueryable();
             var totalItems = await query.CountAsync();
             query = ApplyOrderBy(query, petSortDto.SortBy, petSortDto.Ascending);
             var pets = await query
+                .Include(p => p.Visits)
+                .Include(p => p.PetType)
+                .Include(p => p.User)
+                .ThenInclude(p => p.UserType)
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize)
                 .ToListAsync();
 
