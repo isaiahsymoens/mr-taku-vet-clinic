@@ -20,15 +20,13 @@ namespace MrTakuVetClinic.Repositories
         {
             var totalItems = await _context.Users.Where(u => u.UserId != 1).CountAsync();
             var users = _context.Users
-                .Include(u => u.Pets)
-                .Include(u => u.UserType)
-                .OrderBy(u => u.FirstName)
-                .ThenBy(u => u.LastName)
-                .Where(u => u.UserTypeId != 1)
-                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                .Take(paginationParams.PageSize);
+                .Where(u => u.UserTypeId != 1);
 
             users = ApplyOrderBy(users, userSortDto.SortBy, userSortDto.Ascending);
+            users = users.Include(u => u.Pets)
+                .Include(u => u.UserType)
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize);
 
             return new PaginatedResponse<User>(await users.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
@@ -65,8 +63,6 @@ namespace MrTakuVetClinic.Repositories
             var users = query
                 .Include(u => u.Pets)
                 .Include(u => u.UserType)
-                .OrderBy(u => u.FirstName)
-                .ThenBy(u => u.LastName)
                 .Where(u => u.UserTypeId != 1)
                 .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
                 .Take(paginationParams.PageSize);
