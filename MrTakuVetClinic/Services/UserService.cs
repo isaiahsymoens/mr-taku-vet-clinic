@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using MrTakuVetClinic.DTOs.User;
 using MrTakuVetClinic.Entities;
 using MrTakuVetClinic.Helpers;
@@ -19,6 +20,7 @@ namespace MrTakuVetClinic.Services
         private readonly IUserTypeRepository _userTypeRepository;
         private readonly IValidator<UserPostDto> _userValidator;
         private readonly IMapper _mapper;
+        private readonly PasswordHasher<User> _passwordHasher;
 
         public UserService(
             IUserRepository userRepository, 
@@ -30,6 +32,7 @@ namespace MrTakuVetClinic.Services
             _userTypeRepository = userTypeRepository;
             _userValidator = userValidator;
             _mapper = mapper;
+            _passwordHasher = new PasswordHasher<User>();
         }
 
         public async Task<ApiResponse<PaginatedResponse<UserDto>>> GetAllPaginatedUsersAsync(PaginationParameters paginationParams, UserSortDto userSortDto)
@@ -123,8 +126,11 @@ namespace MrTakuVetClinic.Services
             {
                 return ApiResponseHelper.FailResponse<UserDto>(404, errors);
             }
-            
-            var userResponse = await _userRepository.AddAsync(_mapper.Map<User>(userPostDto));
+
+            var user = _mapper.Map<User>(userPostDto);
+            user.Password = _passwordHasher.HashPassword(user, userPostDto.Password);
+
+            var userResponse = await _userRepository.AddAsync(user);
             return ApiResponseHelper.SuccessResponse<UserDto>(
                 201,
                 _mapper.Map<UserDto>(userResponse)
@@ -134,15 +140,19 @@ namespace MrTakuVetClinic.Services
          public async Task<ApiResponse<UserDto>> PostLoginUserAsync(UserLoginDto userLoginDto)
         {
             var user = await _userRepository.GetUserByUsernameAsync(userLoginDto.UserName);
-            if (await _userRepository.GetUserByUsernameAsync(userLoginDto.UserName) == null)
+            if (user == null)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Username = "Couldn't find your Account." });
             }
+
             var userPassword = await GetUserPasswordByUsernameAsync(userLoginDto.UserName);
-            if (userPassword.Data.Password != userLoginDto.Password)
+            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, userPassword.Data.Password, userLoginDto.Password);
+
+            if (passwordVerificationResult != PasswordVerificationResult.Success)
             {
                 return ApiResponseHelper.FailResponse<UserDto>(400, new { Password = "Incorrect password." });
             }
+
             return ApiResponseHelper.SuccessResponse<UserDto>(201, _mapper.Map<UserDto>(user));
         }
 
@@ -177,7 +187,7 @@ namespace MrTakuVetClinic.Services
             }
             if (userUpdateDto.Password != null)
             {
-                existingUser.Password = userUpdateDto.Password;
+                existingUser.Password = _passwordHasher.HashPassword(existingUser, userUpdateDto.Password);
             }
             if (userUpdateDto.Username != null)
             {
