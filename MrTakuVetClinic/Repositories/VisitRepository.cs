@@ -36,10 +36,13 @@ namespace MrTakuVetClinic.Repositories
                 .ThenInclude(v => v.PetType)
                 .Include(v => v.Pet.User)
                 .ThenInclude(v => v.UserType)
-                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                .Take(paginationParams.PageSize);
+                .AsQueryable();
 
             visits = ApplyOrderBy(visits, visitSortDto.SortBy, visitSortDto.Ascending);
+
+            visits = visits
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize);
 
             return new PaginatedResponse<Visit>(await visits.ToListAsync(), paginationParams.PageNumber, paginationParams.PageSize, totalItems);
         }
