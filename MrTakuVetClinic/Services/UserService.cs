@@ -187,7 +187,16 @@ namespace MrTakuVetClinic.Services
             }
             if (userUpdateDto.Password != null)
             {
-                existingUser.Password = userUpdateDto.Password;
+                var passwordVerification = _passwordHasher.VerifyHashedPassword(existingUser, existingUser.Password, userUpdateDto.Password);
+
+                if (passwordVerification == PasswordVerificationResult.Success)
+                {
+                    errors["Password"] = "New password cannot be the same as the old password.";
+                }
+                else
+                {
+                    existingUser.Password = userUpdateDto.Password;
+                }
             }
             if (userUpdateDto.Username != null)
             {
