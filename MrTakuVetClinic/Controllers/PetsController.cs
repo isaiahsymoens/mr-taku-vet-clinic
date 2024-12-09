@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Pet;
+using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -23,10 +24,31 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetAllPaginatedPetsAsync([FromQuery] PaginationParameters paginationParams, [FromQuery] PetSortDto petSortDto)
+        {
+            var response = await _petService.GetAllPaginatedPetsAsync(paginationParams, petSortDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("id/{id}")]
         public async Task<IActionResult> GetPetByIdAsync(int id)
         {
             var response = await _petService.GetPetByIdAsync(id);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserPetsByUsernameAsync(string username)
+        {
+            var response = await _petService.GetUserPetsByUsernameAsync(username);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("paginated/{username}")]
+        public async Task<IActionResult> GetPaginatedUserPetsByUsernameAsync(string username, [FromQuery] PaginationParameters paginationParams, [FromQuery] PetSortDto petSortDto)
+        {
+            var response = await _petService.GetPaginatedUserPetsByUsernameAsync(username, paginationParams, petSortDto);
             return StatusCode(response.StatusCode, response);
         }
 

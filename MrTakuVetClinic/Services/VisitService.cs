@@ -43,6 +43,18 @@ namespace MrTakuVetClinic.Services
             );
         }
 
+        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> GetAllPaginatedVisitsAsync(PaginationParameters paginationParams, VisitSortDto visitSortDto)
+        {
+            var paginatedVisits = await _visitRepository.GetAllPaginatedVisitsAsync(paginationParams, visitSortDto);
+            var paginatedResponse = new PaginatedResponse<VisitDto>(
+                paginatedVisits.Data.Select(v => _mapper.Map<VisitDto>(v)),
+                paginatedVisits.PageNumber,
+                paginatedVisits.PageSize,
+                paginatedVisits.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<VisitDto>>(200, paginatedResponse);
+        }
+
         public async Task<ApiResponse<VisitDto>> GetVisitById(int id)
         {
             var visit = await _visitRepository.GetVisitByIdAsync(id);
@@ -53,13 +65,28 @@ namespace MrTakuVetClinic.Services
             return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
         }
 
-        public async Task<ApiResponse<IEnumerable<VisitDto>>> SearchVisitsAsync(VisitSearchDto visitSearchDto)
+        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> GetPetVisitsByIdAsync(int id, PaginationParameters paginationParams, VisitSortDto visitSortDto)
         {
-            return ApiResponseHelper.SuccessResponse<IEnumerable<VisitDto>>(
-                200,
-                (await _visitRepository.SearchVisitsAsync(visitSearchDto))
-                .Select(v => _mapper.Map<VisitDto>(v)).ToList()
+            var paginatedVisits = await _visitRepository.GetPetVisitsByIdAsync(id, paginationParams, visitSortDto);
+            var paginatedResponse = new PaginatedResponse<VisitDto>(
+                paginatedVisits.Data.Select(v => _mapper.Map<VisitDto>(v)),
+                paginatedVisits.PageNumber,
+                paginatedVisits.PageSize,
+                paginatedVisits.TotalItems
             );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<VisitDto>>(200, paginatedResponse);
+        }
+
+        public async Task<ApiResponse<PaginatedResponse<VisitDto>>> SearchVisitsAsync(VisitSearchDto visitSearchDto, PaginationParameters paginationParams, VisitSortDto visitSortDto)
+        {
+            var paginatedVisits = await _visitRepository.SearchVisitsAsync(visitSearchDto, paginationParams, visitSortDto);
+            var paginatedResponse = new PaginatedResponse<VisitDto>(
+                paginatedVisits.Data.Select(v => _mapper.Map<VisitDto>(v)),
+                paginatedVisits.PageNumber,
+                paginatedVisits.PageSize,
+                paginatedVisits.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<VisitDto>>(200, paginatedResponse);
         }
 
         public async Task<ApiResponse<VisitDto>> PostVisitAsync(VisitPostDto visitPostDto)
@@ -89,6 +116,36 @@ namespace MrTakuVetClinic.Services
 
             var visitResponse = await _visitRepository.AddAsync(_mapper.Map<Visit>(_mapper.Map<Visit>(visitPostDto)));
             return await GetVisitById(visitResponse.VisitId);
+        }
+
+        public async Task<ApiResponse<VisitDto>> UpdatePetByIdAsync(int id, VisitUpdateDto visitUpdateDto)
+        {
+            var existingVisit = await _visitRepository.GetByIdAsync(id);
+            if (existingVisit == null)
+            {
+                return ApiResponseHelper.FailResponse<VisitDto>(404, new { Message = "Visit record not found." });
+            }
+
+            if (visitUpdateDto.VisitTypeId != null)
+            {
+                existingVisit.VisitTypeId = visitUpdateDto.VisitTypeId.Value;
+            }
+            if (visitUpdateDto.Date != null)
+            { 
+                existingVisit.Date = visitUpdateDto.Date;
+            }
+            if (visitUpdateDto.PetId != null)
+            { 
+                existingVisit.PetId = visitUpdateDto.PetId.Value;
+            }
+            if (visitUpdateDto.Notes != null)
+            { 
+                existingVisit.Notes = visitUpdateDto.Notes;
+            }
+            await _visitRepository.UpdateAsync(existingVisit);
+            var visit = await _visitRepository.GetVisitByIdAsync(id);
+
+            return ApiResponseHelper.SuccessResponse<VisitDto>(200, _mapper.Map<VisitDto>(visit));
         }
 
         public async Task<ApiResponse<VisitDto>> DeleteVisitAsync(int id)

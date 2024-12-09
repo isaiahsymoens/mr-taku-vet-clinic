@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.Visit;
+using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,6 +24,13 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpGet("paginated")]
+        public async Task<ActionResult<IEnumerable<VisitDto>>> GetAllPaginatedVisitsAsync([FromQuery] PaginationParameters paginationParams, [FromQuery] VisitSortDto visitSortDto)
+        {
+            var response = await _visitService.GetAllPaginatedVisitsAsync(paginationParams, visitSortDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVisitByIdAsync(int id)
         {
@@ -30,10 +38,17 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchVisitsAsync([FromBody] VisitSearchDto visitSearchDto)
+        [HttpGet("petvisits/{id}")]
+        public async Task<IActionResult> GetPetVisitsByIdAsync(int id, [FromQuery] PaginationParameters paginationParams, [FromQuery] VisitSortDto visitSortDto)
         {
-            var response = await _visitService.SearchVisitsAsync(visitSearchDto);
+            var response = await _visitService.GetPetVisitsByIdAsync(id, paginationParams, visitSortDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchVisitsAsync([FromBody] VisitSearchDto visitSearchDto, [FromQuery] PaginationParameters paginationParams, [FromQuery] VisitSortDto visitSortDto)
+        {
+            var response = await _visitService.SearchVisitsAsync(visitSearchDto, paginationParams, visitSortDto);
             return StatusCode(response.StatusCode, response);
         }
 
@@ -41,6 +56,13 @@ namespace MrTakuVetClinic.Controllers
         public async Task<ActionResult<VisitDto>> PostVisit(VisitPostDto visitPostDto)
         {
             var response = await _visitService.PostVisitAsync(visitPostDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateVisitRecordById(int id, [FromBody] VisitUpdateDto visitUpdateDto)
+        {
+            var response = await _visitService.UpdatePetByIdAsync(id, visitUpdateDto);
             return StatusCode(response.StatusCode, response);
         }
 

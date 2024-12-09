@@ -34,6 +34,7 @@ namespace MrTakuVetClinic.Services
                 .SuccessResponse<IEnumerable<VisitTypeDto>>(
                     200, 
                     (await _visitTypeRepository.GetAllAsync())
+                    .OrderBy(v => v.TypeName)
                     .Select(v => _mapper.Map<VisitTypeDto>(v))
                 );
         }

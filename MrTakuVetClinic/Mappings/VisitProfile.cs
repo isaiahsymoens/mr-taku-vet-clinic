@@ -8,8 +8,8 @@ namespace MrTakuVetClinic.Mappings
     {
         public VisitProfile()
         {
-            CreateMap<Visit, VisitDto>()
-                .ForMember(dest => dest.VisitType, opt => opt.MapFrom(src => src.VisitType.TypeName));
+            CreateMap<Visit, VisitDto>();
+                //.ForMember(dest => dest.VisitType, opt => opt.MapFrom(src => src.VisitType.TypeName));
             CreateMap<VisitPostDto, Visit>();
             CreateMap<VisitDto, Visit>();
         }

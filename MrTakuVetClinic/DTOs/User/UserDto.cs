@@ -9,5 +9,6 @@
         public string Username { get; set; }
         public string UserType { get; set; }
         public bool Active { get; set; }
+        public int PetOwned { get; set; }
     }
 }

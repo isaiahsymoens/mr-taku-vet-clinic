@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrTakuVetClinic.DTOs.User;
+using MrTakuVetClinic.Models;
 using MrTakuVetClinic.Services;
 using System.Threading.Tasks;
 
@@ -24,6 +25,13 @@ namespace MrTakuVetClinic.Controllers
 
         }
 
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetAllPaginatedUsersAsync([FromQuery] PaginationParameters paginationParams, [FromQuery] UserSortDto userSortDto)
+        {
+            var response = await _userService.GetAllPaginatedUsersAsync(paginationParams, userSortDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
@@ -31,10 +39,17 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("search")]
-        public async Task<ActionResult<UserDto>> GetSearchUsers([FromBody] UserSearchDto userSearchDto)
+        [HttpPost("search")]
+        public async Task<ActionResult<UserDto>> GetSearchUsers([FromBody] UserSearchDto userSearchDto, [FromQuery] UserSortDto userSortDto)
         {
-            var response = await _userService.GetSearchUsersAsync(userSearchDto);
+            var response = await _userService.GetSearchUsersAsync(userSearchDto, userSortDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("userpassword/{username}")]
+        public async Task<IActionResult> GetUserPasswordByUsername(string username)
+        {
+            var response = await _userService.GetUserPasswordByUsernameAsync(username);
             return StatusCode(response.StatusCode, response);
         }
 
@@ -45,10 +60,17 @@ namespace MrTakuVetClinic.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> PostLoginUser([FromBody] UserLoginDto userLoginDto)
+        {
+            var response = await _userService.PostLoginUserAsync(userLoginDto);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpPut("{username}")]
         public async Task<IActionResult> PutUser(string username, [FromBody] UserUpdateDto user)
         {
-            var response = await _userService.UpdateUserAsync(user);
+            var response = await _userService.UpdateUserAsync(username, user);
             return StatusCode(response.StatusCode, response);
         }
 

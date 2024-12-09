@@ -46,6 +46,18 @@ namespace MrTakuVetClinic.Services
             );
         }
 
+        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetAllPaginatedPetsAsync(PaginationParameters paginationParams, PetSortDto petSortDto)
+        {
+            var paginatedPets = await _petRepository.GetPaginatedPetsAsync(paginationParams, petSortDto);
+            var paginatedResponse = new PaginatedResponse<PetDto>(
+                paginatedPets.Data.Select(p => _mapper.Map<PetDto>(p)),
+                paginatedPets.PageNumber,
+                paginatedPets.PageSize,
+                paginatedPets.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<PetDto>>(200, paginatedResponse);
+        }
+
         public async Task<ApiResponse<PetDto>> GetPetByIdAsync(int id)
         {
             var pet = await _petRepository.GetPetByIdAsync(id);
@@ -55,6 +67,31 @@ namespace MrTakuVetClinic.Services
 
             }
             return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(pet));
+        }
+
+        public async Task<ApiResponse<IEnumerable<PetDto>>> GetUserPetsByUsernameAsync(string username)
+        {
+            return ApiResponseHelper.SuccessResponse<IEnumerable<PetDto>>(
+                200,
+                (await _petRepository.GetAllUserPetsAsync(username))
+                .Select(p => _mapper.Map<PetDto>(p)).ToList()
+            );
+        }
+
+        public async Task<ApiResponse<PaginatedResponse<PetDto>>> GetPaginatedUserPetsByUsernameAsync(string username, PaginationParameters paginationParams, PetSortDto petSortDto)
+        {
+            if (await _userRepository.GetUserByUsernameAsync(username) == null)
+            {
+                return ApiResponseHelper.FailResponse<PaginatedResponse<PetDto>>(400, new { Message = "User not found." });
+            }
+            var paginatedPets = await _petRepository.GetAllPaginatedUserPetsAsync(username, paginationParams, petSortDto);
+            var paginatedResponse = new PaginatedResponse<PetDto>(
+                paginatedPets.Data.Select(p => _mapper.Map<PetDto>(p)),
+                paginatedPets.PageNumber,
+                paginatedPets.PageSize,
+                paginatedPets.TotalItems
+            );
+            return ApiResponseHelper.SuccessResponse<PaginatedResponse<PetDto>>(200, paginatedResponse);
         }
 
         public async Task<ApiResponse<PetDto>> UpdatePetByIdAsync(int id, PetUpdateDto petUpdateDto)
@@ -80,9 +117,8 @@ namespace MrTakuVetClinic.Services
             {
                 existingPet.BirthDate = petUpdateDto.BirthDate;
             }
-
             await _petRepository.UpdateAsync(existingPet);
-            return ApiResponseHelper.SuccessResponse<PetDto>(204, null);
+            return ApiResponseHelper.SuccessResponse<PetDto>(200, _mapper.Map<PetDto>(await _petRepository.GetPetByIdAsync(id)));
         }
 
         public async Task<ApiResponse<PetDto>> PostPetAsync(PetPostDto petPostDto)
@@ -105,7 +141,6 @@ namespace MrTakuVetClinic.Services
             if (user == null)
             {
                 return ApiResponseHelper.FailResponse<PetDto>(404, new { Message = "User not found." });
-
             }
             if (await _petTypeRepository.GetByIdAsync(petPostDto.PetTypeId) == null)
             {
